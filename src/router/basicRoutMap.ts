@@ -24,7 +24,12 @@ const routes = [
     path: '/problems',
     name: 'Problems',
     component: () => import('@/layouts/ProblemsLayout.vue'),
-  }
+  },
+  {
+    path: '/111',
+    name: '111',
+    component: () => import('@/views/ABC.vue'),
+  },
 ]
 
 export default routes
