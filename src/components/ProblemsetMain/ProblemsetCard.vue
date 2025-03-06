@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import cover from '@/assets/cover.png'
+
 </script>
 
 <template>
-  <div class="card" style="width: 275px; height: 88px;">
-    <div class="left">
-      <img :src="cover" alt="" />
-    </div>
-    <div class="right">
-      <p>面试经典 150 题</p>
-      <el-text truncated>最经典 150 题，掌握面试所有知识点</el-text>
-    </div>
+  <div class="card" style="width: 355px; height: 100px;">
+<div class="project">
+<h3>Manager</h3>
+<button>开始解答</button>
+<div class="condtion">
+  <span>通过率： 0%</span>
+<span>  分数： 20</span>
+<span> 难度： 低</span>
+</div>
+</div>
   </div>
 </template>
 
 <style lang="less" scoped>
 .card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  // border: 1px solid #e5e5e5;
-  margin-bottom: 10px;
-  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  margin-right: 20px;
+  padding: 20px;
   box-shadow:
     0px 2px 6px #0000000a,
     0px 4px 8px #00000005,
@@ -36,30 +37,26 @@ import cover from '@/assets/cover.png'
       0px 12px 48px #0000000a
   }
 
-  .left {
-    img {
-      margin: 0 8px;
-      width: 72px;
-      height: 72px;
-      border-radius: 5px;
-    }
-  }
-
-  .right {
-    margin-right: 10px;
-    margin-right: 5px;
-
-    p {
-      font-size: 14px;
-      color: #1a1a1a;
-    }
-
-    .el-text {
-      max-width: 180px;
-      font-size: 12px;
-      color: #999;
-      margin-top: 5px;
-    }
-  }
+ .project {
+  width: 100%;
+button{
+  float:right;
+  background-color: #29bdb9;
+    border-radius: 2px;
+    font-size: 14px;
+    line-height: 28px;
+    padding: 7px 15px;
+    margin-top: 20px;
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    border: #29bdb9;
 }
+.condtion{
+  padding: 10px 0;
+  span{
+    margin-right: 10px;
+  }}
+ }}
 </style>
