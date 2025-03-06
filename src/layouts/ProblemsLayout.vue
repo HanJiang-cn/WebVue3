@@ -2,13 +2,15 @@
 <script setup>
 import logo from '@/assets/logo.webp'
 import { ref } from 'vue'
-import MonacoEditor from '@/components/ProblemsMain/MonacoEditor.vue'
+import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import SolutionCard from '@/components/ProblemsMain/SolutionCard.vue'
+import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
 
 const visible = ref(false)
 const visible1 = ref(false)
 const visible2 = ref(false)
 const visible3 = ref(false)
+const visibles = ref(false)
 const test = ref('')
 const activeName = ref('1')
 const activeName1 = ref('1')
@@ -52,6 +54,12 @@ const tableData = [
 
 
 ]
+const lan = ref('1')
+
+const Visable = () => {
+  visibles.value = !visibles.value
+  console.log(visibles.value)
+}
 </script>
 
 <template>
@@ -66,7 +74,7 @@ const tableData = [
             <div>
               <el-button-group>
                 <el-tooltip popper-class="miaoshu" content="展开面板" placement="bottom" effect="light" :visible="visible">
-                  <el-button type="primary" @mouseenter="visible = true" @mouseleave="visible = false">
+                  <el-button type="primary" @mouseenter="visible = true" @mouseleave="visible = false" @click="Visable">
                     <el-icon :size="15" style="margin-right: 8px;">
                       <MenuUnfoldOutlined />
                     </el-icon>
@@ -260,7 +268,12 @@ const tableData = [
                     </el-icon>
                     <span>代码</span>
                   </template>
-                  <MonacoEditor style="width: 98%; height: 90%;"></MonacoEditor>
+                  <el-select v-model="lan" placeholder="请选择语言">
+                    <el-option label="JavaScript" value="1"></el-option>
+                    <el-option label="Java" value="2"></el-option>
+                    <el-option label="Python" value="3"></el-option>
+                  </el-select>
+                  <CodemirrorEditor style="width: 98%; height: 80%;" />
                   <el-tabs v-model="activeName2" type="card" class="vscode">
                     <!-- 测试 -->
                     <el-tab-pane label="测试" name="1">
@@ -296,6 +309,7 @@ const tableData = [
           </el-col>
         </el-row>
       </el-main>
+      <QuestionList :visible="visibles" @colse="visibles = false"></QuestionList>
     </el-container>
   </div>
 </template>
@@ -489,6 +503,11 @@ const tableData = [
     .card-right {
       height: 90vh;
 
+      .el-select {
+        width: 20%;
+        margin: 10px 15px;
+      }
+
       .el-tab-pane {
         margin-top: 10px;
       }
@@ -536,6 +555,8 @@ const tableData = [
       }
 
       .vscode {
+        margin-top: 15px;
+
         .el-tab-pane {
           overflow: auto;
           height: 20vh;
@@ -566,10 +587,3 @@ const tableData = [
   }
 }
 </style>
-
-<!-- <style lang="less">
-// .miaoshu {
-//   .el-popper.is-dark {
-//     background: aliceblue !important;
-//   }
-// }</style> -->

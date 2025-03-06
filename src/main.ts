@@ -37,3 +37,7 @@ for (const i in icons) {
 app.use(setupCalendar, {})
 app.component('VCalendar', Calendar)
 app.component('VDatePicker', DatePicker)
+
+// 编辑器
+import { InstallCodeMirror } from 'codemirror-editor-vue3'
+app.use(InstallCodeMirror)
