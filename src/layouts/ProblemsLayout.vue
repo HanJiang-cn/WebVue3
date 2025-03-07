@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-parsing-error -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import logo from '@/assets/logo.webp'
@@ -54,7 +55,6 @@ const tableData = [
 
 
 ]
-const lan = ref('1')
 
 const Visable = () => {
   visibles.value = !visibles.value
@@ -66,6 +66,7 @@ const Visable = () => {
   <div class="common-layout">
     <el-container>
       <el-header>
+        <!-- 头 -->
         <el-row style="width: 100%;" justify="center">
           <el-col :span="8" class="left">
             <div class="logo">
@@ -130,6 +131,7 @@ const Visable = () => {
       </el-header>
       <el-main>
         <el-row :gutter="10">
+          <!-- 左边 -->
           <el-col :span="12">
             <el-card class="card-left">
               <el-tabs v-model="activeName" type="card">
@@ -143,11 +145,13 @@ const Visable = () => {
                     <span>题目描述</span>
                   </template>
                   <!-- 内容 -->
+                  <!-- 题目 -->
                   <el-row>
                     <h1>
                       这是一个题的题目
                     </h1>
                   </el-row>
+                  <!-- 标签 -->
                   <el-row style="margin-top: 10px;">
                     <el-tag type="success">
                       简单
@@ -159,12 +163,15 @@ const Visable = () => {
                       JavaScript
                     </el-tag>
                   </el-row>
+                  <!-- 题目描述 -->
+                  <!-- 提交记录&题解 -->
                   <el-row style="margin-top: 10px;">
-                    <h3>
-                      题目描述
-                    </h3>
+
                     <div class="topic-content ">
                       <div class="topic-content__text">
+                        <h3>
+                          题目描述
+                        </h3>
                         <p>
                           给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
                         </p>
@@ -217,6 +224,7 @@ const Visable = () => {
                                     <p>只会存在一个有效答案</p>
                       </div>
                     </div>
+                    <!-- 提交记录&题解 -->
                     <el-collapse style="width: 100%;">
                       <!-- 提交记录 -->
                       <el-collapse-item title="提交记录" name="1">
@@ -252,11 +260,15 @@ const Visable = () => {
                     </el-icon>
                     <span>题解</span>
                   </template>
+                  <div class="up-solution">
+                    <el-button type="primary">上传题解</el-button>
+                  </div>
                   <SolutionCard v-for="item in 10" :key="item" />
                 </el-tab-pane>
               </el-tabs>
             </el-card>
           </el-col>
+          <!-- 右边 -->
           <el-col :span="12">
             <el-card class="card-right">
               <!-- 代码 -->
@@ -268,12 +280,8 @@ const Visable = () => {
                     </el-icon>
                     <span>代码</span>
                   </template>
-                  <el-select v-model="lan" placeholder="请选择语言">
-                    <el-option label="JavaScript" value="1"></el-option>
-                    <el-option label="Java" value="2"></el-option>
-                    <el-option label="Python" value="3"></el-option>
-                  </el-select>
-                  <CodemirrorEditor style="width: 98%; height: 80%;" />
+                  <CodemirrorEditor style="width: 98%; height: 68%;" />
+                  <!-- <CodemirrorEditor /> -->
                   <el-tabs v-model="activeName2" type="card" class="vscode">
                     <!-- 测试 -->
                     <el-tab-pane label="测试" name="1">
@@ -316,12 +324,12 @@ const Visable = () => {
 
 <style lang="less" scoped>
 .common-layout {
-  background: #F0F0F0;
-
   .el-header {
     display: flex;
     align-items: center;
     height: 48px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #ebeef5;
 
     .el-popper.is-customized .el-popper__arrow::before {
       background-color: #F0F0F0;
@@ -392,8 +400,10 @@ const Visable = () => {
         width: 100%;
 
         span {
-          font-size: 20px;
-          color: #1a1a1a;
+          color: #2c3e50;
+          font-weight: 600;
+          letter-spacing: 0.5px;
+          font-size: 18px;
 
         }
       }
@@ -407,14 +417,54 @@ const Visable = () => {
   }
 
   .el-main {
+
     .el-col {
       >.el-card {
-        border-radius: 10px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+        &:hover {
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
       }
     }
 
     .card-left {
       height: 90vh;
+
+      // 提交记录&评论
+      .el-collapse {
+        border: none;
+
+        :deep(.el-collapse-item__header) {
+          height: 50px;
+          padding: 0 20px;
+          font-size: 15px;
+          color: #2c3e50;
+          background: rgba(#409EFF, 0.05);
+          border-radius: 8px;
+          border-bottom: none;
+          margin-top: 24px;
+        }
+
+        :deep(.el-collapse-item__content) {
+          .el-table {
+            margin-top: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+          }
+        }
+      }
+
+      .up-solution {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: 10px;
+        padding: 15px;
+        border-bottom: 1px solid #0000000d;
+
+      }
 
       .el-tab-pane {
         margin-top: 10px;
@@ -425,6 +475,7 @@ const Visable = () => {
       }
 
       :deep(.el-tabs__header) {
+        margin-top: 10px;
         border: none;
         height: 10px;
 
@@ -432,6 +483,7 @@ const Visable = () => {
           border: none;
 
           .el-tabs__item {
+            margin-left: 5px;
             border: none;
             font-size: 14px;
             color: #777777;
@@ -446,54 +498,99 @@ const Visable = () => {
 
           .is-active {
             color: #1a1a1a;
+            background: rgba(#409EFF, 0.1);
           }
         }
 
 
       }
 
+      // 实例&提示&题目描述
       .el-tab-pane {
         overflow: auto;
         height: 80vh;
 
+        // 标签
         .el-tag {
           margin-right: 5px;
           border-radius: 10px;
         }
 
+        // 题目描述
         .topic-content {
           margin-top: 10px;
+          line-height: 1.6;
+          position: relative;
+          padding-right: 20px;
 
           .topic-content__text {
-            font-size: 14px;
+            h3 {
+              font-size: 18px;
+              color: #2c3e50;
+              margin: 24px 0 16px;
+              padding-left: 12px;
+              border-left: 4px solid #409EFF;
+            }
 
-            p {
-              margin-bottom: 5px;
+            p,
+            li {
+              line-height: 1.8;
+              color: #606266;
+              margin-bottom: 12px;
             }
           }
 
+          // 示例
           .example {
-            margin: 10px 0;
-            padding: 10px;
-            border-left: 5px solid #0000000d;
-            background: #F0F0F0;
-            font-size: 13px;
+            background: rgba(#409EFF, 0.03);
+            border: 1px solid rgba(#409EFF, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            position: relative;
+
+            // ::before 是伪元素选择器，用于在元素前面插入内容
+            &::before {
+              content: '示例';
+              position: absolute;
+              top: -12px;
+              left: 20px;
+              background: white;
+              padding: 0 8px;
+              color: #409EFF;
+              font-size: 16px;
+              font-weight: 500;
+            }
 
             p {
-              margin-bottom: 5px;
+              margin: 8px 0;
+              font-family: 'JetBrains Mono', monospace;
+              font-size: 14px;
+              color: #2c3e50;
+
+              &:nth-child(odd) {
+                color: #909399;
+              }
             }
           }
 
+          // 提示
           .hint {
-            font-size: 13px;
-            margin-bottom: 30px;
+            background: #fff9f0;
+            border-left: 4px solid #E6A23C;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 24px 0;
 
             h3 {
-              margin-bottom: 5px;
+              color: #E6A23C;
+              border-color: #E6A23C;
+              margin-top: 0;
             }
 
             p {
-              margin-bottom: 5px;
+              color: #8c6b3f;
+              font-size: 14px;
             }
           }
         }
@@ -503,11 +600,6 @@ const Visable = () => {
     .card-right {
       height: 90vh;
 
-      .el-select {
-        width: 20%;
-        margin: 10px 15px;
-      }
-
       .el-tab-pane {
         margin-top: 10px;
       }
@@ -516,7 +608,9 @@ const Visable = () => {
         margin-right: 5px;
       }
 
+      // 标签页和标签
       :deep(.el-tabs__header) {
+        margin-top: 10px;
         border: none;
         height: 10px;
 
@@ -524,6 +618,7 @@ const Visable = () => {
           border: none;
 
           .el-tabs__item {
+            margin-left: 5px;
             border: none;
             font-size: 14px;
             color: #777777;
@@ -538,6 +633,7 @@ const Visable = () => {
 
           .is-active {
             color: #1a1a1a;
+            background: rgba(#409EFF, 0.1);
           }
         }
 
@@ -554,6 +650,7 @@ const Visable = () => {
         }
       }
 
+      // 代码编辑器和测试及测试结果
       .vscode {
         margin-top: 15px;
 
@@ -567,19 +664,36 @@ const Visable = () => {
           }
         }
 
+        // 测试结果
         .result {
-          background-color: #0000000d;
-          margin-left: 10px;
-          margin-bottom: 10px;
-          padding: 10px;
-          border-radius: 15px;
+          padding: 12px;
+          border-radius: 8px;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
 
-          &.error {
-            color: red;
+          &::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 12px;
           }
 
           &.success {
-            color: green;
+            background: fade(#67C23A, 10%);
+
+            &::before {
+              background: #67C23A;
+            }
+          }
+
+          &.error {
+            background: fade(#F56C6C, 10%);
+
+            &::before {
+              background: #F56C6C;
+            }
           }
         }
       }

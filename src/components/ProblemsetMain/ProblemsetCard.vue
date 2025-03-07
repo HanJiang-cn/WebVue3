@@ -3,16 +3,16 @@
 </script>
 
 <template>
-  <div class="card" style="width: 355px; height: 100px;">
-<div class="project">
-<h3>Manager</h3>
-<button>开始解答</button>
-<div class="condtion">
-  <span>通过率： 0%</span>
-<span>  分数： 20</span>
-<span> 难度： 低</span>
-</div>
-</div>
+  <div class="card" style="width: 100%; height: 100px;">
+    <div class="project">
+      <h3>Manager</h3>
+      <button>开始解答</button>
+      <div class="condtion">
+        <span>通过率： 0%</span>
+        <span> 分数： 20</span>
+        <span> 难度： 低</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -37,26 +37,31 @@
       0px 12px 48px #0000000a
   }
 
- .project {
-  width: 100%;
-button{
-  float:right;
-  background-color: #29bdb9;
-    border-radius: 2px;
-    font-size: 14px;
-    line-height: 28px;
-    padding: 7px 15px;
-    margin-top: 20px;
-    text-align: center;
-    color: #fff;
-    text-decoration: none;
-    cursor: pointer;
-    border: #29bdb9;
+  .project {
+    width: 100%;
+
+    button {
+      float: right;
+      background-color: #29bdb9;
+      border-radius: 2px;
+      font-size: 14px;
+      line-height: 28px;
+      padding: 7px 15px;
+      margin-top: 20px;
+      text-align: center;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      border: #29bdb9;
+    }
+
+    .condtion {
+      padding: 10px 0;
+
+      span {
+        margin-right: 10px;
+      }
+    }
+  }
 }
-.condtion{
-  padding: 10px 0;
-  span{
-    margin-right: 10px;
-  }}
- }}
 </style>
