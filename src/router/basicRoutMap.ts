@@ -31,6 +31,11 @@ const routes = [
     component: () => import('@/views/ABC.vue'),
   },
   {
+    path:'/contest',
+    name:'Contest',
+    component:()=>import('@/layouts/ContestLayout.vue')
+  },
+  {
     path:'/compile',
     name:'Compile',
     component:()=>import('@/layouts/CompileLayout.vue')
