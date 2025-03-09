@@ -34,6 +34,16 @@ const routes = [
     path:'/contest',
     name:'Contest',
     component:()=>import('@/layouts/ContestLayout.vue')
+  },
+  {
+    path:'/compile',
+    name:'Compile',
+    component:()=>import('@/layouts/CompileLayout.vue')
+  },
+  {
+    path:'/submit',
+    name:'Submit',
+    component:()=>import('@/layouts/SubmitLayout.vue')
   }
 ]
 
