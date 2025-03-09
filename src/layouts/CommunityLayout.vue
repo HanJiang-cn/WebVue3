@@ -15,7 +15,7 @@ import CommunityAside from '@/views/CommunityMain/CommunityAside.vue'
     <div class="banner">
       <el-carousel height="280px" motion-blur>
         <el-carousel-item v-for="item in 4" :key="item">
-          <img src="http://p1.music.126.net/3bmHxZLAawzb46acOYbNqA==/109951170567995950.jpg" />
+          <p style="width: 100%; height: 100%; background: #fdacfa;">{{ item }}</p>
         </el-carousel-item>
       </el-carousel>
     </div>

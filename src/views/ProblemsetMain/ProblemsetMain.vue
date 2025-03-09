@@ -103,7 +103,7 @@ const attrs = ref([
 
         <div class="tap">
           <div class="block text-center">
-            <el-carousel height="180px" motion-blur>
+            <el-carousel height="180px" motion-blur indicator-position="none">
               <el-carousel-item v-for="item in 4" :key="item">
                 <div class="card">
                   <ProblemsetCard v-for="item in 2" :key="item" />
