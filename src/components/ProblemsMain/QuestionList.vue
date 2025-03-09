@@ -122,15 +122,8 @@ const tableData = ref([
       </div>
     </template>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column label="序号" prop="name" />
-      <el-table-column label="题目" prop="address" />
-      <el-table-column label="难度" prop="address">
-        <template #default="scope">
-          <el-tag type="scope.row.index === 简单 ? 'success' : scope.row.index === 中等?'warning' : 'danger'">
-            {{ scope.row.index }}
-          </el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" />
+      <el-table-column prop="address" />
     </el-table>
   </el-drawer>
 </template>

@@ -26,10 +26,20 @@ const routes = [
     component: () => import('@/layouts/ProblemsLayout.vue'),
   },
   {
-    path: '/community',
-    name: 'Community',
-    component: () => import('@/layouts/CommunityLayout.vue'),
+    path: '/111',
+    name: '111',
+    component: () => import('@/views/ABC.vue'),
   },
+  {
+    path:'/compile',
+    name:'Compile',
+    component:()=>import('@/layouts/CompileLayout.vue')
+  },
+  {
+    path:'/submit',
+    name:'Submit',
+    component:()=>import('@/layouts/SubmitLayout.vue')
+  }
 ]
 
 export default routes

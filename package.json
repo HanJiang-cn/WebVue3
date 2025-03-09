@@ -23,7 +23,6 @@
     "jslint": "^0.12.1",
     "moment": "^2.30.1",
     "pinia": "^3.0.1",
-    "undraw-ui": "^1.2.6",
     "v-calendar": "^3.1.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
