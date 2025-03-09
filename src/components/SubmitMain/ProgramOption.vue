@@ -18,11 +18,29 @@
         <el-form-item label="难度" prop="location">
       <el-segmented v-model="ruleForm.location" :options="locationOptions" />
     </el-form-item>
-    <el-form-item label="题目" prop="question">
-      <el-input v-model="ruleForm.question" type="textarea" />
+    <!-- <div id="text"><TinymceEdit></TinymceEdit></div> -->
+     <el-form-item label="题目" prop="question">
+<TinymceEdit></TinymceEdit>
     </el-form-item>
-    <el-form-item label="答案" prop="answer">
-      <el-input v-model="ruleForm.answer" type="textarea" />
+    <!-- <div class="test">
+        <el-form-item label="样本输入" prop="inp">
+      <el-input v-model="ruleForm.inp" type="textarea" />
+    </el-form-item>
+     <el-form-item label="样本输出" prop="exp">
+      <el-input v-model="ruleForm.exp" type="textarea" />
+    </el-form-item>
+    </div> -->
+  <div v-for="(sample, index) in ruleForm.samples" :key="index" class="sample-io">
+      <el-form-item :label="`样本输入 ${index + 1}`" :prop="`samples[${index}].inp`" :rules="rules.inp">
+        <el-input v-model="sample.inp" type="textarea" />
+      </el-form-item>
+      <el-form-item :label="`样本输出 ${index + 1}`" :prop="`samples[${index}].exp`" :rules="rules.exp">
+        <el-input v-model="sample.exp" type="textarea" />
+      </el-form-item>
+      <el-button type="danger" @click="removeSample(index)">删除</el-button>
+    </div>
+    <el-form-item>
+      <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
     </el-form-item>
     <el-form-item label="解析" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
@@ -39,23 +57,30 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
-
+import TinymceEdit from '@/components/TinymceEdit.vue'
+interface Sample {
+  inp: string
+  exp: string
+}
 interface RuleForm {
   region: string
   location: string
-   question: string
+   question:string
   desc: string
-  answer:string
+  inp: string
+  exp:string
+   samples: Sample[]
 }
-
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   region: '',
   location: '',
-    question: '',
+  question: '',
   desc: '',
-  answer:''
+  samples: [{ inp: '', exp: '' }],
+  inp: '',
+  exp: ''
 })
 
 const locationOptions = ['简单', '适中', '困难']
@@ -82,10 +107,20 @@ const rules = reactive<FormRules<RuleForm>>({
   desc: [
     { required: true, message: '请填写解析', trigger: 'blur' },
   ],
-  answer: [
-    { required: true, message: '请输入答案', trigger: 'blur' },
+ inp: [
+    { required: true, message: '请填写样本输入', trigger: 'blur' },
+  ],
+  exp: [
+    { required: true, message: '请填写样本输出', trigger: 'blur' },
   ],
 })
+const addSample = () => {
+  ruleForm.samples.push({ inp: '', exp: '' })
+}
+
+const removeSample = (index: number) => {
+  ruleForm.samples.splice(index, 1)
+}
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -104,3 +139,18 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 </script>
+<style lang="less" scoped>
+#text{
+  margin-bottom: 20px;
+  margin-left: 35px;
+}
+.test{
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #c0c4cc;
+}
+.sample-io {
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #c0c4cc;
+  padding-bottom: 20px;
+}
+</style>

@@ -4,6 +4,8 @@ import type { TabsPaneContext } from 'element-plus'
 import MoreOptions from '@/components/SubmitMain/MoreOptions.vue'
 import JudgeOption from '@/components/SubmitMain/JudgeOption.vue'
 import BlanksOptions from '@/components/SubmitMain/BlanksOptions.vue'
+import ProgramOption from '@/components/SubmitMain/ProgramOption.vue'
+import ShortOption from '@/components/SubmitMain/ShortOption.vue'
 const activeName = ref('first')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
@@ -149,9 +151,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
   </el-tab-pane>
     <el-tab-pane label="判断题" name="third"><JudgeOption></JudgeOption></el-tab-pane>
     <el-tab-pane label="填空题" name="fourth"><BlanksOptions></BlanksOptions></el-tab-pane>
-     <el-tab-pane label="编程题" name="five">Task</el-tab-pane>
-      <el-tab-pane label="简答题" name="six">Task</el-tab-pane>
-      <el-tab-pane label="编程填空题" name="seven">Task</el-tab-pane>
+     <el-tab-pane label="编程题" name="five"><ProgramOption></ProgramOption></el-tab-pane>
+      <el-tab-pane label="简答题" name="six"><ShortOption></ShortOption></el-tab-pane>
   </el-tabs></div>
 </div>
 </template>

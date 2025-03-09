@@ -13,17 +13,12 @@ import Editor from '@tinymce/tinymce-vue'
 </template>
 
 <style scoped>
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
 @media (min-width: 1024px) {
   #sample {
     display: flex;
     flex-direction: column;
     place-items: center;
-    width: 1000px;
+    width: 600px;
   }
 }
 </style>

@@ -9,44 +9,27 @@
     :size="formSize"
     status-icon
   >
-    <el-form-item label="科目" prop="region">
+     <el-form-item label="科目" prop="region">
       <el-select v-model="ruleForm.region" placeholder="请选择科目">
         <el-option label="Java" value="Java" />
         <el-option label="C++" value="C++" />
       </el-select>
     </el-form-item>
-    <el-form-item label="难度" prop="location">
+        <el-form-item label="难度" prop="location">
       <el-segmented v-model="ruleForm.location" :options="locationOptions" />
     </el-form-item>
     <el-form-item label="题目" prop="question">
       <el-input v-model="ruleForm.question" type="textarea" />
     </el-form-item>
-    <el-form-item label="选项" prop="type">
-      <el-checkbox-group v-model="ruleForm.type">
-        <div><el-checkbox value="Online activities" name="type">
-          <span class="opt">A</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-       <div> <el-checkbox value="Promotion activities" name="type">
-          <span class="opt">B</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-        <div><el-checkbox value="Offline activities" name="type">
-       <span class="opt">C</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-       <div> <el-checkbox value="Simple brand exposure" name="type">
-          <span class="opt">D</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-      </el-checkbox-group>
+     <el-form-item label="答案" prop="answer">
+      <el-input v-model="ruleForm.answer" type="textarea" />
     </el-form-item>
     <el-form-item label="解析" prop="desc">
       <el-input v-model="ruleForm.desc" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
-        创建
+         创建
       </el-button>
       <el-button @click="resetForm(ruleFormRef)">重置</el-button>
     </el-form-item>
@@ -60,9 +43,9 @@ import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 interface RuleForm {
   region: string
   location: string
-  type: string[]
+   question:string
   desc: string
-  question: string
+  answer: string
 }
 
 const formSize = ref<ComponentSize>('default')
@@ -70,15 +53,14 @@ const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   region: '',
   location: '',
-  type: [],
+    question: '',
   desc: '',
-  question: '',
+  answer: '',
 })
 
 const locationOptions = ['简单', '适中', '困难']
 
 const rules = reactive<FormRules<RuleForm>>({
-
   region: [
     {
       required: true,
@@ -94,20 +76,16 @@ const rules = reactive<FormRules<RuleForm>>({
       trigger: 'change',
     },
   ],
-  type: [
-    {
-      type: 'array',
-      required: true,
-      message: '请选择选项',
-      trigger: 'change',
-    },
+  question: [
+    { required: true, message: '请输入题目', trigger: 'blur' },
   ],
   desc: [
     { required: true, message: '请填写解析', trigger: 'blur' },
   ],
-    question: [
-    { required: true, message: '请输入题目', trigger: 'blur' },
-  ]
+    answer: [
+    { required: true, message: '请填写答案', trigger: 'blur' },
+  ],
+
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -127,23 +105,3 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 </script>
-<style lang="less" scoped>
- .inp{
-    display: inline-block;
-    height: 30px;
-    margin-top: 6px;
- .A {
-    width: 485px;
-    height: 25px;
-    outline: none;
-    margin-left: 10px;
-    vertical-align: top;
-    border: 1px solid #c0c4cc;
-  }
-  }
-    .opt{
-    float: left;
-    margin-top: 11px;
-   }
-
-</style>

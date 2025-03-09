@@ -120,6 +120,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   width: 450px;
   height: 25px;
   outline: none;
+  border: 1px solid #c0c4cc;
 }
 .opt{
   margin-right: 10px;
