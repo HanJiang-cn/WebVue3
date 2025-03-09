@@ -1,7 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import ProblemsetCard from '@/components/ProblemsetMain/ProblemsetCard.vue'
-import ProblemBackground from './ProblemBackground.vue'
 import { ref } from 'vue'
 
 const radio1 = ref('1')
@@ -90,7 +89,6 @@ const attrs = ref([
 
 <template>
   <el-row style="width: 100%;" :gutter="20">
-    <ProblemBackground></ProblemBackground>
     <el-col :span="18">
       <el-row class="study">
         <div class="recommmend"></div>
@@ -101,17 +99,17 @@ const attrs = ref([
           </span>
         </div>
 
-        <div class="tap">
-          <div class="block text-center">
-            <el-carousel height="180px" motion-blur>
-              <el-carousel-item v-for="item in 4" :key="item">
-                <div class="card">
-                  <ProblemsetCard v-for="item in 2" :key="item" />
-                </div>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
+      <div class="tap">
+        <div class="block text-center">
+    <el-carousel height="180px" motion-blur>
+      <el-carousel-item v-for="item in 4" :key="item">
+         <div class="card">
+          <ProblemsetCard v-for="item in 2" :key="item" />
         </div>
+      </el-carousel-item>
+    </el-carousel>
+  </div>
+  </div>
       </el-row>
       <el-row>
         <div style="width: 100%; text-align: left;">
@@ -247,29 +245,23 @@ const attrs = ref([
       </el-row>
     </el-col>
     <el-col :span="6">
-      <el-row>
+       <el-row >
         <el-card class="practice-history" style="width: 100%;">
-          <div id="title">
-            <p>练习历史</p>
-          </div>
-          <div id="content">
-            <a href="#">
-              <span id="name">算法</span>
-              <span id="condition">完成</span>
-            </a>
-          </div>
-          <div id="record">
-            <a href="#">
-              <el-icon>
-                <Clock />
-              </el-icon>
-              <span>查看记录</span>
-            </a>
-            <a href="#"><el-icon>
-                <DocumentDelete />
-              </el-icon>
-              <span>错题练习</span></a>
-          </div>
+            <div id="title"> <p>练习历史</p></div>
+            <div id="content">
+                  <a href="#">
+                  <span id="name">算法</span>
+                  <span id="condition">完成</span>
+                  </a>
+            </div>
+<div id="record">
+  <a href="#">
+    <el-icon><Clock /></el-icon>
+    <span>查看记录</span>
+</a>
+  <a href="#"><el-icon><DocumentDelete /></el-icon>
+  <span>错题练习</span></a>
+</div>
         </el-card>
       </el-row>
       <el-row style="margin-top: 15px;">
@@ -285,34 +277,34 @@ const attrs = ref([
 </template>
 
 <style lang="less" scoped>
-.study {
+.study{
   border: 1px solid #eff0f2;
   padding: 20px;
-
   .nav-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 
-    .left-title {
-      color: #1a1a1abf;
-      font-size: 20px;
-    }
+  .left-title {
+    color: #1a1a1abf;
+    font-size: 20px;
+  }
 
-    .right-a {
-      color: #007aff;
-      font-size: 14px;
+  .right-a {
+    color: #007aff;
+    font-size: 14px;
 
-      a {
-        text-decoration: none;
-      }
+    a {
+      text-decoration: none;
     }
   }
+}
 }
 
 .card {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin-top: 10px;
 }
@@ -407,90 +399,80 @@ const attrs = ref([
   }
 }
 
-.el-card {
-  border-radius: 10px;
-  box-shadow: 0px 2px 6px #0000000a,
-    0px 4px 8px #00000005,
-    0px 6px 12px #00000005;
-}
-
-.tap {
+// .el-card {
+//   border-radius: 10px;
+//   box-shadow: 0px 2px 6px #0000000a,
+//     0px 4px 8px #00000005,
+//     0px 6px 12px #00000005;
+// }
+.tap{
   height: 180px;
   width: 100%;
-
   .el-carousel__item h3 {
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-    text-align: center;
-  }
-
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+  text-align: center;
 }
 
+
+
+
+}
 .practice-history {
-  #title {
+  #title{
     font-size: 20px;
     height: 38px;
     color: #000;
     overflow: hidden;
   }
-
-  #content {
+  #content{
     align-items: center;
-
-    a {
-      display: flex;
-      justify-content: space-between;
+    a{
+     display: flex;
+     justify-content: space-between;
       text-decoration: none;
       align-items: center;
-      margin: 0 -10px;
+      margin:0 -10px;
       padding: 10px 10px;
       border-radius: 5px;
-
-      &:hover {
-        background-color: rgba(248, 248, 248);
+      &:hover{
+    background-color: rgba(248, 248, 248);
       }
     }
-
-    #name {
+    #name{
       font-size: 17px;
-      color: #555;
+      color: #555; ;
       font-weight: 600;
       margin-right: 10px;
     }
-
-    #condition {
+    #condition{
       font-size: 17px;
       color: #ff7849;
     }
-  }
-
-  #record {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: 10px;
-    margin-top: 10px;
-    border-top: 1px solid #ddd;
-    font-size: 17px;
-
-    a {
-      text-decoration: none;
-      color: #262626;
-
-      &:hover {
-        color: #409EFF;
-      }
-    }
-
-    .el-icon {
-      margin-right: 2px;
-      vertical-align: middle;
-      margin-bottom: 3px;
-    }
-  }
 }
 
+   #record{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-top:10px ;
+      margin-top: 10px;
+      border-top: 1px solid #ddd;
+      font-size: 17px;
+      a{
+        text-decoration: none;
+        color: #262626;
+        &:hover{
+          color: #409EFF;
+        }
+      }
+    .el-icon{
+  margin-right: 2px;
+vertical-align: middle;
+margin-bottom: 3px;
+}
+    }
 .calendar {
   span {
     margin: 5px 3px;
@@ -502,7 +484,7 @@ const attrs = ref([
   :deep(.vc-pane) {
     min-width: 120px !important;
   }
-}
+}}
 </style>
 
 // 下拉组件
