@@ -26,11 +26,6 @@ const routes = [
     component: () => import('@/layouts/ProblemsLayout.vue'),
   },
   {
-    path: '/111',
-    name: '111',
-    component: () => import('@/views/ABC.vue'),
-  },
-  {
     path:'/contest',
     name:'Contest',
     component:()=>import('@/layouts/ContestLayout.vue')
