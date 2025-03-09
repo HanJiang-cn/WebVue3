@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
-import IndexMain from '@/views/IndexMain/IndexMain.vue'
-import IndexAside from '@/views/IndexMain/IndexAside.vue';
+import CommunityMain from '@/views/CommunityMain/CommunityMain.vue'
+import CommunityAside from '@/views/CommunityMain/CommunityAside.vue'
 
 </script>
 
@@ -12,14 +12,21 @@ import IndexAside from '@/views/IndexMain/IndexAside.vue';
         <navMenu />
       </div>
     </div>
+    <div class="banner">
+      <el-carousel height="280px" motion-blur>
+        <el-carousel-item v-for="item in 4" :key="item">
+          <img src="http://p1.music.126.net/3bmHxZLAawzb46acOYbNqA==/109951170567995950.jpg" />
+        </el-carousel-item>
+      </el-carousel>
+    </div>
     <div class="main-layout">
       <div class="main">
-        <IndexMain />
+        <CommunityMain />
       </div>
       <div class="aside">
         <div class="aside-content">
           <el-affix :offset="20" target=".aside-content">
-            <IndexAside />
+            <CommunityAside />
           </el-affix>
         </div>
       </div>
@@ -40,6 +47,12 @@ import IndexAside from '@/views/IndexMain/IndexAside.vue';
     height: 100%;
     margin: 0 auto;
   }
+}
+
+.banner {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 2000px;
 }
 
 .main-layout {

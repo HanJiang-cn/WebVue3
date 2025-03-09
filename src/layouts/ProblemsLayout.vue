@@ -6,6 +6,8 @@ import { ref } from 'vue'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import SolutionCard from '@/components/ProblemsMain/SolutionCard.vue'
 import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
+import SolutionContent from '@/views/ProblemsMain/SolutionContent.vue'
+import CommentComponent from '@/components/CommentComponent.vue'
 
 const visible = ref(false)
 const visible1 = ref(false)
@@ -13,6 +15,7 @@ const visible2 = ref(false)
 const visible3 = ref(false)
 const visibles = ref(false)
 const test = ref('')
+const solution = ref(true)
 const activeName = ref('1')
 const activeName1 = ref('1')
 const activeName2 = ref('1')
@@ -164,7 +167,7 @@ const Visable = () => {
                     </el-tag>
                   </el-row>
                   <!-- 题目描述 -->
-                  <!-- 提交记录&题解 -->
+                  <!-- 提交记录&评论 -->
                   <el-row style="margin-top: 10px;">
 
                     <div class="topic-content ">
@@ -224,7 +227,7 @@ const Visable = () => {
                                     <p>只会存在一个有效答案</p>
                       </div>
                     </div>
-                    <!-- 提交记录&题解 -->
+                    <!-- 提交记录&评论 -->
                     <el-collapse style="width: 100%;">
                       <!-- 提交记录 -->
                       <el-collapse-item title="提交记录" name="1">
@@ -247,7 +250,7 @@ const Visable = () => {
                       </el-collapse-item>
                       <!-- 评论 -->
                       <el-collapse-item title="评论" name="2">
-                        评论有完整的组件，此处就不额外设计
+                        <CommentComponent></CommentComponent>
                       </el-collapse-item>
                     </el-collapse>
                   </el-row>
@@ -260,10 +263,19 @@ const Visable = () => {
                     </el-icon>
                     <span>题解</span>
                   </template>
-                  <div class="up-solution">
-                    <el-button type="primary">上传题解</el-button>
+                  <div v-if="!solution">
+                    <div class="up-solution">
+                      <el-button type="primary">上传题解</el-button>
+                    </div>
+                    <SolutionCard style="cursor: pointer;" @click="solution = true" v-for="item in 10" :key="item" />
                   </div>
-                  <SolutionCard v-for="item in 10" :key="item" />
+                  <div v-if="solution" class="solution-content">
+                    <div class="title">
+                      <ArrowLeftOutlined />
+                      <el-text @click="solution = flase">全部题解</el-text>
+                    </div>
+                    <SolutionContent></SolutionContent>
+                  </div>
                 </el-tab-pane>
               </el-tabs>
             </el-card>
@@ -317,6 +329,7 @@ const Visable = () => {
           </el-col>
         </el-row>
       </el-main>
+      <!-- 每日一题 -->
       <QuestionList :visible="visibles" @colse="visibles = false"></QuestionList>
     </el-container>
   </div>
@@ -432,6 +445,21 @@ const Visable = () => {
     .card-left {
       height: 90vh;
 
+      // 题解内容页面
+      .solution-content {
+        .title {
+          width: 11%;
+          display: flex;
+          align-items: center;
+          padding: 15px;
+          cursor: pointer;
+
+          .el-text {
+            margin-left: 5px;
+          }
+        }
+      }
+
       // 提交记录&评论
       .el-collapse {
         border: none;
@@ -518,7 +546,7 @@ const Visable = () => {
 
         // 题目描述
         .topic-content {
-          margin-top: 10px;
+          // margin-top: 10px;
           line-height: 1.6;
           position: relative;
           padding-right: 20px;
@@ -642,7 +670,7 @@ const Visable = () => {
 
       .el-tab-pane {
         overflow: auto;
-        height: 80vh;
+        height: 89vh;
 
         .el-tag {
           margin-right: 5px;
@@ -656,7 +684,7 @@ const Visable = () => {
 
         .el-tab-pane {
           overflow: auto;
-          height: 20vh;
+          height: 14vh;
 
           .el-tag {
             margin-right: 5px;

@@ -40,7 +40,8 @@
   // width: 80vh;
   display: flex;
   justify-content: first baseline;
-  padding: 10px;
+  padding-top: 10px;
+  margin-bottom: 10px;
 
   .left {
     // float: left;
@@ -65,6 +66,12 @@
         display: flex;
         justify-content: space-between;
         margin-bottom: 5px;
+      }
+
+      >p {
+        font-size: 15px !important;
+        margin-bottom: 5px !important;
+        font-weight: bold;
       }
 
       p {

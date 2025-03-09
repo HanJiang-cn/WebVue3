@@ -41,3 +41,9 @@ app.component('VDatePicker', DatePicker)
 // 编辑器
 import { InstallCodeMirror } from 'codemirror-editor-vue3'
 app.use(InstallCodeMirror)
+
+// 评论
+import UndrawUi from 'undraw-ui'
+import 'undraw-ui/dist/style.css'
+
+app.use(UndrawUi)
