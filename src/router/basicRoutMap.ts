@@ -26,20 +26,25 @@ const routes = [
     component: () => import('@/layouts/ProblemsLayout.vue'),
   },
   {
-    path:'/contest',
-    name:'Contest',
-    component:()=>import('@/layouts/ContestLayout.vue')
+    path: '/community',
+    name: 'Community',
+    component: () => import('@/layouts/CommunityLayout.vue'),
   },
   {
-    path:'/compile',
-    name:'Compile',
-    component:()=>import('@/layouts/CompileLayout.vue')
+    path: '/contest',
+    name: 'Contest',
+    component: () => import('@/layouts/ContestLayout.vue'),
   },
   {
-    path:'/submit',
-    name:'Submit',
-    component:()=>import('@/layouts/SubmitLayout.vue')
-  }
+    path: '/compile',
+    name: 'Compile',
+    component: () => import('@/layouts/CompileLayout.vue'),
+  },
+  {
+    path: '/submit',
+    name: 'Submit',
+    component: () => import('@/layouts/SubmitLayout.vue'),
+  },
 ]
 
 export default routes

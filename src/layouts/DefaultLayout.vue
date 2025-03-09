@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
 import IndexMain from '@/views/IndexMain/IndexMain.vue'
-import AsideCard from '@/components/IndexMain/AsideCard.vue';
+import IndexAside from '@/views/IndexMain/IndexAside.vue';
 
 </script>
 
@@ -19,7 +19,7 @@ import AsideCard from '@/components/IndexMain/AsideCard.vue';
       <div class="aside">
         <div class="aside-content">
           <el-affix :offset="20" target=".aside-content">
-            <AsideCard></AsideCard>
+            <IndexAside />
           </el-affix>
         </div>
       </div>
@@ -42,26 +42,6 @@ import AsideCard from '@/components/IndexMain/AsideCard.vue';
   }
 }
 
-.main {
-  height: 100%;
-  float: left;
-  text-align: left;
-  color: #333;
-  margin-top: 40px;
-}
-
-.aside {
-  width: 350px;
-  padding-top: 50px;
-  color: #333;
-  text-align: right;
-
-  .aside-content {
-    text-align: left;
-    height: 100%;
-  }
-}
-
 .main-layout {
   max-width: 1200px;
   margin: 0 auto;
@@ -69,5 +49,25 @@ import AsideCard from '@/components/IndexMain/AsideCard.vue';
   width: 65%;
   height: 100%;
   display: flex;
+
+  .main {
+    height: 100%;
+    float: left;
+    text-align: left;
+    color: #333;
+    margin-top: 40px;
+  }
+
+  .aside {
+    width: 350px;
+    padding-top: 50px;
+    color: #333;
+    text-align: right;
+
+    .aside-content {
+      text-align: left;
+      height: 100%;
+    }
+  }
 }
 </style>
