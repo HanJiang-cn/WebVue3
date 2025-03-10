@@ -9,23 +9,23 @@
     :size="formSize"
     status-icon
   >
-     <el-form-item label="科目" prop="region">
-      <el-select v-model="ruleForm.region" placeholder="请选择科目">
+     <el-form-item label="科目" prop="regionS">
+      <el-select v-model="ruleForm.regionS" placeholder="请选择科目">
         <el-option label="Java" value="Java" />
         <el-option label="C++" value="C++" />
       </el-select>
     </el-form-item>
-        <el-form-item label="难度" prop="location">
-      <el-segmented v-model="ruleForm.location" :options="locationOptions" />
+        <el-form-item label="难度" prop="locationS">
+      <el-segmented v-model="ruleForm.locationS" :options="locationSOptions" />
     </el-form-item>
-    <el-form-item label="题目" prop="question">
-      <el-input v-model="ruleForm.question" type="textarea" />
+    <el-form-item label="题目" prop="questionS">
+      <el-input v-model="ruleForm.questionS" type="textarea" />
     </el-form-item>
-     <el-form-item label="答案" prop="answer">
-      <el-input v-model="ruleForm.answer" type="textarea" />
+     <el-form-item label="答案" prop="answerS">
+      <el-input v-model="ruleForm.answerS" type="textarea" />
     </el-form-item>
-    <el-form-item label="解析" prop="desc">
-      <el-input v-model="ruleForm.desc" type="textarea" />
+    <el-form-item label="解析" prop="descS">
+      <el-input v-model="ruleForm.descS" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
@@ -37,31 +37,31 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 
 interface RuleForm {
-  region: string
-  location: string
-   question:string
-  desc: string
-  answer: string
+  regionS: string
+  locationS: string
+   questionS:string
+  descS: string
+  answerS: string
 }
 
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  region: '',
-  location: '',
-    question: '',
-  desc: '',
-  answer: '',
+  regionS: '',
+  locationS: '',
+    questionS: '',
+  descS: '',
+  answerS: '',
 })
 
-const locationOptions = ['简单', '适中', '困难']
+const locationSOptions = ['简单', '适中', '困难']
 
 const rules = reactive<FormRules<RuleForm>>({
-  region: [
+  regionS: [
     {
       required: true,
       message: '请选择科目',
@@ -69,30 +69,54 @@ const rules = reactive<FormRules<RuleForm>>({
     },
   ],
 
-  location: [
+  locationS: [
     {
       required: true,
       message: '请选择难度',
       trigger: 'change',
     },
   ],
-  question: [
+  questionS: [
     { required: true, message: '请输入题目', trigger: 'blur' },
   ],
-  desc: [
+  descS: [
     { required: true, message: '请填写解析', trigger: 'blur' },
   ],
-    answer: [
+    answerS: [
     { required: true, message: '请填写答案', trigger: 'blur' },
   ],
 
 })
+// 保存表单数据到 LocalStorage
+const saveFormToLocalStorage = () => {
+  localStorage.setItem('ruleForm', JSON.stringify(ruleForm))
+}
+
+// 从 LocalStorage 恢复表单数据
+const loadFormFromLocalStorage = () => {
+  const savedForm = localStorage.getItem('ruleForm')
+  if (savedForm) {
+    Object.assign(ruleForm, JSON.parse(savedForm))
+  }
+}
+
+// 在组件挂载时加载表单数据和选中的标签页
+onMounted(() => {
+  loadFormFromLocalStorage()
+
+})
+
+// 在表单数据变化时保存到 LocalStorage
+watch(ruleForm, () => {
+  saveFormToLocalStorage()
+}, { deep: true })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
+      formEl.resetFields()
     } else {
       console.log('error submit!', fields)
     }

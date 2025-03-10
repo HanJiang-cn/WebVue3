@@ -15,7 +15,7 @@ import CommunityAside from '@/views/CommunityMain/CommunityAside.vue'
     <div class="banner">
       <el-carousel height="280px" motion-blur>
         <el-carousel-item v-for="item in 4" :key="item">
-          <p style="width: 100%; height: 100%; background: rgba(59, 130, 246, 0.2);">{{ item }}</p>
+          <p style="width: 100%; height: 100%; background: #fdacfa;">{{ item }}</p>
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -64,13 +64,11 @@ import CommunityAside from '@/views/CommunityMain/CommunityAside.vue'
   display: flex;
 
   .main {
-    width: 100%;
     height: 100%;
     float: left;
     text-align: left;
     color: #333;
     margin-top: 40px;
-    margin-right: 30px;
   }
 
   .aside {
