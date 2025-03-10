@@ -18,7 +18,7 @@ import Editor from '@tinymce/tinymce-vue'
     display: flex;
     flex-direction: column;
     place-items: center;
-    width: 1000px;
+    width: 600px;
   }
 }
 </style>

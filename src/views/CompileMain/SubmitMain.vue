@@ -1,15 +1,18 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import MoreOptions from '@/components/SubmitMain/MoreOptions.vue'
 import JudgeOption from '@/components/SubmitMain/JudgeOption.vue'
 import BlanksOptions from '@/components/SubmitMain/BlanksOptions.vue'
-const activeName = ref('first')
+import ProgramOption from '@/components/SubmitMain/ProgramOption.vue'
+import ShortOption from '@/components/SubmitMain/ShortOption.vue'
+const activeName = ref(localStorage.getItem('activeTab') || 'first')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {
   console.log(tab, event)
+  // 保存当前选中的标签页
+  localStorage.setItem('activeTab', activeName.value)
 }
-
 
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 
@@ -67,11 +70,39 @@ const rules = reactive<FormRules<RuleForm>>({
   ]
 })
 
+// 保存表单数据到 LocalStorage
+const saveFormToLocalStorage = () => {
+  localStorage.setItem('ruleForm', JSON.stringify(ruleForm))
+}
+
+// 从 LocalStorage 恢复表单数据
+const loadFormFromLocalStorage = () => {
+  const savedForm = localStorage.getItem('ruleForm')
+  if (savedForm) {
+    Object.assign(ruleForm, JSON.parse(savedForm))
+  }
+}
+
+// 在组件挂载时加载表单数据和选中的标签页
+onMounted(() => {
+  loadFormFromLocalStorage()
+  activeName.value = localStorage.getItem('activeTab') || 'first'
+})
+
+// 在表单数据变化时保存到 LocalStorage
+watch(ruleForm, () => {
+  saveFormToLocalStorage()
+}, { deep: true })
+
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
+      // 提交成功后清空表单
+      resetForm(formEl)
+      // 清空 LocalStorage 中的表单数据
+      localStorage.removeItem('ruleForm')
     } else {
       console.log('error submit!', fields)
     }
@@ -149,9 +180,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
   </el-tab-pane>
     <el-tab-pane label="判断题" name="third"><JudgeOption></JudgeOption></el-tab-pane>
     <el-tab-pane label="填空题" name="fourth"><BlanksOptions></BlanksOptions></el-tab-pane>
-     <el-tab-pane label="编程题" name="five">Task</el-tab-pane>
-      <el-tab-pane label="简答题" name="six">Task</el-tab-pane>
-      <el-tab-pane label="编程填空题" name="seven">Task</el-tab-pane>
+     <el-tab-pane label="编程题" name="five"><ProgramOption></ProgramOption></el-tab-pane>
+      <el-tab-pane label="简答题" name="six"><ShortOption></ShortOption></el-tab-pane>
   </el-tabs></div>
 </div>
 </template>

@@ -1,62 +1,85 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 
 interface RuleForm {
-  region: string
-  location: string
-  resource: string
-  desc: string
-   question: string
+  regionJ: string
+  locationJ: string
+  resourceJ: string
+  descJ: string
+   questionJ: string
 }
 
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  region: '',
-  location: '',
-  resource: '',
-  desc: '',
-   question: '',
+  regionJ: '',
+  locationJ: '',
+  resourceJ: '',
+  descJ: '',
+   questionJ: '',
 })
 
-const locationOptions = ['简单', '适中', '困难']
+const locationJOptions = ['简单', '适中', '困难']
 
 const rules = reactive<FormRules<RuleForm>>({
-  region: [
+  regionJ: [
     {
       required: true,
       message: '请选择科目',
       trigger: 'change',
     },
   ],
-  location: [
+  locationJ: [
     {
       required: true,
       message: '请选择难度',
       trigger: 'change',
     },
   ],
-  resource: [
+  resourceJ: [
     {
       required: true,
       message: '请选择选项',
       trigger: 'change',
     },
   ],
-  desc: [
+  descJ: [
     { required: true, message: '请填写解析', trigger: 'blur' },
   ],
-  question: [
+  questionJ: [
     { required: true, message: '请输入题目', trigger: 'blur' },
   ]
 })
+// 保存表单数据到 LocalStorage
+const saveFormToLocalStorage = () => {
+  localStorage.setItem('ruleForm', JSON.stringify(ruleForm))
+}
 
+// 从 LocalStorage 恢复表单数据
+const loadFormFromLocalStorage = () => {
+  const savedForm = localStorage.getItem('ruleForm')
+  if (savedForm) {
+    Object.assign(ruleForm, JSON.parse(savedForm))
+  }
+}
+
+// 在组件挂载时加载表单数据和选中的标签页
+onMounted(() => {
+  loadFormFromLocalStorage()
+
+})
+
+// 在表单数据变化时保存到 LocalStorage
+watch(ruleForm, () => {
+  saveFormToLocalStorage()
+}, { deep: true })
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
+      formEl.resetFields()
     } else {
       console.log('error submit!', fields)
     }
@@ -82,28 +105,28 @@ const resetForm = (formEl: FormInstance | undefined) => {
     :size="formSize"
     status-icon
   >
-   <el-form-item label="科目" prop="region">
-      <el-select v-model="ruleForm.region" placeholder="请选择科目">
+   <el-form-item label="科目" prop="regionJ">
+      <el-select v-model="ruleForm.regionJ" placeholder="请选择科目">
         <el-option label="Java" value="Java" />
         <el-option label="C++" value="C++" />
       </el-select>
     </el-form-item>
-   <el-form-item label="难度" prop="location">
-      <el-segmented v-model="ruleForm.location" :options="locationOptions" />
+   <el-form-item label="难度" prop="locationJ">
+      <el-segmented v-model="ruleForm.locationJ" :options="locationJOptions" />
     </el-form-item>
-    <el-form-item label="题目" prop="question">
-      <el-input v-model="ruleForm.question" type="textarea" />
+    <el-form-item label="题目" prop="questionJ">
+      <el-input v-model="ruleForm.questionJ" type="textarea" />
     </el-form-item>
-    <el-form-item label="判断" prop="resource">
-      <el-radio-group v-model="ruleForm.resource">
+    <el-form-item label="判断" prop="resourceJ">
+      <el-radio-group v-model="ruleForm.resourceJ">
         <div><el-radio value="Sponsorship"><span class="opt">正确</span>
           <span><input type="text" class="A"></span></el-radio></div>
 <div>  <el-radio value="Venue"><span class="opt">错误</span>
           <span><input type="text" class="A"></span></el-radio></div>
       </el-radio-group>
     </el-form-item>
-      <el-form-item label="解析" prop="desc">
-      <el-input v-model="ruleForm.desc" type="textarea" />
+      <el-form-item label="解析" prop="descJ">
+      <el-input v-model="ruleForm.descJ" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
@@ -120,6 +143,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   width: 450px;
   height: 25px;
   outline: none;
+  border: 1px solid #c0c4cc;
 }
 .opt{
   margin-right: 10px;
