@@ -1,8 +1,8 @@
 //逻辑
 <script setup lang="ts">
-    import conMenu from "@/components/ContestMain/conMenu.vue"
-    import contestMain from "@/views/contestMain/contestMain.vue";
-    import contestMainTow from "@/views/contestMain/contestMainTow.vue";
+    import conMenu from "@/components/ContestMain/ConMenu.vue";
+    import contestMain from "@/views/contestMain/ContestMain.vue";
+    import contestMainTow from "@/views/contestMain/ContestMainTow.vue";
 </script>
 
 
