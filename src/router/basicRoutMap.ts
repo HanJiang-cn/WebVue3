@@ -55,6 +55,16 @@ const routes = [
     name: 'Team2',
     component: () => import('@/layouts/TeamLayoutTow.vue'),
   },
+  {
+    path: '/publishpost',
+    name: 'Publishpost',
+    component: () => import('@/layouts/PublishpostLayout.vue'),
+  },
+  {
+    path: '/post',
+    name: 'Post',
+    component: () => import('@/layouts/PostLayout.vue'),
+  },
 ]
 
 export default routes

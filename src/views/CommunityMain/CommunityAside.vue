@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-
 import { ref, defineEmits } from 'vue'
+// import { useRouter } from 'vue-router'
 
+// const router = useRouter()
 const emits = defineEmits(['switch'])
 const input3 = ref('')
 const switchIndex = ref(1)
@@ -9,6 +10,11 @@ const switchIndex = ref(1)
 const handleSwitch = () => {
   emits('switch')
   switchIndex.value++
+}
+
+const handlePost = () => {
+  // 在新的标签页中打开
+  window.open('/publishpost?=' + switchIndex.value, '_blank')
 }
 </script>
 
@@ -23,7 +29,7 @@ const handleSwitch = () => {
   <div class="switch" @click="handleSwitch">
     <span>{{ switchIndex % 2 === 0 ? '前往讨论板块' : '前往题目板块' }}</span>
   </div>
-  <div class="post">
+  <div class="post" @click="handlePost">
     <span>{{ switchIndex % 2 === 0 ? '发表题目' : '发表帖子' }}</span>
   </div>
   <div class="my-post">

@@ -1,6 +1,8 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommunityPost from '@/components/CommunityMain/CommunityPost.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 import { ref, defineProps } from 'vue'
 
@@ -10,13 +12,23 @@ const questionName = ref('1')
 const props = defineProps({
   visable: Boolean
 })
+
+// 路由跳转到 post 页面
+const handlePost = (id) => {
+  router.push({
+    path: '/post',
+    query: {
+      id: id
+    }
+  })
+}
 </script>
 
 <template>
   <div class="discussion" v-show="props.visable">
     <el-tabs v-model="discussionName" type="card">
       <el-tab-pane label="推荐" name="1">
-        <CommunityPost v-for="item in 10" :key="item"></CommunityPost>
+        <CommunityPost v-for="item in 10" :key="item" @click="handlePost(1)"></CommunityPost>
       </el-tab-pane>
       <el-tab-pane label="资讯" name="2">Config</el-tab-pane>
       <el-tab-pane label="热榜" name="3">Role</el-tab-pane>
@@ -27,7 +39,7 @@ const props = defineProps({
   <div class="question" v-show="!props.visable">
     <el-tabs v-model="questionName" type="card">
       <el-tab-pane label="推荐" name="1">
-        <CommunityPost v-for="item in 10" :key="item"></CommunityPost>
+        <CommunityPost v-for="item in 10" :key="item" @click="handlePost(1)"></CommunityPost>
       </el-tab-pane>
       <el-tab-pane label="Java" name="2">Config</el-tab-pane>
       <el-tab-pane label="Html" name="3">Role</el-tab-pane>

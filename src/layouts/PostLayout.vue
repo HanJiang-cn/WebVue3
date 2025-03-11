@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
-import submitMain from '@/views/CompileMain/SubmitMain.vue'
+import PostMain from '@/views/PostMain/PostMain.vue'
 
 </script>
 <template>
@@ -12,8 +12,7 @@ import submitMain from '@/views/CompileMain/SubmitMain.vue'
     </div>
     <div class="main-layout">
       <div class="main">
-        <submitMain></submitMain>
-
+        <PostMain />
       </div>
     </div>
 

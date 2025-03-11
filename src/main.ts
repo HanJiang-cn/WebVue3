@@ -47,3 +47,7 @@ import UndrawUi from 'undraw-ui'
 import 'undraw-ui/dist/style.css'
 
 app.use(UndrawUi)
+
+// 二维码
+import VueQrcode from 'vue-qrcode'
+app.component('VueQrcode', VueQrcode)
