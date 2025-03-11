@@ -1,4 +1,5 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+</script>
 
 <template>
   <el-row justify="center" align="middle" :gutter="50" style="height: 100%;">

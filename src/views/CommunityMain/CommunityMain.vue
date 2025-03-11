@@ -1,19 +1,40 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import CommunityPost from '@/components/CommunityMain/CommunityPost.vue'
 
-const activeName = ref('1')
+import { ref, defineProps } from 'vue'
+
+const discussionName = ref('1')
+const questionName = ref('1')
+
+const props = defineProps({
+  visable: Boolean
+})
 </script>
 
 <template>
-  <el-tabs v-model="activeName" type="card" class="demo-tabs" @tab-click="handleClick">
-    <el-tab-pane label="推荐" name="1">
-      1111
-    </el-tab-pane>
-    <el-tab-pane label="资讯" name="2">Config</el-tab-pane>
-    <el-tab-pane label="热榜" name="3">Role</el-tab-pane>
-    <el-tab-pane label="动态" name="4">Task</el-tab-pane>
-  </el-tabs>
+  <div class="discussion" v-show="props.visable">
+    <el-tabs v-model="discussionName" type="card">
+      <el-tab-pane label="推荐" name="1">
+        <CommunityPost v-for="item in 10" :key="item"></CommunityPost>
+      </el-tab-pane>
+      <el-tab-pane label="资讯" name="2">Config</el-tab-pane>
+      <el-tab-pane label="热榜" name="3">Role</el-tab-pane>
+      <el-tab-pane label="动态" name="4">Task</el-tab-pane>
+      <el-tab-pane label="动态" name="5">Task</el-tab-pane>
+    </el-tabs>
+  </div>
+  <div class="question" v-show="!props.visable">
+    <el-tabs v-model="questionName" type="card">
+      <el-tab-pane label="推荐" name="1">
+        <CommunityPost v-for="item in 10" :key="item"></CommunityPost>
+      </el-tab-pane>
+      <el-tab-pane label="Java" name="2">Config</el-tab-pane>
+      <el-tab-pane label="Html" name="3">Role</el-tab-pane>
+      <el-tab-pane label="JavaScirpt" name="4">Task</el-tab-pane>
+      <el-tab-pane label="PHP" name="5">Task</el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <style lang="less" scoped>

@@ -2,8 +2,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
-
-
 // 定义 props ,当父组件传递过来的 message 为 true 时，抽屉打开。
 // 抽屉的 value 一定要绑定为 :model-value ！！！
 const props = defineProps({

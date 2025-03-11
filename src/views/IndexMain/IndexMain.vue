@@ -131,7 +131,9 @@ const radio1 = ref('1')
     justify-content: space-between;
 
     .center {
-      margin-left: -135px;
+      width: 100%;
+      height: 80px;
+      margin-left: 20px;
       text-align: left;
 
       .el-skeleton-item {

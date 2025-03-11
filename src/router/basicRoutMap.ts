@@ -45,6 +45,16 @@ const routes = [
     name: 'Submit',
     component: () => import('@/layouts/SubmitLayout.vue'),
   },
+  {
+    path: '/team',
+    name: 'Team',
+    component: () => import('@/layouts/TeamLayout.vue'),
+  },
+  {
+    path: '/team2',
+    name: 'Team2',
+    component: () => import('@/layouts/TeamLayoutTow.vue'),
+  },
 ]
 
 export default routes

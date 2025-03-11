@@ -63,6 +63,11 @@ const Visable = () => {
   visibles.value = !visibles.value
   console.log(visibles.value)
 }
+
+const handleSolution = () => {
+  solution.value = !solution.value
+  console.log(solution.value)
+}
 </script>
 
 <template>
@@ -169,7 +174,6 @@ const Visable = () => {
                   <!-- 题目描述 -->
                   <!-- 提交记录&评论 -->
                   <el-row style="margin-top: 10px;">
-
                     <div class="topic-content ">
                       <div class="topic-content__text">
                         <h3>
@@ -263,16 +267,16 @@ const Visable = () => {
                     </el-icon>
                     <span>题解</span>
                   </template>
-                  <div v-if="!solution">
+                  <div v-show="solution">
                     <div class="up-solution">
                       <el-button type="primary">上传题解</el-button>
                     </div>
-                    <SolutionCard style="cursor: pointer;" @click="solution = true" v-for="item in 10" :key="item" />
+                    <SolutionCard style="cursor: pointer;" @click="handleSolution" v-for="item in 10" :key="item" />
                   </div>
-                  <div v-if="solution" class="solution-content">
+                  <div v-show="!solution" class="solution-content">
                     <div class="title">
                       <ArrowLeftOutlined />
-                      <el-text @click="solution = flase">全部题解</el-text>
+                      <el-text @click="handleSolution">全部题解</el-text>
                     </div>
                     <SolutionContent></SolutionContent>
                   </div>

@@ -1,8 +1,15 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 
+const emits = defineEmits(['switch'])
 const input3 = ref('')
+const switchIndex = ref(1)
+
+const handleSwitch = () => {
+  emits('switch')
+  switchIndex.value++
+}
 </script>
 
 <template>
@@ -13,8 +20,11 @@ const input3 = ref('')
       </template>
     </el-input>
   </div>
+  <div class="switch" @click="handleSwitch">
+    <span>{{ switchIndex % 2 === 0 ? '前往讨论板块' : '前往题目板块' }}</span>
+  </div>
   <div class="post">
-    <span>发布帖子/题目</span>
+    <span>{{ switchIndex % 2 === 0 ? '发表题目' : '发表帖子' }}</span>
   </div>
   <div class="my-post">
     <span>我的帖子</span>
@@ -73,7 +83,9 @@ const input3 = ref('')
 }
 
 // 发布帖子
-.post {
+.post,
+.my-post,
+.switch {
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -124,55 +136,12 @@ const input3 = ref('')
   }
 }
 
-.my-post {
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px; // 更紧凑的横向间距
-  // width: 80%;
-  height: 48px; // 更适合导航类按钮的高度
-  background: rgba(59, 130, 246, 0.08); // 浅蓝基底
-  border: 1px solid rgba(191, 219, 254, 0.3); // 浅蓝边框
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  gap: 10px;
+.my-post::before {
+  content: "📄" !important; // 可用SVG图标替换
+}
 
-  &:hover {
-    background: rgba(59, 130, 246, 0.12);
-    border-color: rgba(147, 197, 253, 0.5);
-    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.05),
-      0 2px 4px rgba(59, 130, 246, 0.02);
-
-    span {
-      color: #1d4ed8; // 深蓝文字
-    }
-
-    &::before {
-      transform: scale(1.05);
-    }
-  }
-
-  &:active {
-    transform: scale(0.98);
-    background: rgba(59, 130, 246, 0.15);
-  }
-
-  span {
-    color: #1e40af; // 品牌蓝
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-
-  // 更换为文档图标
-  &::before {
-    content: "📄"; // 可用SVG图标替换
-    display: block;
-    font-size: 18px;
-    transition: transform 0.2s ease;
-  }
+.switch::before {
+  content: "🪧" !important; // 可用SVG图标替换
 }
 
 // 推荐作者
