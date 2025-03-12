@@ -26,6 +26,11 @@ const routes = [
     component: () => import('@/layouts/ProblemsLayout.vue'),
   },
   {
+    path: '/competitionproblems',
+    name: 'CompetitionProblems',
+    component: () => import('@/layouts/CompetitionproblemsLayout.vue'),
+  },
+  {
     path: '/community',
     name: 'Community',
     component: () => import('@/layouts/CommunityLayout.vue'),
@@ -51,9 +56,19 @@ const routes = [
     component: () => import('@/layouts/TeamLayout.vue'),
   },
   {
-    path: '/team2',
-    name: 'Team2',
-    component: () => import('@/layouts/TeamLayoutTow.vue'),
+    path: '/create',
+    name: 'Create',
+    component: () => import('@/layouts/TeamLayoutCreate.vue'),
+  },
+  {
+    path: '/list',
+    name: 'List',
+    component: () => import('@/layouts/TeamLayoutList.vue'),
+  },
+  {
+    path: '/manage',
+    name: 'Manage',
+    component: () => import('@/layouts/TeamLayoutManage.vue'),
   },
   {
     path: '/publishpost',
@@ -65,11 +80,6 @@ const routes = [
     name: 'Post',
     component: () => import('@/layouts/PostLayout.vue'),
   },
-  {
-    path: '/submit',
-    name: '/submit',
-    component: () => import('@/layouts/SubmitLayout.vue'),
-  }
 ]
 
 export default routes
