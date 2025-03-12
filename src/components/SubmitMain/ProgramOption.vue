@@ -1,7 +1,6 @@
 <template>
   <el-form
     ref="ruleFormRef"
-    style="max-width: 600px"
     :model="ruleForm"
     :rules="rules"
     label-width="auto"
@@ -9,11 +8,10 @@
     :size="formSize"
     status-icon
   >
-     <el-form-item label="科目" prop="regionP">
-      <el-select v-model="ruleForm.regionP" placeholder="请选择科目">
-        <el-option label="Java" value="Java" />
-        <el-option label="C++" value="C++" />
-      </el-select>
+     <el-form-item label="分类" prop="regionP">
+      <div class="m-4">
+    <el-cascader :show-all-levels="false"  v-model="ruleForm.regionP" :options="options" @change="handleChange" />
+  </div>
     </el-form-item>
         <el-form-item label="难度" prop="locationP">
       <el-segmented v-model="ruleForm.locationP" :options="locationPOptions" />
@@ -63,7 +61,7 @@ interface Sample {
   exp: string
 }
 interface RuleForm {
-  regionP: string
+  regionP: string[]
   locationP: string
    question:string
   descP: string
@@ -74,7 +72,7 @@ interface RuleForm {
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  regionP: '',
+  regionP: [],
   locationP: '',
   question: '',
   descP: '',
@@ -82,14 +80,281 @@ const ruleForm = reactive<RuleForm>({
   inp: '',
   exp: ''
 })
-
+const options = [
+  {
+    value: 'guide',
+    label: 'Guide',
+    children: [
+      {
+        value: 'disciplines',
+        label: 'Disciplines',
+        children: [
+          {
+            value: 'consistency',
+            label: 'Consistency'
+          },
+          {
+            value: 'feedback',
+            label: 'Feedback'
+          },
+          {
+            value: 'efficiency',
+            label: 'Efficiency'
+          },
+          {
+            value: 'controllability',
+            label: 'Controllability'
+          }
+        ]
+      },
+      {
+        value: 'navigation',
+        label: 'Navigation',
+        children: [
+          {
+            value: 'side nav',
+            label: 'Side Navigation'
+          },
+          {
+            value: 'top nav',
+            label: 'Top Navigation'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: 'component',
+    label: 'Component',
+    children: [
+      {
+        value: 'basic',
+        label: 'Basic',
+        children: [
+          {
+            value: 'layout',
+            label: 'Layout'
+          },
+          {
+            value: 'color',
+            label: 'Color'
+          },
+          {
+            value: 'typography',
+            label: 'Typography'
+          },
+          {
+            value: 'icon',
+            label: 'Icon'
+          },
+          {
+            value: 'button',
+            label: 'Button'
+          }
+        ]
+      },
+      {
+        value: 'form',
+        label: 'Form',
+        children: [
+          {
+            value: 'radio',
+            label: 'Radio'
+          },
+          {
+            value: 'checkbox',
+            label: 'Checkbox'
+          },
+          {
+            value: 'input',
+            label: 'Input'
+          },
+          {
+            value: 'input-number',
+            label: 'InputNumber'
+          },
+          {
+            value: 'select',
+            label: 'Select'
+          },
+          {
+            value: 'cascader',
+            label: 'Cascader'
+          },
+          {
+            value: 'switch',
+            label: 'Switch'
+          },
+          {
+            value: 'slider',
+            label: 'Slider'
+          },
+          {
+            value: 'time-picker',
+            label: 'TimePicker'
+          },
+          {
+            value: 'date-picker',
+            label: 'DatePicker'
+          },
+          {
+            value: 'datetime-picker',
+            label: 'DateTimePicker'
+          },
+          {
+            value: 'upload',
+            label: 'Upload'
+          },
+          {
+            value: 'rate',
+            label: 'Rate'
+          },
+          {
+            value: 'form',
+            label: 'Form'
+          }
+        ]
+      },
+      {
+        value: 'data',
+        label: 'Data',
+        children: [
+          {
+            value: 'table',
+            label: 'Table'
+          },
+          {
+            value: 'tag',
+            label: 'Tag'
+          },
+          {
+            value: 'progress',
+            label: 'Progress'
+          },
+          {
+            value: 'tree',
+            label: 'Tree'
+          },
+          {
+            value: 'pagination',
+            label: 'Pagination'
+          },
+          {
+            value: 'badge',
+            label: 'Badge'
+          }
+        ]
+      },
+      {
+        value: 'notice',
+        label: 'Notice',
+        children: [
+          {
+            value: 'alert',
+            label: 'Alert'
+          },
+          {
+            value: 'loading',
+            label: 'Loading'
+          },
+          {
+            value: 'message',
+            label: 'Message'
+          },
+          {
+            value: 'message-box',
+            label: 'MessageBox'
+          },
+          {
+            value: 'notification',
+            label: 'Notification'
+          }
+        ]
+      },
+      {
+        value: 'navigation',
+        label: 'Navigation',
+        children: [
+          {
+            value: 'menu',
+            label: 'Menu'
+          },
+          {
+            value: 'tabs',
+            label: 'Tabs'
+          },
+          {
+            value: 'breadcrumb',
+            label: 'Breadcrumb'
+          },
+          {
+            value: 'dropdown',
+            label: 'Dropdown'
+          },
+          {
+            value: 'steps',
+            label: 'Steps'
+          }
+        ]
+      },
+      {
+        value: 'others',
+        label: 'Others',
+        children: [
+          {
+            value: 'dialog',
+            label: 'Dialog'
+          },
+          {
+            value: 'tooltip',
+            label: 'Tooltip'
+          },
+          {
+            value: 'popover',
+            label: 'Popover'
+          },
+          {
+            value: 'card',
+            label: 'Card'
+          },
+          {
+            value: 'carousel',
+            label: 'Carousel'
+          },
+          {
+            value: 'collapse',
+            label: 'Collapse'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: 'resource',
+    label: 'Resource',
+    children: [
+      {
+        value: 'axure',
+        label: 'Axure Components'
+      },
+      {
+        value: 'sketch',
+        label: 'Sketch Templates'
+      },
+      {
+        value: 'docs',
+        label: 'Design Documentation'
+      }
+    ]
+  }
+]
 const locationPOptions = ['简单', '适中', '困难']
 
 const rules = reactive<FormRules<RuleForm>>({
   regionP: [
     {
       required: true,
-      message: '请选择科目',
+      message: '请选择分类',
       trigger: 'change',
     },
   ],
@@ -145,13 +410,16 @@ onMounted(() => {
 watch(ruleForm, () => {
   saveFormToLocalStorage()
 }, { deep: true })
-
+const handleChange = (value: unknown) => {
+  console.log(value)
+}
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
       formEl.resetFields()
+      ruleForm.regionP = []
     } else {
       console.log('error submit!', fields)
     }
@@ -161,6 +429,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+  ruleForm.regionP = []
 }
 
 </script>
@@ -178,4 +447,8 @@ const resetForm = (formEl: FormInstance | undefined) => {
   border-bottom: 1px dashed #c0c4cc;
   padding-bottom: 20px;
 }
+.el-form-item--default{
+  margin-bottom: 25px;
+}
+
 </style>
