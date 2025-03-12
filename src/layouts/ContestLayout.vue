@@ -1,13 +1,9 @@
-//逻辑
 <script setup lang="ts">
 import conMenu from "@/components/ContestMain/ConMenu.vue";
 import contestMain from "@/views/ContestMain/ContestMain.vue";
 import contestMainTow from "@/views/ContestMain/ContestMainTow.vue";
 </script>
 
-
-
-//布局
 <template>
   <div class="default-layout">
     <div class="header">
@@ -38,8 +34,6 @@ import contestMainTow from "@/views/ContestMain/ContestMainTow.vue";
   </div>
 </template>
 
-
-//样式
 <style lang="less" scoped>
 .header {
   height: 50px;

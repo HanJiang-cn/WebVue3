@@ -398,13 +398,13 @@ const pageInfo = reactive({
                 </span>
               </template>
               <div class="sheet">
-                <div>
-                  <span>1.随便的题单</span>
-                  <span>查看详细></span>
+                <div class="sheet-item">
+                  <span>1. 前端工程师成长指南</span>
+                  <span class="sheet-item__action">查看详细</span>
                 </div>
-                <div>
-                  <span>2.随便的题单</span>
-                  <span>查看详细></span>
+                <div class="sheet-item">
+                  <span>2. LeetCode 精选算法 200 题</span>
+                  <span class="sheet-item__action">查看详细</span>
                 </div>
               </div>
             </el-tab-pane>
@@ -647,17 +647,14 @@ const pageInfo = reactive({
   font-size: 14px
 }
 
-:deep(.el-tabs) {
-  --el-color-primary: #000;
+:deep(.el-tabs__header) {
+  border-bottom: none;
+  transition: border-color 0.3s ease;
 
-  .el-tabs__header {
-    border-bottom: none;
-  }
-
-  .el-tabs__item,
   .el-tabs__nav {
     border: none;
-    border-radius: 5px;
+    gap: 8px; // 使用gap控制间距
+    margin-bottom: -1px; // 对齐底部边框
 
     .title {
       display: flex;
@@ -669,62 +666,89 @@ const pageInfo = reactive({
       }
 
       span {
-        color: #262626bf;
         margin-left: 5px;
       }
     }
-  }
 
-  .is-active {
-    background-color: #2626260f;
-    color: #000 !important;
+    .el-tabs__item {
+      position: relative;
+      padding: 15px 20px;
+      margin-right: 10px;
+      border: none !important;
+      font-size: 16px;
+      color: #64748b; // 现代中性色
+      border-radius: 8px; // 更柔和的圆角
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-    .title {
-      color: #000 !important;
+      // 悬停状态
+      &:hover {
+        color: #3b82f6; // 品牌蓝色
+        background: rgba(59, 130, 246, 0.05);
+        transform: translateY(-2px);
+      }
 
-      span {
-        color: #000;
+      // 激活状态
+      &.is-active {
+        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+
+        // 底部指示条
+        &::after {
+          content: '';
+          position: absolute;
+          left: 20px;
+          right: 20px;
+          bottom: -1px;
+          height: 2px;
+          background: #3b82f6;
+          border-radius: 2px;
+        }
       }
     }
   }
+}
 
-  .el-tabs__item:hover {
-    .title {
-      color: #000 !important;
+.sheet {
+  &-item {
+    width: 90%;
+    height: 64px;
+    margin: 12px 0;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(246, 247, 249, 0.8);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    border: 1px solid transparent;
 
-      span {
-        color: #000;
+    // 悬停效果
+    &:hover {
+      background-color: #f8f9fa;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+      .sheet-item__action {
+        color: #1677ff;
+        margin-right: -4px; // 箭头动效
       }
     }
-  }
 
-  .sheet {
-    div {
-      width: 100%;
-      height: 50px;
-      margin: 10px 0;
-      display: flex;
-      justify-content: space-between;
+    // 操作区域
+    &__action {
+      display: inline-flex;
       align-items: center;
-      line-height: 50px;
-      background-color: #2626260f;
-      border-radius: 10px;
+      gap: 6px;
+      color: #8a8f99;
+      font-size: 13px;
+      transition: all 0.2s ease;
 
-      span {
-
-        &:first-child {
-          margin-left: 10px;
-          color: #000;
-          font-size: 14px;
-        }
-
-        &:nth-child(2) {
-          margin-right: 10px;
-          text-align: right;
-          font-size: 14px;
-          color: #262626bf;
-        }
-
+      // 箭头图标
+      &::after {
+        content: '→';
+        font-weight: 600;
+        transition: margin 0.2s ease;
       }
     }
   }

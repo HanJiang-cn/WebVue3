@@ -1,6 +1,8 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommentComponent from '@/components/CommentComponent.vue'
+import LinkCard from '@/components/PostMain/LinkCard.vue'
+
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
@@ -45,7 +47,9 @@ const handleCopyLink = () => {
     <!-- 正文内容 -->
     <div class="post-content">
       <div class="content">
-        115615618561561561561
+        115615618561561561561<br>
+        <LinkCard url="https://vitepress.yiov.top/" title="Vitepress中文搭建教程" description="https://vitepress.yiov.top/"
+          logo="https://vitepress.yiov.top/logo.png" />
       </div>
     </div>
 
@@ -93,6 +97,7 @@ const handleCopyLink = () => {
           </template>
         </el-popover>
       </div>
+      <!-- 浏览数据 -->
       <div class="right">
         <span>浏览 123</span>
       </div>

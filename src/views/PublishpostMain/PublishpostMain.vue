@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive } from 'vue'
@@ -31,10 +32,6 @@ const rules = reactive({
     { required: true, message: '标题不能为空', trigger: 'blur' },
     { min: 5, max: 50, message: '长度在5到50个字符', trigger: 'blur' }
   ],
-  // content: [
-  //   { required: true, message: '内容不能为空', trigger: 'blur' },
-  //   { min: 50, message: '内容至少需要50个字符', trigger: 'blur' }
-  // ],
   category: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
@@ -94,11 +91,6 @@ const saveDraft = () => {
       </el-input>
     </el-form-item>
 
-    <!-- <el-form-item prop="content" label="正文" class="form-section">
-      <el-input v-model="form.content" type="textarea" :rows="8" placeholder="请输入详细内容（支持Markdown语法）" maxlength="2000"
-        show-word-limit resize="vertical">
-      </el-input>
-    </el-form-item> -->
     <TinymceEdit class="form-section" />
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">

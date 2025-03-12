@@ -116,7 +116,6 @@ const radio1 = ref('1')
   text-align: center;
   height: 100%;
   border-radius: 4px;
-  // background: var(--el-color-primary-light-9);
 }
 
 .content-card {
@@ -194,7 +193,7 @@ const radio1 = ref('1')
 
   .el-radio-button {
     --el-radio-button-checked-text-color: #000 !important;
-    --el-radio-button-checked-bg-color: #F5F5F5 !important;
+    --el-radio-button-checked-bg-color: rgba(59, 130, 246, 0.05) !important;
     --el-radio-button-checked-border-color: transparent !important;
   }
 }
