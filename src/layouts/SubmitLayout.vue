@@ -1,21 +1,22 @@
-<script setup lang="ts">
-import navMenu from '@/components/navMenu/navMenu.vue'
-import submitMain from '@/views/CompileMain/SubmitMain.vue'
-
+<script lang="ts" setup>
+import navMenu from '@/components/navMenu/navMenu.vue';
+import SubmitMain1 from '@/views/CompileMain/SubmitMain.vue';
 </script>
 <template>
-  <div class="default-layout">
+   <div class="default-layout">
     <div class="header">
       <div class="nav-menu">
         <navMenu />
       </div>
     </div>
-    <div class="main-layout">
-      <div class="main">
-        <submitMain></submitMain>
-
-      </div>
-    </div>
+ <div class="create">
+<div class="title">新建试题</div>
+  <div class="main-layout">
+    <div class="main">
+      <SubmitMain1 />
+  </div>
+</div>
+ </div>
 
   </div>
 </template>
@@ -32,23 +33,25 @@ import submitMain from '@/views/CompileMain/SubmitMain.vue'
     margin: 0 auto;
   }
 }
-
-.main-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 30px;
-  width: 68%;
+.create {
+  max-width: 1700px;
+  width: 100%;
   height: 100%;
-  display: flex;
 
-  .main {
-    height: 100%;
-    width: 100%;
-    float: left;
-    text-align: left;
-    color: #333;
-    // margin-top: 40px;
+  .title {
+    color: #000;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 12px;
+    margin-left: 130px;
   }
 
+.main-layout {
+  margin-left: 100px;
+  max-width: 1500px;
+  width: 85%;
+  height: 100%;
 }
+}
+
 </style>

@@ -17,7 +17,7 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 
 interface RuleForm {
-  region: string
+  region: string[]
   question: string
   location: string
   type: string[]
@@ -28,14 +28,281 @@ interface RuleForm {
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  region: '',
+  region: [],
   question: '',
   location: '',
   type: [],
   resource: '',
   desc: '',
 })
-
+const options = [
+  {
+    value: 'guide',
+    label: 'Guide',
+    children: [
+      {
+        value: 'disciplines',
+        label: 'Disciplines',
+        children: [
+          {
+            value: 'consistency',
+            label: 'Consistency'
+          },
+          {
+            value: 'feedback',
+            label: 'Feedback'
+          },
+          {
+            value: 'efficiency',
+            label: 'Efficiency'
+          },
+          {
+            value: 'controllability',
+            label: 'Controllability'
+          }
+        ]
+      },
+      {
+        value: 'navigation',
+        label: 'Navigation',
+        children: [
+          {
+            value: 'side nav',
+            label: 'Side Navigation'
+          },
+          {
+            value: 'top nav',
+            label: 'Top Navigation'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: 'component',
+    label: 'Component',
+    children: [
+      {
+        value: 'basic',
+        label: 'Basic',
+        children: [
+          {
+            value: 'layout',
+            label: 'Layout'
+          },
+          {
+            value: 'color',
+            label: 'Color'
+          },
+          {
+            value: 'typography',
+            label: 'Typography'
+          },
+          {
+            value: 'icon',
+            label: 'Icon'
+          },
+          {
+            value: 'button',
+            label: 'Button'
+          }
+        ]
+      },
+      {
+        value: 'form',
+        label: 'Form',
+        children: [
+          {
+            value: 'radio',
+            label: 'Radio'
+          },
+          {
+            value: 'checkbox',
+            label: 'Checkbox'
+          },
+          {
+            value: 'input',
+            label: 'Input'
+          },
+          {
+            value: 'input-number',
+            label: 'InputNumber'
+          },
+          {
+            value: 'select',
+            label: 'Select'
+          },
+          {
+            value: 'cascader',
+            label: 'Cascader'
+          },
+          {
+            value: 'switch',
+            label: 'Switch'
+          },
+          {
+            value: 'slider',
+            label: 'Slider'
+          },
+          {
+            value: 'time-picker',
+            label: 'TimePicker'
+          },
+          {
+            value: 'date-picker',
+            label: 'DatePicker'
+          },
+          {
+            value: 'datetime-picker',
+            label: 'DateTimePicker'
+          },
+          {
+            value: 'upload',
+            label: 'Upload'
+          },
+          {
+            value: 'rate',
+            label: 'Rate'
+          },
+          {
+            value: 'form',
+            label: 'Form'
+          }
+        ]
+      },
+      {
+        value: 'data',
+        label: 'Data',
+        children: [
+          {
+            value: 'table',
+            label: 'Table'
+          },
+          {
+            value: 'tag',
+            label: 'Tag'
+          },
+          {
+            value: 'progress',
+            label: 'Progress'
+          },
+          {
+            value: 'tree',
+            label: 'Tree'
+          },
+          {
+            value: 'pagination',
+            label: 'Pagination'
+          },
+          {
+            value: 'badge',
+            label: 'Badge'
+          }
+        ]
+      },
+      {
+        value: 'notice',
+        label: 'Notice',
+        children: [
+          {
+            value: 'alert',
+            label: 'Alert'
+          },
+          {
+            value: 'loading',
+            label: 'Loading'
+          },
+          {
+            value: 'message',
+            label: 'Message'
+          },
+          {
+            value: 'message-box',
+            label: 'MessageBox'
+          },
+          {
+            value: 'notification',
+            label: 'Notification'
+          }
+        ]
+      },
+      {
+        value: 'navigation',
+        label: 'Navigation',
+        children: [
+          {
+            value: 'menu',
+            label: 'Menu'
+          },
+          {
+            value: 'tabs',
+            label: 'Tabs'
+          },
+          {
+            value: 'breadcrumb',
+            label: 'Breadcrumb'
+          },
+          {
+            value: 'dropdown',
+            label: 'Dropdown'
+          },
+          {
+            value: 'steps',
+            label: 'Steps'
+          }
+        ]
+      },
+      {
+        value: 'others',
+        label: 'Others',
+        children: [
+          {
+            value: 'dialog',
+            label: 'Dialog'
+          },
+          {
+            value: 'tooltip',
+            label: 'Tooltip'
+          },
+          {
+            value: 'popover',
+            label: 'Popover'
+          },
+          {
+            value: 'card',
+            label: 'Card'
+          },
+          {
+            value: 'carousel',
+            label: 'Carousel'
+          },
+          {
+            value: 'collapse',
+            label: 'Collapse'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    value: 'resource',
+    label: 'Resource',
+    children: [
+      {
+        value: 'axure',
+        label: 'Axure Components'
+      },
+      {
+        value: 'sketch',
+        label: 'Sketch Templates'
+      },
+      {
+        value: 'docs',
+        label: 'Design Documentation'
+      }
+    ]
+  }
+]
 const locationOptions = ['简单', '适中', '困难']
 
 const rules = reactive<FormRules<RuleForm>>({
@@ -43,7 +310,7 @@ const rules = reactive<FormRules<RuleForm>>({
   region: [
     {
       required: true,
-      message: '请选择科目',
+      message: '请选择分类',
       trigger: 'change',
     },
   ],
@@ -94,6 +361,9 @@ watch(ruleForm, () => {
   saveFormToLocalStorage()
 }, { deep: true })
 
+const handleChange = (value: unknown) => {
+  console.log(value)
+}
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
@@ -101,6 +371,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       console.log('submit!')
       // 提交成功后清空表单
       resetForm(formEl)
+       ruleForm.region = [] // 清空 regionB 的选择状态
       // 清空 LocalStorage 中的表单数据
       localStorage.removeItem('ruleForm')
     } else {
@@ -114,15 +385,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
+
 </script>
 <template>
 <div class="create">
-  <div class="title">新建试题</div>
-  <div><el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+ <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
     <el-tab-pane label="单选题" name="first">
-<el-form
+     <el-form
     ref="ruleFormRef"
-    style="max-width: 600px"
+    style="max-width: 100%"
     :model="ruleForm"
     :rules="rules"
     label-width="auto"
@@ -130,14 +401,13 @@ const resetForm = (formEl: FormInstance | undefined) => {
     :size="formSize"
     status-icon
   >
-    <el-form-item label="科目" prop="region">
-      <el-select v-model="ruleForm.region" placeholder="请选择科目">
-        <el-option label="Java" value="Java" />
-        <el-option label="C++" value="C++" />
-      </el-select>
+    <el-form-item prop="region" label="分类">
+      <div class="m-4">
+    <el-cascader :show-all-levels="false"  v-model="ruleForm.region" :options="options" @change="handleChange" />
+  </div>
     </el-form-item>
 
-    <el-form-item label="难度" prop="location">
+    <el-form-item label="难度"  prop="location">
       <el-segmented v-model="ruleForm.location" :options="locationOptions" />
     </el-form-item>
 <el-form-item label="题目" prop="question">
@@ -175,35 +445,31 @@ const resetForm = (formEl: FormInstance | undefined) => {
     </el-form-item>
   </el-form>
     </el-tab-pane>
-    <el-tab-pane label="多选题" name="second">
-<MoreOptions></MoreOptions>
-  </el-tab-pane>
+    <el-tab-pane label="多选题" name="second"><MoreOptions></MoreOptions></el-tab-pane>
     <el-tab-pane label="判断题" name="third"><JudgeOption></JudgeOption></el-tab-pane>
     <el-tab-pane label="填空题" name="fourth"><BlanksOptions></BlanksOptions></el-tab-pane>
-     <el-tab-pane label="编程题" name="five"><ProgramOption></ProgramOption></el-tab-pane>
-      <el-tab-pane label="简答题" name="six"><ShortOption></ShortOption></el-tab-pane>
-  </el-tabs></div>
+    <el-tab-pane label="编程题" name="five"><ProgramOption></ProgramOption></el-tab-pane>
+    <el-tab-pane label="简答题" name="six"><ShortOption></ShortOption></el-tab-pane>
+  </el-tabs>
 </div>
 </template>
 <style lang="less" scoped>
-.create {
-  width: 70%;
-  margin: 0 auto;
-  margin-top: 30px;
-  padding: 25px;
-  height: 100%;
-  border: #eee 1px solid;
-  .title {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
+.create{
+  max-width: 1500px;
+  .el-tabs{
+    width: 100%;
+    padding-left: 30px;
   }
-  .inp{
+}
+.el-form-item--default{
+  margin-bottom: 25px;
+}
+ .inp{
     display: inline-block;
     height: 30px;
     margin-top: 6px;
  .A {
-    width: 485px;
+    width: 1100px;
     height: 25px;
     border: none;
     outline: none;
@@ -215,12 +481,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
     float: left;
     margin-top: 3px;
    }
-
-}
-.demo-tabs > .el-tabs__question {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
+.el-tabs{
+  --el-tabs-header-height: 50px;
 }
 </style>
