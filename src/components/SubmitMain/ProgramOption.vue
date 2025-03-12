@@ -18,7 +18,7 @@
     </el-form-item>
     <!-- <div id="text"><TinymceEdit></TinymceEdit></div> -->
      <el-form-item label="题目" prop="question">
-<TinymceEdit></TinymceEdit>
+<TinymceEdit style="width: 85%;"></TinymceEdit>
     </el-form-item>
     <!-- <div class="test">
         <el-form-item label="样本输入" prop="inp">

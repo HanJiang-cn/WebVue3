@@ -65,6 +65,11 @@ const routes = [
     name: 'Post',
     component: () => import('@/layouts/PostLayout.vue'),
   },
+  {
+    path: '/submit',
+    name: '/submit',
+    component: () => import('@/layouts/SubmitLayout.vue'),
+  }
 ]
 
 export default routes
