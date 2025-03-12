@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import teammain  from '@/views/TeamMain/TeamMain.vue'
+import teammain from '@/views/TeamMain/TeamMain.vue'
 </script>
 
-
-
-
 <template>
-     <teammain></teammain>  
+  <teammain></teammain>
 </template>
 
-
-
-
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

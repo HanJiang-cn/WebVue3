@@ -3,6 +3,7 @@
 
 <template>
   <el-row justify="center" align="middle" :gutter="50" style="height: 100%;">
+    <!-- 左边 -->
     <el-col :span="11">
       <el-row justify="start" align="middle" style="height: 100%; width: 100%;">
         <el-row :gutter="58" justify="start" align="middle">
@@ -67,9 +68,11 @@
         </el-row>
       </el-row>
     </el-col>
+    <!-- 右边 -->
     <el-col :span="6">
       <el-row justify="end" align="middle" style="height: 100%; width: 90%;">
-        <el-row :gutter="40" justify="end" align="middle">
+        <!-- 登录情况下 -->
+        <!-- <el-row :gutter="40" justify="end" align="middle">
           <el-col :span="3">
             <el-button size="small" type="info" text>
               <el-icon :size="18">
@@ -87,6 +90,37 @@
           <el-col :span="3">
             <el-avatar :size="25" style="margin-left: 3px;" />
           </el-col>
+        </el-row> -->
+        <!-- 未登录情况下 -->
+        <el-row justify="end" align="middle" style="height: 100%; width: 90%;">
+          <el-row :gutter="40" justify="end" align="middle">
+            <el-col :span="3">
+              <el-button size="small" type="info" text>
+                <el-icon :size="18">
+                  <Search />
+                </el-icon>
+              </el-button>
+            </el-col>
+            <el-col :span="3">
+              <el-button size="small" text>
+                注册
+              </el-button>
+              <!-- <el-button size="small" text>
+              登录
+            </el-button> -->
+            </el-col>
+            <el-col :span="3">
+              <el-button size="small" text>
+                登录
+              </el-button>
+              <!-- <el-button size="small" text>
+              登录
+            </el-button> -->
+            </el-col>
+            <el-col :span="3">
+              <el-button type="warning" plain>会员Plus</el-button>
+            </el-col>
+          </el-row>
         </el-row>
       </el-row>
     </el-col>

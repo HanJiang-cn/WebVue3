@@ -7,5 +7,5 @@ function up() {
 </script>
 
 <template>
-      <el-button plain @click="up">显示更多</el-button>
+  <el-button plain @click="up">显示更多</el-button>
 </template>

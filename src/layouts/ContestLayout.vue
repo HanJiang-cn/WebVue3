@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import conMenu from "@/components/ContestMain/ConMenu.vue";
-import contestMain from "@/views/ContestMain/ContestMain.vue";
-import contestMainTow from "@/views/ContestMain/ContestMainTow.vue";
+import navMenu from '@/components/navMenu/navMenu.vue'
+import ContestMain from "@/views/ContestMain/ContestMain.vue"
+import ContestMainTow from "@/views/ContestMain/ContestMainTow.vue"
 </script>
 
 <template>
   <div class="default-layout">
     <div class="header">
       <div class="contest-menu">
-        <conMenu></conMenu>
+        <navMenu></navMenu>
       </div>
     </div>
     <div class="main-layout">
       <div class="main_one">
-        <contestMain></contestMain>
+        <ContestMain></ContestMain>
       </div>
       <div class="main_tow">
-        <contestMainTow></contestMainTow>
+        <ContestMainTow></ContestMainTow>
       </div>
     </div>
 

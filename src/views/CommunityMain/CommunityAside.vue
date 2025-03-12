@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref, defineEmits } from 'vue'
-// import { useRouter } from 'vue-router'
 
-// const router = useRouter()
 const emits = defineEmits(['switch'])
 const input3 = ref('')
 const switchIndex = ref(1)
