@@ -2,10 +2,10 @@
 import { useRouter } from 'vue-router';
 const router = useRouter();
 function up() {
-  router.push({ path: '/create' });
+  router.push({ path: 'team/create' });
 }
 </script>
 
 <template>
-      <el-button plain @click="up">显示更多</el-button>
+  <el-button plain @click="up">显示更多</el-button>
 </template>

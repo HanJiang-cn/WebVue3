@@ -579,6 +579,7 @@ function agree() {
 
       .list_item {
         cursor: pointer;
+        margin-top: 5px;
         width: 345px;
         height: 62px;
         text-align: left;

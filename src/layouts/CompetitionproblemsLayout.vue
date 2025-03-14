@@ -252,50 +252,27 @@ const value = ref(Date.now() + 1000 * 60 * 60 * 7)
                   <!-- 题目信息 -->
                   <el-row style="margin-top: 10px;">
                     <div class="problem-info">
-                      <div class="problem-header">
-                        <h3 class="problem-title">📋 题目信息</h3>
-                        <div class="difficulty-badge">简单</div>
+                      <h3 class="info-title">题目信息</h3>
+                      <div class="info-section">
+                        <p class="difficulty">本题目难度：<span>简单</span></p>
+                        <div class="target-box">
+                          <p><strong>目标：</strong></p>
+                          <ul>
+                            <li>完成程序并输出结果</li>
+                            <li>编译成功！</li>
+                            <li>完成所有目标可获得满分</li>
+                          </ul>
+                        </div>
+                        <p class="score">分值：<em>100</em>（完成所有目标可获得满分）</p>
+                        <div class="notice-box">
+                          <p><strong>注意事项：</strong></p>
+                          <ol>
+                            <li>请确保已完成每日一题的题目描述和示例</li>
+                            <li>请确保已掌握相关解题思路和算法</li>
+                          </ol>
+                        </div>
+                        <p class="source">题目来源：<a>力扣（LeetCode）</a></p>
                       </div>
-
-                      <dl class="info-grid">
-                        <!-- 目标 -->
-                        <div class="info-card info-card--primary">
-                          <dt class="info-label">🎯 目标要求</dt>
-                          <dd class="info-content">
-                            <ul class="target-list">
-                              <li>完成程序并输出结果</li>
-                              <li>编译成功</li>
-                              <li>完成所有目标可获得满分</li>
-                            </ul>
-                          </dd>
-                        </div>
-
-                        <!-- 分值 -->
-                        <div class="info-card info-card--highlight">
-                          <dt class="info-label">⭐ 分值</dt>
-                          <dd class="info-content">
-                            <div class="score-display">100</div>
-                            <div class="score-tip">完成所有目标可获得满分</div>
-                          </dd>
-                        </div>
-
-                        <!-- 注意事项 -->
-                        <div class="info-card info-card--warning">
-                          <dt class="info-label">⚠️ 注意事项</dt>
-                          <dd class="info-content">
-                            <ol class="notice-list">
-                              <li>确保完成每日一题的题目描述和示例</li>
-                              <li>掌握相关解题思路和算法</li>
-                            </ol>
-                          </dd>
-                        </div>
-
-                        <!-- 来源 -->
-                        <div class="info-source">
-                          <span class="source-label">📚 题目来源：</span>
-                          <span class="source-name">力扣（LeetCode）</span>
-                        </div>
-                      </dl>
                     </div>
                   </el-row>
                 </el-tab-pane>
@@ -652,167 +629,76 @@ const value = ref(Date.now() + 1000 * 60 * 60 * 7)
 
       // 题目信息
       .problem-info {
-        --primary-color: #1677ff;
-        --warning-color: #faad14;
-        --success-color: #52c41a;
-        --text-primary: rgba(0, 0, 0, 0.85);
-        --text-secondary: rgba(0, 0, 0, 0.65);
-        --border-radius: 8px;
-        --spacing: 16px;
-        --transition: all 0.2s ease;
-
-        padding: var(--spacing);
+        line-height: 1.6;
+        padding: 16px;
         background: #fff;
-        border-radius: var(--border-radius);
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
 
-        &-header {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 24px;
-          padding-bottom: 12px;
-          border-bottom: 1px solid #f0f0f0;
+        .info-title {
+          font-size: 18px;
+          color: #2c3e50;
+          margin: 0 0 20px;
+          padding-left: 12px;
+          border-left: 4px solid #409EFF;
         }
 
-        &-title {
-          margin: 0;
-          font-size: 1.4em;
-          color: var(--text-primary);
-        }
-
-        .difficulty-badge {
-          padding: 4px 12px;
-          background: var(--success-color);
-          color: white;
-          border-radius: 20px;
-          font-size: 0.9em;
-          font-weight: 500;
-        }
-
-
-        .info-grid {
-          display: grid;
-          gap: var(--spacing);
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        }
-
-        .info-card {
-          padding: var(--spacing);
-          border-radius: var(--border-radius);
-          border: 1px solid #f0f0f0;
-          transition: var(--transition);
-
-          &--primary {
-            border-left: 4px solid var(--primary-color);
+        .info-section {
+          p {
+            margin: 12px 0;
+            color: #606266;
           }
 
-          &--highlight {
-            background: rgba(250, 173, 20, 0.05);
-            border-color: rgba(250, 173, 20, 0.15);
-          }
-
-          &--warning {
-            border-left: 4px solid var(--warning-color);
-          }
-
-          &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-          }
-        }
-
-        .info-label {
-          margin-bottom: 8px;
-          font-weight: 500;
-          color: var(--text-primary);
-          font-size: 1.1em;
-
-          &::before {
-            margin-right: 8px;
-          }
-        }
-
-        .target-list {
-          margin: 0;
-          padding-left: 20px;
-
-          li {
-            margin-bottom: 6px;
-            color: var(--text-secondary);
-
-            &::marker {
-              color: var(--primary-color);
+          .difficulty {
+            span {
+              color: #67C23A;
+              font-weight: 500;
             }
           }
-        }
 
-        .score-display {
-          font-size: 2.2em;
-          font-weight: 600;
-          color: var(--warning-color);
-          line-height: 1;
-        }
+          .target-box {
+            background: rgba(#409EFF, 0.03);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
 
-        .score-tip {
-          margin-top: 4px;
-          font-size: 0.9em;
-          color: var(--text-secondary);
-        }
+            ul {
+              margin: 8px 0 0 20px;
+              padding: 0;
 
-        .notice-list {
-          counter-reset: notice-counter;
-          margin: 0;
-          padding-left: 0;
-
-          li {
-            position: relative;
-            margin-bottom: 8px;
-            padding-left: 28px;
-            color: var(--text-secondary);
-
-            &::before {
-              counter-increment: notice-counter;
-              content: counter(notice-counter);
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 20px;
-              height: 20px;
-              background: var(--warning-color);
-              color: white;
-              border-radius: 50%;
-              text-align: center;
-              line-height: 20px;
-              font-size: 0.9em;
+              li {
+                margin: 8px 0;
+                color: #606266;
+              }
             }
           }
-        }
 
-        .info-source {
-          margin-top: var(--spacing);
-          padding-top: var(--spacing);
-          text-align: right;
-          color: var(--text-secondary);
-          font-size: 0.95em;
-          border-top: 1px solid #f0f0f0;
-
-          .source-name {
-            color: var(--primary-color);
-            font-weight: 500;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .problem-info {
-            --spacing: 12px;
-
-            &-title {
+          .score {
+            em {
+              color: #E6A23C;
+              font-style: normal;
               font-size: 1.2em;
             }
+          }
 
-            .info-grid {
-              grid-template-columns: 1fr;
+          .notice-box {
+            ol {
+              margin: 8px 0 0 20px;
+              padding: 0;
+
+              li {
+                margin: 8px 0;
+                color: #606266;
+              }
+            }
+          }
+
+          .source {
+            margin-top: 24px;
+            color: #909399;
+
+            a {
+              color: #409EFF;
+              text-decoration: none;
             }
           }
         }
