@@ -106,6 +106,11 @@ const routes = [
     name: 'Post',
     component: () => import('@/layouts/PostLayout.vue'),
   },
+  {
+    path:'/store',
+    name:'Store',
+    component:()=>import('@/layouts/StoreLayout.vue')
+  }
 ]
 
 export default routes
