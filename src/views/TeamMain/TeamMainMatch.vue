@@ -139,7 +139,6 @@ const handleVisable = () => {
 
 <template>
   <div class="default-layout">
-    <h1>队友匹配</h1>
     <div class="main-layout">
       <!-- 主内容区 -->
       <div class="main">
@@ -241,14 +240,6 @@ const handleVisable = () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 20px;
-
-  h1 {
-    text-align: center;
-    margin-bottom: 32px;
-    color: #2c3e50;
-    font-size: 2.2em;
-    font-weight: 600;
-  }
 }
 
 .main-layout {
