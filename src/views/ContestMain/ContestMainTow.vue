@@ -1,129 +1,28 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-import { reactive, toRefs } from 'vue'
+import {  ref } from 'vue'
 import dayjs from 'dayjs'
 const value2 = ref(dayjs().add(1, 'month').startOf('month'))
-const state = reactive({
-  circleUrl:
-    'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-  squareUrl:
-    'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',
-  sizeList: ['small', '', 'large'] as const,
-})
-
-const { circleUrl } = toRefs(state)
 function add() {
   console.log('添加到计划表中')
 }
-const allTableData = ref([
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
+import { Medal } from '@element-plus/icons-vue'
 
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
-  {
-    contest: '第439场周赛',
-    time: '1小时30分钟',
-
-  },
+const rankList = ref([
+  { rank: 1, name: '代码大师', score: 1500 },
+  { rank: 2, name: '算法忍者', score: 1450 },
+  { rank: 3, name: 'Bug终结者', score: 1400 },
+  { rank: 4, name: '小白选手', score: 1200 },
+  { rank: 5, name: 'Vue爱好者', score: 1150 },
+  { rank: 6, name: 'React选手', score: 1100 },
+  { rank: 7, name: '全栈新人', score: 1050 },
 ])
-let tableData: { contest: string; time: string; }[] = []
-const total = ref(1000)
-// 当前页码，初始值为1
-const currentPage = ref(1);
-// 每页显示的条目数，初始值为14
-onMounted(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  tableData = allTableData.value.slice(startIndex, endIndex);
-  console.log(tableData)
-})
-const pageSize = ref(14);
-watch([currentPage, pageSize], () => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  tableData = allTableData.value.slice(startIndex, endIndex);
-});
-const yes = ref(true)
-const yes2 = ref(false)
-function agree() {
-  console.log('显示更多')
-  if (yes.value == true) {
-    yes.value = false
-    yes2.value = true
-    return
-  }
-  if (yes2.value == true) {
-    yes2.value = false
-    yes.value = true
-    return
-  }
-}
+const schedules = ref([
+  { id: 1, date: '2025-04-01', title: '春季编程挑战赛', time: '19:00-21:00', status: '已结束' },
+  { id: 2, date: '2025-04-08', title: '算法周赛', time: '20:00-22:00', status: '报名中' },
+  { id: 3, date: '2025-04-15', title: '全栈开发大赛', time: '18:30-20:30', status: '即将开始' },
+  { id: 4, date: '2025-04-22', title: '人工智能挑战赛', time: '19:30-21:30', status: '未开放' },
+  { id: 5, date: '2025-04-29', title: '网络安全竞赛', time: '20:00-22:00', status: '未开放' }
+])
 </script>
 
 
@@ -137,9 +36,9 @@ function agree() {
           <List />
         </el-icon><span @click="add"><a href="#">添加到计划表中</a></span></div>
       <div class="start">
-        <el-countdown format="DD [天] HH:mm:ss" :value="value2">
+        <el-countdown format="DD [天] HH:mm:ss" :value="value2" :value-style="'color:white'">
           <template #title>
-            <div style="display: inline-flex; align-items: center">
+            <div style="display: inline-flex; align-items: center;color: white;">
               <el-icon style="margin-right: 4px" :size="12">
                 <Calendar />
               </el-icon>
@@ -158,9 +57,9 @@ function agree() {
           <List />
         </el-icon><span @click="add"><a href="#">添加到计划表中</a></span></div>
       <div class="start">
-        <el-countdown format="DD [天] HH:mm:ss" :value="value2">
+        <el-countdown format="DD [天] HH:mm:ss" :value="value2"  :value-style="'color:white'">
           <template #title>
-            <div style="display: inline-flex; align-items: center">
+            <div style="display: inline-flex; align-items: center;color: white;">
               <el-icon style="margin-right: 4px" :size="12">
                 <Calendar />
               </el-icon>
@@ -171,182 +70,62 @@ function agree() {
       </div>
     </div>
   </div>
-  <div class="contest_body">
-    <div class="card_four">
-      <div class="list">
-        <div class="head">
-          <div class="title"> 精彩竞赛回顾 </div>
-          <div class="info">参加虚拟竞赛，为你的排位赛做好充足准备</div>
-          <a href="#"> 竞赛合作</a>
+  <div class="rank">
+    <div class="rank-header">实时排行榜</div>
+    <div class="rank-list">
+      <div 
+        v-for="(item, index) in rankList" 
+        :key="index"
+        class="rank-item"
+        :class="{ 'top-three': item.rank <= 3 }"
+      >
+        <div class="rank-number">
+          <el-icon v-if="item.rank === 1"><Medal color="#FFD700" /></el-icon>
+          <el-icon v-else-if="item.rank === 2"><Medal color="#C0C0C0" /></el-icon>
+          <el-icon v-else-if="item.rank === 3"><Medal color="#CD7F32" /></el-icon>
+          <span v-else>{{ item.rank }}</span>
         </div>
-        <div class="table">
-          <el-table class="custom_table" :data="tableData" style="width: 100%;">
-            <el-table-column prop="contest" label="竞赛场次" width="180" />
-            <el-table-column prop="time" label="比赛时长" width="180" />
-            <el-table-column prop="address" label="" />
-          </el-table>
-        </div>
-        <div class="Result">
-          <el-pagination background layout="prev, pager, next" :total="total" size="small"
-            v-model:current-page="currentPage" v-model:page-size="pageSize" @current-change="() => { }"
-            @size-change="() => { }" />
-        </div>
+        <div class="rank-name">{{ item.name }}</div>
+        <div class="rank-score">{{ item.score }} </div>
       </div>
     </div>
-    <div class="card_three">
-      <div class="title">
-        <div class="img"><img src="/src/assets/qi.jpg" alt="china map"></div>
-        <div class="rank"><span>全省排名</span></div>
-        <div class="check"><label><input type="checkbox" @click="agree"> 全国排名</label> </div>
-      </div>
-      <div class="list" v-if="yes">
-        <div class="list_item">
-          <div class="ranking">4</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
+  </div>
+ <div class="contest">
+    <div class="rank-header">竞赛时间表</div>
+    <div class="schedule-list">
+      <div 
+        v-for="item in schedules" 
+        :key="item.id"
+        class="schedule-item"
+        :class="{
+          'ended': item.status === '已结束',
+          'active': item.status === '报名中'
+        }"
+      >
+        <div class="schedule-date">
+          <div class="date-day">{{ dayjs(item.date).format('DD') }}</div>
+          <div class="date-month">{{ dayjs(item.date).format('MMM') }}</div>
+        </div>
+        <div class="schedule-info">
+          <div class="schedule-title">{{ item.title }}</div>
+          <div class="schedule-time">
+            <el-icon><Clock /></el-icon>
+            <span>{{ item.time }}</span>
           </div>
         </div>
-        <div class="list_item">
-          <div class="ranking">5</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">6</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">7</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">8</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">9</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">10</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="button">
-          <el-button plain>显示更多</el-button>
-        </div>
-      </div>
-      <div class="list" v-if="yes2">
-        <div class="list_item">
-          <div class="ranking">5</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">5</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">6</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">7</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">8</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">9</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="list_item">
-          <div class="ranking">10</div>
-          <div class="user">
-            <el-avatar class="one" :size="50" :src="circleUrl" />
-          </div>
-          <div class="name">
-            <div>jiete</div>
-            <div>参加比赛51次</div>
-          </div>
-        </div>
-        <div class="button">
-          <el-button plain>显示更多</el-button>
+        <div class="schedule-status">
+          <el-tag 
+            :type="{
+              '已结束': 'info',
+              '报名中': 'primary',
+              '即将开始': 'warning',
+              '未开放': 'danger'
+            }[item.status]"
+            effect="dark"
+            size="small"
+          >
+            {{ item.status }}
+          </el-tag>
         </div>
       </div>
     </div>
@@ -355,7 +134,7 @@ function agree() {
 
 <style lang="less" scoped>
 .card {
-  width: 525px;
+  width: 430px;
   height: 270px;
   position: relative;
   margin-top: -60px;
@@ -435,7 +214,7 @@ function agree() {
 
 .card_tow {
   cursor: pointer;
-  width: 375px;
+  width: 430px;
   height: 270px;
   position: relative;
   margin-top: -60px;
@@ -502,212 +281,226 @@ function agree() {
     }
   }
 }
-
-.contest_body {
-  width: 900px;
-  height: 820px;
+.rank {
+  width: 380px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin: 20px auto;
+  float: left;
   position: relative;
-  top: 220px;
   left: 130px;
+  top: 10px;
 
-  .card_three {
-    position: relative;
-    top: -560px;
-    left: 550px;
-    width: 375px;
-    height: 819px;
-
-    .title {
-      width: 345px;
-      height: 65px;
-
-      .img {
-        width: 62px;
-        height: 65px;
-        margin-top: -210px;
-        float: left;
-
-        img {
-
-          width: 62px;
-          height: 55px;
-        }
-      }
-
-      .rank {
-        width: 179px;
-        height: 65px;
-        float: left;
-        text-align: left;
-        margin-top: -210px;
-        margin-left: 62px;
-
-        span {
-          font-weight: 500;
-          font-size: 25px;
-          padding-left: 10px;
-          line-height: 65px;
-          color: #bdc3c7;
-        }
-      }
-
-      .check {
-        width: 80px;
-        height: 65px;
-        float: right;
-        margin-top: -210px;
-        text-align: left;
-
-        label {
-          font-size: 12px;
-          color: #bdc3c7;
-          line-height: 65px;
-        }
-      }
-    }
-
-    .list {
-      position: relative;
-      top: -180px;
-      left: 0px;
-      width: 345px;
-      height: 489px;
-      background-color: white;
-      border-radius: 20px;
-      box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.15);
-      margin-top: 10px;
-
-      .list_item {
-        cursor: pointer;
-        margin-top: 5px;
-        width: 345px;
-        height: 62px;
-        text-align: left;
-        border-bottom: 1px solid #f0f0f0;
-
-        .ranking {
-          width: 25px;
-          height: 62px;
-          line-height: 62px;
-          float: left;
-          margin-left: 10px;
-
-        }
-
-        .user {
-          width: 30px;
-          height: 47px;
-          float: left;
-          line-height: 47px;
-          padding-left: 10px;
-        }
-
-        .name {
-          width: 94.76px;
-          height: 62px;
-          float: left;
-          margin-left: 40px;
-
-          div {
-            width: 120.76px;
-            font-size: 16px;
-          }
-        }
-      }
-
-      .button {
-        width: 345px;
-        height: 62px;
-
-        .el-button {
-          width: 345px;
-          height: 62px;
-          border: 0;
-          border-radius: 20px;
-        }
-      }
-
+  &-header {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    &::before {
+      content: "";
+      width: 4px;
+      height: 24px;
+      background: #409eff;
+      border-radius: 2px;
     }
   }
 
-  .card_four {
-    width: 525px;
-    height: 780px;
+  &-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
 
-    .list {
-      width: 495px;
-      height: 780px;
-      margin-left: 15px;
-      border-radius: 20px;
-      background-color: white;
-      box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.15);
+    /* 美化滚动条 */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+  }
 
-      .head {
-        width: 495px;
-        height: 130.67px;
-        border-bottom: 1px solid #f0f0f0;
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius: 12px;
+    background: #f8faff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
-        .title {
-          position: relative;
-          top: -180px;
-          left: 20px;
-          width: 495px;
-          height: 42px;
-          text-align: left;
-          font-size: 30px;
-          font-weight: 600;
-          line-height: 42px;
-          margin-top: 5px;
-        }
+    &:hover {
+      background: #ecf5ff;
+      transform: translateX(8px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .info {
-          position: relative;
-          top: -120px;
-          left: 0px;
-          text-align: left;
-          width: 495px;
-          height: 18px;
-          color: #afafaf;
-          line-height: 18px;
-          font-weight: 500;
-          font-size: 13px;
-          padding-left: 20px;
-        }
+    &.top-three {
+      background: linear-gradient(
+        135deg,
+        rgba(64, 158, 255, 0.15) 0%,
+        rgba(255, 255, 255, 1) 80%
+      );
+    }
+  }
 
-        a {
-          position: relative;
-          top: -130px;
-          left: 200px;
-          width: 70px;
-          height: 21px;
-          color: #007bff;
-          text-decoration: none;
+  &-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #606266;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    .el-icon {
+      font-size: 24px;
+    }
+  }
 
-          a:hover {
-            color: #83bfff;
-          }
-        }
-      }
+  &-name {
+    flex: 1;
+    margin: 0 20px;
+    font-size: 15px;
+    color: #303133;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
 
-      .table {
-        position: relative;
-        top: -70px;
-        left: 0px;
-        width: 495px;
-        height: 600px;
-      }
+  &-score {
+    width: 80px;
+    text-align: right;
+    color: #67c23a;
+    font-weight: 600;
+    font-size: 15px;
+    
+    &::after {
+      content: "分";
+      font-size: 12px;
+      color: #909399;
+      margin-left: 2px;
+    }
+  }
+}
+.contest {
+  width: 380px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  float: left;
+  position: relative;
+  left: 200px;
+  top: 10px;
+  margin-top: 20px;
 
-      .Result {
-        width: 495px;
-        height: 52px;
+  .schedule-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
 
-        .el-pagination {
-          position: relative;
-          top: 16px;
-          left: 50px
-        }
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+  }
+
+  .schedule-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    margin: 12px 0;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateX(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.active {
+      border-left: 4px solid #67c23a;
+    }
+
+    &.ended {
+      opacity: 0.6;
+      .schedule-status {
+        filter: grayscale(1);
       }
     }
+  }
+
+  .schedule-date {
+    width: 60px;
+    text-align: center;
+    padding-right: 16px;
+    border-right: 1px solid #ebeef5;
+
+    .date-day {
+      font-size: 24px;
+      font-weight: 700;
+      color: #409eff;
+      line-height: 1.2;
+    }
+
+    .date-month {
+      font-size: 12px;
+      color: #909399;
+      text-transform: uppercase;
+    }
+  }
+
+  .schedule-info {
+    flex: 1;
+    padding: 0 20px;
+
+    .schedule-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: #303133;
+      margin-bottom: 6px;
+    }
+
+    .schedule-time {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #606266;
+
+      .el-icon {
+        margin-right: 6px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .schedule-status {
+    width: 80px;
+    text-align: center;
   }
 }
 </style>

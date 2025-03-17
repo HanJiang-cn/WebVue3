@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import TeamList from "@/components/TeamMain/TeamList.vue"
+const router = useRouter();
+const jump = () => {
+  router.push({ path: '/team/manage' }); 
+}
+</script>
+
 <template>
 <div class="box">
   <div class="title">队伍列表</div>
@@ -27,11 +36,13 @@
       </div>
       
       <div class="team-actions">
-        <el-button size="small" type="primary">查看详情</el-button>
+         <TeamList></TeamList>&nbsp;
+         <el-button size="small" @click="jump">管理队伍</el-button>
       </div>
     </div>
   </div>
 </div>
+ 
 </template>
 
 <style lang="less" scoped>
@@ -61,10 +72,6 @@
     transition: all 0.3s ease;
     border: 1px solid rgba(64, 158, 255, 0.15);
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 32px rgba(64, 158, 255, 0.15);
-    }
 
     .card-header {
       display: flex;
@@ -103,7 +110,6 @@
 
   }
 }
-
 // 响应式调整
 @media (max-width: 768px) {
   .team-list {

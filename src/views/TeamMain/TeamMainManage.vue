@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import TeamUp from "@/components/TeamMain/TeamUp.vue"
 import TeamEditor from "@/components/TeamMain/TeamEditor.vue"
-const add = () => {
-    console.log("add") 
-}
+import TeamAdd from "@/components/TeamMain/TeamAdd.vue"
+
 </script>
 <template>
 <div class="box">
  <div class="style"></div><div class="title">队伍管理 </div>
   <div class="box2">
    <div class="add">
-       <el-button type="primary" @click="add">添加成员</el-button>
+       <TeamAdd></TeamAdd>
    </div>
    <div class="people">
         <div class="main">
