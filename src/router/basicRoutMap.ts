@@ -110,6 +110,16 @@ const routes = [
     path:'/store',
     name:'Store',
     component:()=>import('@/layouts/StoreLayout.vue')
+  },
+  {
+    path:'/competition',
+    name:'Competition',
+    component:()=>import('@/layouts/CompetitionLayout.vue')
+  },
+  {
+    path:'/competitiondetail',
+    name:'CompetitionDetail',
+    component:()=>import('@/layouts/CompetitionDetailLayout.vue')
   }
 ]
 
