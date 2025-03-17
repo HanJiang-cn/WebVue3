@@ -2,6 +2,8 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import TeamMatch from '@/components/TeamMain/TeamMatch.vue'
+// 匹配动画对话框
+import MatchAnimationDialog from '@/components/TeamMain/MatchAnimationDialog.vue'
 
 const dialogFormVisible = ref(false)
 // 用户信息
@@ -93,7 +95,8 @@ const statusType = {
 
 // 表单引用
 const matchForm = ref(null)
-
+// 匹配动画弹窗
+const dialogVisible = ref(false)
 // 提交匹配
 const isSubmitting = ref(false)
 const submitMatch = () => {
@@ -101,39 +104,47 @@ const submitMatch = () => {
   matchForm.value.validate((valid) => {
     if (valid) {
       isSubmitting.value = true
+      // 匹配动画弹窗
+      dialogVisible.value = true
       setTimeout(() => {
-        currentMatch.value.unshift({
-          id: `#MATCH${Math.random().toString(16).substr(2, 5)}`,
-          members: 1,
-          capacity: 3,
-          deadline: new Date().toISOString().slice(0, 16),
-          status: '匹配中',
-        })
-        matchHistory.value.unshift({
-          id: currentMatch.value[0].id,
-          status: currentMatch.value[0].status,
-        })
-        isSubmitting.value = false
+        dialogVisible.value = false
         // 模拟匹配进度
-        const timer = setInterval(() => {
-          if (currentMatch.value[0].members < 3) {
-            currentMatch.value[0].members++
-          } else {
-            clearInterval(timer)
-            currentMatch.value[0].status = '已组队'
-          }
-        }, 3000)
-      }, 1000)
+        if (!dialogVisible.value) {
+          setTimeout(() => {
+            currentMatch.value.unshift({
+              id: `#MATCH${Math.random().toString(16).substr(2, 5)}`,
+              members: 1,
+              capacity: 3,
+              deadline: new Date().toISOString().slice(0, 16),
+              status: '匹配中',
+            })
+            matchHistory.value.unshift({
+              id: currentMatch.value[0].id,
+              status: currentMatch.value[0].status,
+            })
+            isSubmitting.value = false
+            // 模拟匹配进度
+            const timer = setInterval(() => {
+              if (currentMatch.value[0].members < 3) {
+                currentMatch.value[0].members++
+              } else {
+                clearInterval(timer)
+                currentMatch.value[0].status = '已组队'
+              }
+            }, 3000)
+          }, 500)
+        }
+      }, 100000)
     }
   })
 }
 
-const handleClose = () => {
-  dialogFormVisible.value = false
-}
-
+// 匹配详情
 const handleVisable = () => {
   dialogFormVisible.value = true
+}
+const handleClose = () => {
+  dialogFormVisible.value = false
 }
 </script>
 
@@ -166,6 +177,7 @@ const handleVisable = () => {
           <el-form-item>
             <el-button type="primary" @click="submitMatch" :loading="isSubmitting" class="primary-btn">开始匹配</el-button>
           </el-form-item>
+          <MatchAnimationDialog :dialogVisible="dialogVisible" />
         </el-form>
 
         <!-- 当前匹配 -->
@@ -179,8 +191,9 @@ const handleVisable = () => {
               <p>匹配ID: {{ currentMatch.id }}</p>
               <p>成员人数: {{ currentMatch.members }}/{{ currentMatch.capacity }}</p>
               <p>截止时间: {{ currentMatch.deadline }}</p>
-              <el-tag :type="statusType[currentMatch.status]" class="status-tag" effect="dark">{{ currentMatch.status
-                }}</el-tag>
+              <el-tag :type="statusType[currentMatch.status]" class="status-tag" effect="dark">{{
+                currentMatch.status
+              }}</el-tag>
             </div>
             <el-button type="primary" class="secondary-btn" @click="handleVisable">查看详情</el-button>
           </el-card>

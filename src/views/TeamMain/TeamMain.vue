@@ -235,6 +235,10 @@ const handleList = () => {
               </div>
               <div class="info-item">
                 <label>人数：</label>
+                <p>3/5</p>
+              </div>
+              <div class="info-item">
+                <label>积分：</label>
                 <el-progress> </el-progress>
               </div>
               <div class="info-item">
