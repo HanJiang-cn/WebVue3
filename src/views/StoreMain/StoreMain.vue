@@ -78,8 +78,15 @@
         </div>
         <div class="item" v-for="item in 3" :key="item">
         <img src="https://uploadfiles.nowcoder.com/images/20200205/9398821_1580898882521_062F798501999A3D1CACBFB6DD65BFBB" alt="" style="width: 100%;display: block;">
-        <div class="mask"><p>精华教程</p><p>共4章</p>
-        <p><el-icon><User /></el-icon>3137549人学习</p>
+        <div class="mask">
+          <p>精华教程</p>
+          <p>共4章</p>
+        <p>
+          <el-icon>
+            <User />
+          </el-icon>
+          3137549人学习
+        </p>
         </div>
         </div>
       </li>
@@ -89,8 +96,11 @@
         </div>
         <div class="item" v-for="item in 3" :key="item">
         <img src="https://uploadfiles.nowcoder.com/images/20200330/826546_1585563045511_5409C304FB9CF4DA37FCE1D446239ABE" alt="" style="width: 100%;display: block;">
-        <div class="mask"><p>精华教程</p><p>共4章</p>
-        <p><el-icon><User /></el-icon>3137549人学习</p></div>
+        <div class="mask">
+          <p>精华教程</p><p>共4章</p>
+        <p><el-icon><User />
+        </el-icon>3137549人学习</p>
+        </div>
         </div>
       </li>
     </ul>
@@ -212,6 +222,34 @@
           </div>
         </li>
       </ul>
+      <div class="introduce">
+    <img src="https://static.nowcoder.com/fe/file/images/web/course/more-free-lessons.png" alt="" style="width: 205px;">
+    </div>
+    <div class="mod">
+      <img src="https://static.nowcoder.com/fe/file/images/web/course/fre.png" alt="" style="width: 131px;">
+      </div>
+    <div class="example-pagination-block">
+    <div class="example-demonstration">
+      <div class="course" v-for="item in 5" :key="item">
+      <a href="#">
+        <div class="pic">
+          <img src="https://uploadfiles.nowcoder.com/images/20200917/59_1600326953543_106DF34AADDE51FDD3355A11AB52718C" alt="" style="width: 100%;">
+        </div>
+        <div class="detail">
+         <div style="height: 30px;">
+          <span class="price">￥399</span>
+          <h3>算法基础提升班</h3>
+         </div>
+         <div class="count"><el-icon style="font-size: 14px; vertical-align: middle;"><Management /></el-icon>
+          <span style="font-size: 14px; vertical-align: middle;">共有4章</span>
+           <el-button size="small" round style="float: right;margin-top: 2px;">学习</el-button>
+        </div>
+        </div>
+      </a>
+    </div>
+    </div>
+    <el-pagination  background layout="prev, pager, next" :total="50" />
+  </div>
   </div>
 </div>
 </template>
@@ -403,6 +441,9 @@ justify-content: space-around;
     &:hover {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       transform: translateY(-5px);
+      .mask {
+        display: block;
+      }
     }
     .hd{
     margin-bottom: 20px;
@@ -434,9 +475,10 @@ justify-content: space-around;
     margin: 0 28px;
     width: 130px;
     height: 177px;
+
     }
     .mask {
-    display: none;
+   display: none;
     background: rgba(0, 0, 0, .5);
     position: absolute;
     bottom: 0;
@@ -447,9 +489,7 @@ justify-content: space-around;
     padding: 15px 0 5px;
     margin: 0 auto;
     font-size: 14px;
-    &:hover {
-      display: block;
-    }
+
     }
 }
 }
@@ -621,5 +661,10 @@ justify-content: space-around;
 }
    }
  }
+}
+.el-pagination{
+display: flex;
+justify-content: center;
+
 }
 </style>
