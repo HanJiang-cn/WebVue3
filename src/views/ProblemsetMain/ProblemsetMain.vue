@@ -81,11 +81,14 @@ const tableData = ref([
 ])
 const attrs = ref([
   {
-    key: 'today',
+    // key: 'today',
     dot: true,
-    dates: new Date(),
+    dates: [
+      new Date(),
+      new Date(2025, 2, 17)
+    ],
   },
-]);
+])
 </script>
 
 <template>
@@ -276,7 +279,7 @@ const attrs = ref([
         <el-card class="calendar" style="width: 100%;">
           <ScheduleOutlined style="margin-left: 10px; font-size: 20px;" />
           <span>每日打卡</span>
-          <VCalendar title-position="left" borderless transparent :attributes='attrs' />
+          <VCalendar title-position="left" borderless transparent :attributes='attrs' :max-date="new Date()" />
         </el-card>
       </el-row>
       <el-row></el-row>
@@ -329,7 +332,7 @@ const attrs = ref([
     margin-right: 13px;
     border-radius: 10px;
     border: none;
-    background-color: #000a200d;
+    background-color: rgba(59, 130, 246, 0.08);
     font-size: 16px;
     padding: 12px 14px;
 
@@ -338,8 +341,8 @@ const attrs = ref([
     }
 
     &:hover {
-      color: #262626bf !important;
-      background-color: #000a201a;
+      color: #010000bf !important;
+      background-color: rgb(118, 177, 208);
     }
   }
 
@@ -351,7 +354,7 @@ const attrs = ref([
 
   .el-radio-button {
     --el-radio-button-checked-text-color: #fff !important;
-    --el-radio-button-checked-bg-color: #000 !important;
+    --el-radio-button-checked-bg-color: rgb(10, 89, 138) !important;
     --el-radio-button-checked-border-color: transparent !important;
   }
 }

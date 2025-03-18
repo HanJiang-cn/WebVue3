@@ -21,14 +21,14 @@ import cover from '@/assets/cover.png'
   padding: 0;
   width: 243px;
   height: 88px;
-  background-color: #F5F5F5;
+  background-color: #f5faff;
   border-radius: 10px;
   border: none;
   transition: all .3s;
   text-align: left;
 
   &:hover {
-    background-color: #F0F0F0 !important;
+    background-color: #e1f9ff !important;
   }
 
   img {

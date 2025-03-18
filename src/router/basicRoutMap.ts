@@ -18,17 +18,55 @@ const routes = [
     name: 'Problemset',
     component: () => import('@/layouts/ProblemsetLayout.vue'),
   },
-  // 登录
+  // 登录&注册
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('@/layouts/LoginLayout.vue'),
+    path: '/accounts',
+    name: 'Accounts',
+    component: () => import('@/layouts/AccountsLayout.vue'),
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: () => import('@/views/LoginMain/LoginCard.vue'),
+      },
+      // 注册
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import('@/views/LoginMain/RegisterCard.vue'),
+      },
+    ],
   },
   // 做题页面
   {
     path: '/problems',
     name: 'Problems',
+    redirect: '/problems/question',
     component: () => import('@/layouts/ProblemsLayout.vue'),
+    children: [
+      {
+        path: 'question',
+        name: 'QuestionDescription',
+        component: () => import('@/views/ProblemsMain/QuestionDescription.vue'),
+      },
+      {
+        path: 'solution',
+        name: 'SolutionList',
+        component: () => import('@/views/ProblemsMain/SolutionList.vue'),
+        children: [
+          {
+            path: '',
+            name: 'SolutionListIndex',
+            component: () => import('@/views/ProblemsMain/SolutionList/SolutionIndex.vue'),
+          },
+          {
+            path: 'content',
+            name: 'SolutionContent',
+            component: () => import('@/views/ProblemsMain/SolutionList/SolutionContent.vue'),
+          },
+        ],
+      },
+    ],
   },
   // 比赛做题页面
   {
@@ -107,20 +145,20 @@ const routes = [
     component: () => import('@/layouts/PostLayout.vue'),
   },
   {
-    path:'/store',
-    name:'Store',
-    component:()=>import('@/layouts/StoreLayout.vue')
+    path: '/store',
+    name: 'Store',
+    component: () => import('@/layouts/StoreLayout.vue'),
   },
   {
-    path:'/competition',
-    name:'Competition',
-    component:()=>import('@/layouts/CompetitionLayout.vue')
+    path: '/competition',
+    name: 'Competition',
+    component: () => import('@/layouts/CompetitionLayout.vue'),
   },
   {
-    path:'/competitiondetail',
-    name:'CompetitionDetail',
-    component:()=>import('@/layouts/CompetitionDetailLayout.vue')
-  }
+    path: '/competitiondetail',
+    name: 'CompetitionDetail',
+    component: () => import('@/layouts/CompetitionDetailLayout.vue'),
+  },
 ]
 
 export default routes

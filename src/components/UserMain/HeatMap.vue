@@ -19,8 +19,8 @@ const today = {
   month: date.getMonth(),
   day: date.getDate()
 }
-const endTime = moment(date, 'YYYY/MM/DD').format('L')
-const startTime = moment((today.year - 1) + '/' + (today.month + 1) + '/' + today.day, 'YYYY/MM/DD').format('L')
+// const endTime = moment(date, 'YYYY/MM/DD').format('L')
+// const startTime = moment((today.year - 1) + '/' + (today.month + 1) + '/' + today.day, 'YYYY/MM/DD').format('L')
 const visibleList = ref<Record<string, boolean>>({})
 const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -71,6 +71,7 @@ const viewsList = ref<any>({
 
 // 自定义颜色
 const colorArr = ["#E0F8E0", "#C6E0C6", "#AEE6AE", "#96EA96", "#7EF07E", "#66F566", "#4EF94E", "#36FD36", "#1EFF1E", "#00CC00"]
+// 根据数量获取颜色
 function getColorFunc(value: number): string {
   let i = 0
   while (value > 10 && i < colorArr.length) {
@@ -81,21 +82,47 @@ function getColorFunc(value: number): string {
 }
 
 function generateData() {
-  const startTimeStamp = new Date(startTime).getTime()
-  const endTimeStamp = new Date(endTime).getTime()
-  // 随机生成365个数据
-  for (let i = 0; i < 365; i++) {
-    const randomTimeStamp: number = (endTimeStamp - Math.random() * (endTimeStamp - startTimeStamp)) //  随机减一个随机时间戳，相当于在今天的时间戳基础上减
-    const dateStr: string = moment(randomTimeStamp).format('YYYY/MM/DD')
-    if (!viewsList.value.views[dateStr]) {
-      viewsList.value.views[dateStr] = 0
+  // 提交日期及次数
+  viewsList.value.views = {
+    '2025/01/01': 10,
+    '2025/01/02': 10,
+    '2025/01/03': 10,
+    '2025/01/04': 10,
+    '2025/01/05': 10,
+    '2025/01/06': 10,
+    '2025/01/07': 10,
+    '2025/01/08': 10,
+  }
+  // 总提交次数
+  viewsList.value.totalCnt = 80
+  // 提交次数对应的颜色
+  for (const key in viewsList.value.views) {
+    if (Object.prototype.hasOwnProperty.call(viewsList.value.views, key)) {
+      const element = viewsList.value.views[key]
+      viewsList.value.colors[key] = getColorFunc(element)
     }
-    const curCnt = Math.random() * 100 | 0 // |0去除小数点
-    viewsList.value.views[dateStr] += curCnt
-    viewsList.value.totalCnt += curCnt
-    viewsList.value.colors[dateStr] = getColorFunc(viewsList.value.views[dateStr])
   }
 }
+
+// 生成数据
+// function generateData() {
+//   // // startTimeStamp 是一个随机的时间戳，endTimeStamp 是今天的时间戳
+//   // const startTimeStamp = new Date(startTime).getTime()
+//   // // endTimeStamp 是今天的时间戳
+//   // const endTimeStamp = new Date(endTime).getTime()
+//   // 随机生成365个数据
+//   // for (let i = 0; i < 365; i++) {
+//   //   const randomTimeStamp: number = (endTimeStamp - Math.random() * (endTimeStamp - startTimeStamp)) //  随机减一个随机时间戳，相当于在今天的时间戳基础上减
+//   //   const dateStr: string = moment(randomTimeStamp).format('YYYY/MM/DD')
+//   //   if (!viewsList.value.views[dateStr]) {
+//   //     viewsList.value.views[dateStr] = 0
+//   //   }
+//   //   const curCnt = Math.random() * 100 | 0 // |0去除小数点
+//   //   viewsList.value.views[dateStr] += curCnt
+//   //   viewsList.value.totalCnt += curCnt
+//   //   viewsList.value.colors[dateStr] = getColorFunc(viewsList.value.views[dateStr])
+//   // }
+// }
 
 const formatDate = (year: number, month: number, day: number) => {
   return moment(today.year + (year == 0 ? -1 : 0) + '/' + (month + 1) + '/' + (day + 1), 'YYYY/MM/DD').format('L')
@@ -111,7 +138,7 @@ onMounted(() => {
 <template>
   <div class="calander_box">
     <p class="view_title">
-      近一年共浏览
+      近一年提交
       <span style="font-weight: bold;padding: 0 5px;">{{ viewsList?.totalCnt != null ?
         viewsList?.totalCnt : '...' }}
       </span>
@@ -132,7 +159,7 @@ onMounted(() => {
               <!-- 真正显示的格子 -->
               <div v-for="(_day, index) in month.remainDay" :key="index">
                 <el-tooltip effect="dark" :visible="visibleList[formatDate(month.year, month.month, index)]"
-                  :content="`${formatDate(month.year, month.month, !month.rev ? index : (days[month.month] - (month.remainDay - index)))}  ${viewsList?.views[formatDate(month.year, month.month, index)] || 0}次浏览`"
+                  :content="`${formatDate(month.year, month.month, !month.rev ? index : (days[month.month] - (month.remainDay - index)))} 提交 ${viewsList?.views[formatDate(month.year, month.month, index)] || 0} 次`"
                   placement="top-start">
                   <div class="views_day" @mouseenter="visibleList[formatDate(month.year, month.month, index)] = true"
                     @mouseleave="visibleList[formatDate(month.year, month.month, index)] = false" :style="{

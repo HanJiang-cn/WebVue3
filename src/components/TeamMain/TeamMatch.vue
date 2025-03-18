@@ -110,14 +110,14 @@ const matchDetail = ref({
       </div>
     </div>
 
-    <template #footer>
+    <!-- <template #footer>
       <div class="dialog-footer">
         <el-button @click="closeDialog">返回</el-button>
         <el-button type="primary" @click="closeDialog">
           确认
         </el-button>
       </div>
-    </template>
+    </template> -->
   </el-dialog>
 </template>
 

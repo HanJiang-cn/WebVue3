@@ -12,17 +12,30 @@ const radio1 = ref('1')
 </script>
 
 <template>
+  <el-carousel height="360px" class="main-carousel">
+    <el-carousel-item v-for="item in 4" :key="item">
+      <div class="carousel-item" :style="{ background: `url(${tp}) center/cover` }">
+        <div class="carousel-content">
+          <h2>2023 算法大师班</h2>
+          <p>全球顶级算法竞赛选手亲授</p>
+          <el-button type="primary" size="large">立即报名</el-button>
+        </div>
+      </div>
+    </el-carousel-item>
+  </el-carousel>
   <el-row>
-    <el-row style="width: 100%;">
-      <el-link :underline="false">
-        <span class="title-text">学习计划</span>
-        <el-icon>
-          <ArrowRightBold />
-        </el-icon>
-      </el-link>
-    </el-row>
     <el-row style="margin-top: 10px;">
-      <MainCard v-for="item in 3" :key="item" />
+      <div class="learning-plan">
+        <div class="section-header">
+          <h2><el-icon>
+              <DocumentChecked />
+            </el-icon> 我的学习计划</h2>
+          <el-link type="primary">查看全部计划</el-link>
+        </div>
+        <el-row :gutter="20">
+          <MainCard v-for="item in 3" :key="item" />
+        </el-row>
+      </div>
     </el-row>
   </el-row>
   <div class="content">
@@ -100,11 +113,61 @@ const radio1 = ref('1')
 </template>
 
 <style lang="less" scoped>
-.title-text {
-  color: #000;
-  font-size: 16px;
-  font-weight: bolder;
-  margin-right: 5px;
+// 轮播图样式
+.main-carousel {
+  margin-bottom: 40px;
+  border-radius: 12px;
+  overflow: hidden;
+
+  .carousel-item {
+    height: 100%;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), transparent);
+    }
+  }
+
+  .carousel-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    padding: 80px 5%;
+    text-align: left;
+
+    h2 {
+      font-size: 2.5em;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 32px;
+    }
+  }
+}
+
+// 学习计划
+.learning-plan {
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.4em;
+    }
+  }
 }
 
 .el-link:hover {

@@ -1,9 +1,19 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommentComponent from '@/components/CommentComponent.vue'
+
+const handleBack = () => {
+  window.history.back()
+}
 </script>
 
 <template>
+  <el-button type="text" @click="handleBack" class="back-button">
+    <el-icon>
+      <ArrowLeft />
+    </el-icon>
+    <span>返回</span>
+  </el-button>
   <el-row class="solution-card">
     <el-col :span="24" class="top">
       <div class="title">
@@ -41,6 +51,16 @@ import CommentComponent from '@/components/CommentComponent.vue'
 </template>
 
 <style lang="less" scoped>
+.back-button {
+  gap: 8px;
+  font-size: 16px;
+  color: #34495e;
+
+  .el-icon {
+    font-size: 20px;
+  }
+}
+
 .solution-card {
   padding: 20px;
   background: white;

@@ -225,7 +225,7 @@ const pageInfo = reactive({
           <el-row style="width: 100%; margin-bottom: 20px; margin-top: 5px;">
             <div class="user-accomplishment">
               <div class="title">
-                <span>成就贡献</span>
+                <span>相关数据</span>
               </div>
               <div class="accomplishment">
                 <div>
@@ -394,16 +394,16 @@ const pageInfo = reactive({
                       d="M20.995 4.824A3 3 0 0018 2H6l-.176.005A3 3 0 003 5v14l.005.176A3 3 0 006 22h12l.176-.005A3 3 0 0021 19V5l-.005-.176zM6 4h12l.117.007A1 1 0 0119 5v14l-.007.117A1 1 0 0118 20H6l-.117-.007A1 1 0 015 19V5l.007-.117A1 1 0 016 4zm5.718 9.304a1 1 0 01.063 1.321l-.085.093-2.062 2a1 1 0 01-1.3.08l-.093-.08-.937-.91A1 1 0 018.6 14.292l.095.082.241.234 1.367-1.325a1 1 0 011.414.022zM17 15a1 1 0 00-1-1h-2l-.117.007A1 1 0 0014 16h2l.117-.007A1 1 0 0017 15zm-5.282-7.696a1 1 0 01.063 1.321l-.085.093-2.062 2a1 1 0 01-1.3.08l-.093-.08-.937-.91A1 1 0 018.6 8.292l.095.082.241.234 1.367-1.325a1 1 0 011.414.022zM17 9a1 1 0 00-1-1h-2l-.117.007A1 1 0 0014 10h2l.117-.007A1 1 0 0017 9z"
                       clip-rule="evenodd"></path>
                   </svg>
-                  <span>题单</span>
+                  <span>竞赛</span>
                 </span>
               </template>
               <div class="sheet">
                 <div class="sheet-item">
-                  <span>1. 前端工程师成长指南</span>
+                  <span>1. 绿桥杯软件和信息技术专业人才大赛</span>
                   <span class="sheet-item__action">查看详细</span>
                 </div>
                 <div class="sheet-item">
-                  <span>2. LeetCode 精选算法 200 题</span>
+                  <span>2. 小学生创新创业训练计划项目</span>
                   <span class="sheet-item__action">查看详细</span>
                 </div>
               </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
-import LoginMain from '@/views/LoginMain/LoginMain.vue'
 
 </script>
 
@@ -13,7 +12,7 @@ import LoginMain from '@/views/LoginMain/LoginMain.vue'
     </div>
     <div class="main-layout">
       <div class="main">
-        <LoginMain />
+        <RouterView />
       </div>
     </div>
     <div class="footer">
