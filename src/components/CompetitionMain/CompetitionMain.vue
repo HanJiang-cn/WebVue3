@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-
+import { ref } from 'vue'
+const checked1 = ref(true)
+const checked2 = ref(false)
 </script>
 <template>
 <div>
@@ -13,13 +15,6 @@
     </el-carousel>
   </div>
   <div class="main">
-    <div class="left">
-      <div class="section">
-        <a href="#">
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAcCAYAAAAJKR1YAAAAAXNSR0IArs4c6QAAA85JREFUWEetl11oHFUYht83220i6KYWf5Gi1oASK3bO2dCW0HQtVUQMaCUBfxC1ghcKVSuCXi31ooh/FfRCRVFqQbGCN4KaarYgxrieM8GQ9EaKxnqhvVDbYlI3O589yzbuz2zmTPDc7MW87/s9e2bON98QKZZovRtRtBa9vftYKi2ksHpL6a0EIEo9DeB5kFOIojsYhj+n8fto0wLtB7C7HvwTstmtnJw87lPIV5MWqARgW0P4NMjNNOZv34JJOm8g0boXIicAZJtCyVdpzONJhXyv+wMp9SiA12KCq8hkbmS5PCNKjSKbPcLJyd98AVp1XkAyMpLBsWMzELm2Q6EPaO3dks/fhijaC3JopbcxFkiKxS4Wi9G54hIED4F8e5l/vYhMZh0WF68HeRjAu7T2wZXsUjyQUo/Q2jdcoGzcuAZdXUcBXJZQ4Mn69Zdrv+SdNOaTtFBtQNLX141c7jgWFq7m7OxpCYK3QD7sEVwGcPHZ3bmqrp1Dd/d1nJiY9/AuSdqBtL4HIgcRRYNYtepyRNGhNIEtJ/ApGvNSGn87kFLfA9AAXFd+BsCFLYE/AujzLPILcrn1LJUWPfVoApKBgR2oVsfq5n8ArI4JegXAFwDeBLAusZDIDobhl4m6uqAZSOtxiBSWNZNjNOYW2bTpUlQq7qHdnFBsP619IjWQaK0gYjoY3W65Ln0FgKO0tr92AguFHpw8+TmAoY4Fya9pzNaVAL0IkT0djHMAhgGUQc7SmGCpR23ZshZnznwDoFPTnKO1V6YHUsod23wH40e0dlSUesdtDK3d1air7S7wHUQyMf4TtPaSlQD9AWBNrFHkZobhYcnnd4H8geWyg29aotQBAPe1+ckZGrMhPZDW8xDpiTF+Smtvrz0zWvfSmL/iwiUItoF040nzIg/RmJH0QEq5Qcs9tE13AyIbGIazSYHS378aPT2nY8aTB2jMe0n+c9eXjr0o9SGA0RbjOK3d7hsmSrmTeFGD/nfkctewVHKgXus/IK1vgshXLa4XaK3r2IlLtM5CxBVubKaP0drXE80NgubGqNT7AO5tuH6A1t7vEyhBMATyyJKWHMPw8K2NY4xPTjNQoXA+Tp36DCKDdfOvyOX6fD55RKmPAeys+cgQ1ep2Tk396QPRqGl/uQ4OXoD5+YP1RgiI7GMYPrtcsCjlQByQW+OoVO7i9LRrI6lX/IAGEFrvgcjes99h54HsOEaI1jdA5FuQ3RBx32xFGlNJTVI3LDtTy8DAekTRcxCZoLVxA77rTe4d6B58dwA6vQu9+byGfO+0/0H4L8U/Vyw4wrImAAAAAElFTkSuQmCC" alt="" style="height: 14px;">
-           热门竞赛top50 </a>
-      </div>
-    </div>
     <div class="right">
       <div class="box">
         <div class="wrap">
@@ -110,6 +105,44 @@
       </div>
 
     </div>
+    <div class="left">
+      <div class="section">
+        <a href="#">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAcCAYAAAAJKR1YAAAAAXNSR0IArs4c6QAAA85JREFUWEetl11oHFUYht83220i6KYWf5Gi1oASK3bO2dCW0HQtVUQMaCUBfxC1ghcKVSuCXi31ooh/FfRCRVFqQbGCN4KaarYgxrieM8GQ9EaKxnqhvVDbYlI3O589yzbuz2zmTPDc7MW87/s9e2bON98QKZZovRtRtBa9vftYKi2ksHpL6a0EIEo9DeB5kFOIojsYhj+n8fto0wLtB7C7HvwTstmtnJw87lPIV5MWqARgW0P4NMjNNOZv34JJOm8g0boXIicAZJtCyVdpzONJhXyv+wMp9SiA12KCq8hkbmS5PCNKjSKbPcLJyd98AVp1XkAyMpLBsWMzELm2Q6EPaO3dks/fhijaC3JopbcxFkiKxS4Wi9G54hIED4F8e5l/vYhMZh0WF68HeRjAu7T2wZXsUjyQUo/Q2jdcoGzcuAZdXUcBXJZQ4Mn69Zdrv+SdNOaTtFBtQNLX141c7jgWFq7m7OxpCYK3QD7sEVwGcPHZ3bmqrp1Dd/d1nJiY9/AuSdqBtL4HIgcRRYNYtepyRNGhNIEtJ/ApGvNSGn87kFLfA9AAXFd+BsCFLYE/AujzLPILcrn1LJUWPfVoApKBgR2oVsfq5n8ArI4JegXAFwDeBLAusZDIDobhl4m6uqAZSOtxiBSWNZNjNOYW2bTpUlQq7qHdnFBsP619IjWQaK0gYjoY3W65Ln0FgKO0tr92AguFHpw8+TmAoY4Fya9pzNaVAL0IkT0djHMAhgGUQc7SmGCpR23ZshZnznwDoFPTnKO1V6YHUsod23wH40e0dlSUesdtDK3d1air7S7wHUQyMf4TtPaSlQD9AWBNrFHkZobhYcnnd4H8geWyg29aotQBAPe1+ckZGrMhPZDW8xDpiTF+Smtvrz0zWvfSmL/iwiUItoF040nzIg/RmJH0QEq5Qcs9tE13AyIbGIazSYHS378aPT2nY8aTB2jMe0n+c9eXjr0o9SGA0RbjOK3d7hsmSrmTeFGD/nfkctewVHKgXus/IK1vgshXLa4XaK3r2IlLtM5CxBVubKaP0drXE80NgubGqNT7AO5tuH6A1t7vEyhBMATyyJKWHMPw8K2NY4xPTjNQoXA+Tp36DCKDdfOvyOX6fD55RKmPAeys+cgQ1ep2Tk396QPRqGl/uQ4OXoD5+YP1RgiI7GMYPrtcsCjlQByQW+OoVO7i9LRrI6lX/IAGEFrvgcjes99h54HsOEaI1jdA5FuQ3RBx32xFGlNJTVI3LDtTy8DAekTRcxCZoLVxA77rTe4d6B58dwA6vQu9+byGfO+0/0H4L8U/Vyw4wrImAAAAAElFTkSuQmCC" alt="" style="height: 14px;">
+           热门竞赛top50
+        </a>
+        <div class="short-name">
+          竞赛类别
+        </div>
+        <div class="item-title">工科</div>
+        <div class="item-content">
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+        </div>
+        <div class="item-title">工科</div>
+        <div class="item-content">
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+    <el-checkbox v-model="checked1" label="数学建模" size="large" />
+    <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+        </div>
+        <div class="item-title" >竞赛级别</div>
+        <div class="item-content" style="margin-top: 15px;">
+         <button>不限</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 </template>
@@ -130,7 +163,7 @@
   .left{
     float: left;
     width: 310px;
-    margin-right: 18px;
+    margin-left: 18px;
     .section{
     border-radius: 4px;
     border: 1px solid #ecedf3;
@@ -151,6 +184,30 @@
     border-radius: 4px;
     font-size: 14px;
     padding: 0 10px;
+    }
+    .short-name{
+    color: #333;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+    margin-top: 30px;
+    }
+    .item-title{
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 20px;
+    }
+    .item-content{
+    display: flex;
+    flex-direction: row;
+    align-items: top;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .el-checkbox{
+      margin-right: 30px;
+      width: 104px;
+    }
     }
     }
   }
