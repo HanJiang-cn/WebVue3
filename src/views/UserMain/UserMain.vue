@@ -8,6 +8,7 @@ import { useChart } from '@/hooks/useChart'
 
 const activeName = ref('1')
 const chartRef1 = ref(null)
+const format = (percentage) => (percentage === 100 ? 'Full' : `${percentage}分`)
 const setChartData1 = () => {
   const chartOptions = reactive({
     legend: {
@@ -167,6 +168,13 @@ const pageInfo = reactive({
           </el-row>
           <el-row style="width: 100%;">
             <el-button type="success" plain style="width: 100%;">编辑个人资料</el-button>
+          </el-row>
+          <el-row style="width: 100%;">
+            <!-- <span>积分</span> -->
+            <div class="user-progress">
+              <span>积分:</span>
+              <el-progress :stroke-width="7" :percentage="70" :format="format" />
+            </div>
           </el-row>
           <el-row style="width: 100%; margin-top: 20px;">
             <div class="user-info">
@@ -505,6 +513,23 @@ const pageInfo = reactive({
         color: #262626;
       }
     }
+  }
+}
+
+.user-progress {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  span {
+    margin-right: 10px;
+    color: #262626;
+    font-size: 14px;
+  }
+
+  .el-progress {
+    width: 84%;
   }
 }
 

@@ -193,7 +193,7 @@ const handleClose = () => {
               <p>截止时间: {{ currentMatch.deadline }}</p>
               <el-tag :type="statusType[currentMatch.status]" class="status-tag" effect="dark">{{
                 currentMatch.status
-              }}</el-tag>
+                }}</el-tag>
             </div>
             <el-button type="primary" class="secondary-btn" @click="handleVisable">查看详情</el-button>
           </el-card>
@@ -252,7 +252,6 @@ const handleClose = () => {
 .default-layout {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px;
 }
 
 .main-layout {
@@ -273,7 +272,7 @@ const handleClose = () => {
   .section-title {
     font-size: 1.4em;
     color: #2c3e50;
-    margin: 24px 0 16px;
+    margin: 0 0 16px 0;
     padding-left: 12px;
     border-left: 4px solid #409EFF;
   }
@@ -282,6 +281,7 @@ const handleClose = () => {
 .match-form {
   background: #fff;
   padding: 24px;
+  margin-bottom: 24px;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 

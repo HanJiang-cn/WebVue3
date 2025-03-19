@@ -23,7 +23,7 @@ const handleLoding = () => {
   })
   setTimeout(() => {
     loading.close()
-  }, 2000)
+  }, 500)
 }
 
 onMounted(() => {

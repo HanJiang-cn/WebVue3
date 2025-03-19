@@ -22,6 +22,7 @@ const routes = [
   {
     path: '/accounts',
     name: 'Accounts',
+    redirect: '/accounts/login',
     component: () => import('@/layouts/AccountsLayout.vue'),
     children: [
       {
@@ -67,12 +68,6 @@ const routes = [
         ],
       },
     ],
-  },
-  // 比赛做题页面
-  {
-    path: '/competitionproblems',
-    name: 'CompetitionProblems',
-    component: () => import('@/layouts/CompetitionproblemsLayout.vue'),
   },
   // 社区
   {
@@ -153,11 +148,23 @@ const routes = [
     path: '/competition',
     name: 'Competition',
     component: () => import('@/layouts/CompetitionLayout.vue'),
-  },
-  {
-    path: '/competitiondetail',
-    name: 'CompetitionDetail',
-    component: () => import('@/layouts/CompetitionDetailLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'CompetitionIndex',
+        component: () => import('@/views/CompetitionMain/CompetitionIndex.vue'),
+      },
+      {
+        path: 'detail',
+        name: 'CompetitionDetail',
+        component: () => import('@/views/CompetitionMain/CompetitionDetail.vue'),
+      },
+      {
+        path: 'answer',
+        name: 'CompetitionProblems',
+        component: () => import('@/views/CompetitionMain/CompetitionProblems.vue'),
+      },
+    ],
   },
 ]
 

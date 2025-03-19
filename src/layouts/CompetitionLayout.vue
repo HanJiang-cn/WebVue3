@@ -1,16 +1,33 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import navMenu from '@/components/navMenu/navMenu.vue'
-import competitonMain from '@/components/CompetitionMain/CompetitionMain.vue'
+
+const router = useRouter()
+const visable = ref(true)
+
+function switchNavMenu() {
+  // 获取当前路由
+  const currentRoute = router.currentRoute.value
+  if (currentRoute.path === '/competition/answer') {
+    visable.value = false
+  }
+}
+
+onMounted(() => {
+  switchNavMenu()
+})
+
 </script>
 <template>
-    <div class="default-layout">
-    <div class="header">
+  <div class="default-layout">
+    <div class="header" v-show="visable">
       <div class="nav-menu">
         <navMenu />
       </div>
     </div>
     <div class="main">
-      <competitonMain></competitonMain>
+      <RouterView />
     </div>
   </div>
 </template>
