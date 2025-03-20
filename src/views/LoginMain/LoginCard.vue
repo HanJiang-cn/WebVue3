@@ -1,19 +1,23 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import ewm from '@/assets/ewm.png'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
+const router = useRouter()
 const activeName = ref('1')
-
+// 表单数据
 const formData = ref({
   phone: {
     phones: '',
     code: ''
   },
   users: {
-    name: '',
-    password: ''
+    userAccount: '',
+    userPassword: ''
   }
 })
 const basicRules = {
@@ -24,19 +28,21 @@ const basicRules = {
   code: [
     { required: true, message: '请输入验证码', trigger: 'change' }
   ],
-  name: [
+  userAccount: [
     { required: true, message: '请输入账号', trigger: 'change' }
   ],
-  password: [
+  userPassword: [
     { required: true, message: '请输入密码', trigger: 'change' }
   ]
 }
 const form1 = ref()
 const form2 = ref()
 
+// 手机号登录
 const handleSubmitForm1 = () => {
   form1.value.validate((valid) => {
     if (valid) {
+      // 调用接口
       ElNotification({
         title: '成功',
         message: '登陆成功',
@@ -55,15 +61,13 @@ const handleSubmitForm1 = () => {
   )
 
 }
-const handleSubmitForm2 = () => {
-  form2.value.validate((valid) => {
+
+// 账号登录
+const handleSubmitForm2 = async () => {
+  form2.value.validate(async (valid) => {
     if (valid) {
-      ElNotification({
-        title: '成功',
-        message: '登陆成功',
-        type: 'success',
-      })
-      form2.value.resetFields()
+      await userStore.login(formData.value.users)
+      router.push('/')
     } else {
       ElNotification({
         title: '失败',
@@ -140,7 +144,7 @@ const startCountdown = () => {
           <div class="user">
             <el-form :model="formData.users" :rules="basicRules" ref="form2">
               <el-form-item prop="name">
-                <el-input placeholder="请输入账号" v-model="formData.users.name">
+                <el-input placeholder="请输入账号" v-model="formData.users.userAccount">
                   <template #prefix>
                     <el-icon>
                       <UserFilled />
@@ -149,7 +153,7 @@ const startCountdown = () => {
                 </el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input placeholder="请输入密码" v-model="formData.users.password" type="password" show-password>
+                <el-input placeholder="请输入密码" v-model="formData.users.userPassword" type="password" show-password>
                   <template #prefix>
                     <el-icon>
                       <LockFilled />

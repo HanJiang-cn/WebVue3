@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {  ref } from 'vue'
+import { ref } from 'vue'
 import dayjs from 'dayjs'
 const value2 = ref(dayjs().add(1, 'month').startOf('month'))
 function add() {
@@ -57,7 +57,7 @@ const schedules = ref([
           <List />
         </el-icon><span @click="add"><a href="#">添加到计划表中</a></span></div>
       <div class="start">
-        <el-countdown format="DD [天] HH:mm:ss" :value="value2"  :value-style="'color:white'">
+        <el-countdown format="DD [天] HH:mm:ss" :value="value2" :value-style="'color:white'">
           <template #title>
             <div style="display: inline-flex; align-items: center;color: white;">
               <el-icon style="margin-right: 4px" :size="12">
@@ -73,16 +73,17 @@ const schedules = ref([
   <div class="rank">
     <div class="rank-header">实时排行榜</div>
     <div class="rank-list">
-      <div 
-        v-for="(item, index) in rankList" 
-        :key="index"
-        class="rank-item"
-        :class="{ 'top-three': item.rank <= 3 }"
-      >
+      <div v-for="(item, index) in rankList" :key="index" class="rank-item" :class="{ 'top-three': item.rank <= 3 }">
         <div class="rank-number">
-          <el-icon v-if="item.rank === 1"><Medal color="#FFD700" /></el-icon>
-          <el-icon v-else-if="item.rank === 2"><Medal color="#C0C0C0" /></el-icon>
-          <el-icon v-else-if="item.rank === 3"><Medal color="#CD7F32" /></el-icon>
+          <el-icon v-if="item.rank === 1">
+            <Medal color="#FFD700" />
+          </el-icon>
+          <el-icon v-else-if="item.rank === 2">
+            <Medal color="#C0C0C0" />
+          </el-icon>
+          <el-icon v-else-if="item.rank === 3">
+            <Medal color="#CD7F32" />
+          </el-icon>
           <span v-else>{{ item.rank }}</span>
         </div>
         <div class="rank-name">{{ item.name }}</div>
@@ -90,18 +91,13 @@ const schedules = ref([
       </div>
     </div>
   </div>
- <div class="contest">
+  <div class="contest">
     <div class="rank-header">竞赛时间表</div>
     <div class="schedule-list">
-      <div 
-        v-for="item in schedules" 
-        :key="item.id"
-        class="schedule-item"
-        :class="{
-          'ended': item.status === '已结束',
-          'active': item.status === '报名中'
-        }"
-      >
+      <div v-for="item in schedules" :key="item.id" class="schedule-item" :class="{
+        'ended': item.status === '已结束',
+        'active': item.status === '报名中'
+      }">
         <div class="schedule-date">
           <div class="date-day">{{ dayjs(item.date).format('DD') }}</div>
           <div class="date-month">{{ dayjs(item.date).format('MMM') }}</div>
@@ -109,21 +105,19 @@ const schedules = ref([
         <div class="schedule-info">
           <div class="schedule-title">{{ item.title }}</div>
           <div class="schedule-time">
-            <el-icon><Clock /></el-icon>
+            <el-icon>
+              <Clock />
+            </el-icon>
             <span>{{ item.time }}</span>
           </div>
         </div>
         <div class="schedule-status">
-          <el-tag 
-            :type="{
-              '已结束': 'info',
-              '报名中': 'primary',
-              '即将开始': 'warning',
-              '未开放': 'danger'
-            }[item.status]"
-            effect="dark"
-            size="small"
-          >
+          <el-tag :type="{
+            '已结束': 'info',
+            '报名中': 'primary',
+            '即将开始': 'warning',
+            '未开放': 'danger'
+          }[item.status]" effect="dark" size="small">
             {{ item.status }}
           </el-tag>
         </div>
@@ -281,6 +275,7 @@ const schedules = ref([
     }
   }
 }
+
 .rank {
   width: 380px;
   background: #fff;
@@ -301,7 +296,7 @@ const schedules = ref([
     display: flex;
     align-items: center;
     gap: 10px;
-    
+
     &::before {
       content: "";
       width: 4px;
@@ -320,10 +315,12 @@ const schedules = ref([
     &::-webkit-scrollbar {
       width: 6px;
     }
+
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 3px;
     }
+
     &::-webkit-scrollbar-thumb {
       background: #c1c1c1;
       border-radius: 3px;
@@ -347,11 +344,9 @@ const schedules = ref([
     }
 
     &.top-three {
-      background: linear-gradient(
-        135deg,
-        rgba(64, 158, 255, 0.15) 0%,
-        rgba(255, 255, 255, 1) 80%
-      );
+      background: linear-gradient(135deg,
+          rgba(64, 158, 255, 0.15) 0%,
+          rgba(255, 255, 255, 1) 80%);
     }
   }
 
@@ -366,7 +361,7 @@ const schedules = ref([
     background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    
+
     .el-icon {
       font-size: 24px;
     }
@@ -387,7 +382,7 @@ const schedules = ref([
     color: #67c23a;
     font-weight: 600;
     font-size: 15px;
-    
+
     &::after {
       content: "分";
       font-size: 12px;
@@ -396,6 +391,7 @@ const schedules = ref([
     }
   }
 }
+
 .contest {
   width: 380px;
   background: #fff;
@@ -416,10 +412,12 @@ const schedules = ref([
     &::-webkit-scrollbar {
       width: 6px;
     }
+
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 3px;
     }
+
     &::-webkit-scrollbar-thumb {
       background: #c1c1c1;
       border-radius: 3px;
@@ -448,6 +446,7 @@ const schedules = ref([
 
     &.ended {
       opacity: 0.6;
+
       .schedule-status {
         filter: grayscale(1);
       }

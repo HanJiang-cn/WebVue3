@@ -1,56 +1,3 @@
-<template>
-  <div ><el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="auto"
-    class="demo-ruleForm"
-    :size="formSize"
-    status-icon
-  >
-    <el-form-item label="分类" prop="regionM">
-          <div class="m-4">
-    <el-cascader :show-all-levels="false"  v-model="ruleForm.regionM" :options="options" @change="handleChange" />
-  </div>
-    </el-form-item>
-    <el-form-item label="难度" prop="locationM">
-      <el-segmented v-model="ruleForm.locationM" :options="locationMOptions" />
-    </el-form-item>
-    <el-form-item label="题目" prop="questionM">
-      <el-input v-model="ruleForm.questionM" type="textarea" />
-    </el-form-item>
-    <el-form-item label="选项" prop="typeM">
-      <el-checkbox-group v-model="ruleForm.typeM">
-        <div class="more"><el-checkbox value="Online activities" name="type">
-          <span class="opt">A</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-       <div class="more"> <el-checkbox value="Promotion activities" name="type">
-          <span class="opt">B</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-        <div class="more"><el-checkbox value="Offline activities" name="type">
-       <span class="opt">C</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-       <div class="more"> <el-checkbox value="Simple brand exposure" name="type">
-          <span class="opt">D</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-checkbox></div>
-      </el-checkbox-group>
-    </el-form-item>
-    <el-form-item label="解析" prop="descM">
-      <el-input v-model="ruleForm.descM" type="textarea" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-        创建
-      </el-button>
-      <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-    </el-form-item>
-  </el-form></div>
-</template>
-
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
@@ -66,7 +13,7 @@ interface RuleForm {
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  regionM:[],
+  regionM: [],
   locationM: '',
   typeM: [],
   descM: '',
@@ -370,7 +317,7 @@ const rules = reactive<FormRules<RuleForm>>({
   descM: [
     { required: true, message: '请填写解析', trigger: 'blur' },
   ],
-    questionM: [
+  questionM: [
     { required: true, message: '请输入题目', trigger: 'blur' },
   ]
 })
@@ -420,12 +367,62 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 </script>
+
+<template>
+  <div>
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto" class="demo-ruleForm"
+      :size="formSize" status-icon>
+      <el-form-item label="分类" prop="regionM">
+        <div class="m-4">
+          <el-cascader :show-all-levels="false" v-model="ruleForm.regionM" :options="options" @change="handleChange" />
+        </div>
+      </el-form-item>
+      <el-form-item label="难度" prop="locationM">
+        <el-segmented v-model="ruleForm.locationM" :options="locationMOptions" />
+      </el-form-item>
+      <el-form-item label="题目" prop="questionM">
+        <el-input v-model="ruleForm.questionM" type="textarea" />
+      </el-form-item>
+      <el-form-item label="选项" prop="typeM">
+        <el-checkbox-group v-model="ruleForm.typeM">
+          <div class="more"><el-checkbox value="Online activities" name="type">
+              <span class="opt">A</span>
+              <span class="inp"><input type="text" class="A"></span>
+            </el-checkbox></div>
+          <div class="more"> <el-checkbox value="Promotion activities" name="type">
+              <span class="opt">B</span>
+              <span class="inp"><input type="text" class="A"></span>
+            </el-checkbox></div>
+          <div class="more"><el-checkbox value="Offline activities" name="type">
+              <span class="opt">C</span>
+              <span class="inp"><input type="text" class="A"></span>
+            </el-checkbox></div>
+          <div class="more"> <el-checkbox value="Simple brand exposure" name="type">
+              <span class="opt">D</span>
+              <span class="inp"><input type="text" class="A"></span>
+            </el-checkbox></div>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="解析" prop="descM">
+        <el-input v-model="ruleForm.descM" type="textarea" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm(ruleFormRef)">
+          创建
+        </el-button>
+        <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
 <style lang="less" scoped>
- .inp{
-    display: inline-block;
-    height: 30px;
-    margin-bottom: 6px;
- .A {
+.inp {
+  display: inline-block;
+  height: 30px;
+  margin-bottom: 6px;
+
+  .A {
     width: 1100px;
     height: 35px;
     outline: none;
@@ -434,15 +431,18 @@ const resetForm = (formEl: FormInstance | undefined) => {
     border: 1px solid #c0c4cc;
     border-radius: 3px;
   }
-  }
-    .opt{
-    float: left;
-    margin-top: 11px;
-   }
-.el-form-item--default{
+}
+
+.opt {
+  float: left;
+  margin-top: 11px;
+}
+
+.el-form-item--default {
   margin-bottom: 25px;
 }
-.more{
+
+.more {
   height: 50px;
 }
 </style>

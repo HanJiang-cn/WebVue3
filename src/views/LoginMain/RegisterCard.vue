@@ -2,7 +2,6 @@
 <script setup>
 import { ref } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { UserFilled, Message, Lock, Unlock, Iphone } from '@element-plus/icons-vue'
 
 const formData = ref({
   username: '',
@@ -97,15 +96,15 @@ const handleSendCode = () => {
 
     <el-form :model="formData" :rules="rules" ref="formRef" style="margin: 5px 25px;">
       <el-form-item prop="username">
-        <el-input v-model="formData.username" placeholder="请输入用户名" :prefix-icon="UserFilled" clearable />
+        <el-input v-model="formData.username" placeholder="请输入用户名" prefix-icon="UserFilled" clearable />
       </el-form-item>
 
       <el-form-item prop="email">
-        <el-input v-model="formData.email" placeholder="请输入邮箱" :prefix-icon="Message" clearable />
+        <el-input v-model="formData.email" placeholder="请输入邮箱" prefix-icon="Message" clearable />
       </el-form-item>
 
       <el-form-item prop="phone">
-        <el-input v-model="formData.phone" placeholder="请输入手机号" :prefix-icon="Iphone" clearable>
+        <el-input v-model="formData.phone" placeholder="请输入手机号" prefix-icon="Iphone" clearable>
         </el-input>
       </el-form-item>
 
@@ -119,12 +118,11 @@ const handleSendCode = () => {
       </el-form-item>
 
       <el-form-item prop="password">
-        <el-input v-model="formData.password" type="password" placeholder="请输入密码" :prefix-icon="Lock" show-password />
+        <el-input v-model="formData.password" type="password" placeholder="请输入密码" prefix-icon="Lock" show-password />
       </el-form-item>
 
       <el-form-item prop="confirm">
-        <el-input v-model="formData.confirm" type="password" placeholder="请再次确认密码" :prefix-icon="Unlock"
-          show-password />
+        <el-input v-model="formData.confirm" type="password" placeholder="请再次确认密码" prefix-icon="Unlock" show-password />
       </el-form-item>
 
       <el-button type="primary" class="submit-btn" @click="handleRegister">

@@ -50,7 +50,6 @@ import ContestMainTow from "@/views/ContestMain/ContestMainTow.vue"
 
 .main-layout {
   width: 100%;
-  height: 1600px;
   text-align: center;
   overflow: hidden;
   background-color: #fafafa;
@@ -65,7 +64,6 @@ import ContestMainTow from "@/views/ContestMain/ContestMainTow.vue"
 
   .main_tow {
     width: 1170px;
-    height: 1040px;
     text-align: center;
     margin: 0 auto;
   }

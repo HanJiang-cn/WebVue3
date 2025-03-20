@@ -14,8 +14,8 @@
       <div class="center">
         <p>LeetCode</p>
         <p>七周算法特训</p>
-        <el-text truncated line-clamp="2">七周掌握高频算法考点，学-练-测全方位夯实，剑指大厂 Offer！<br>剑指大厂 Offer！剑指大厂 Offer！剑指大厂
-          Offer！剑<br>指大厂 Offer！剑指大厂 Offer！剑指大厂 Offer！</el-text>
+        <el-text truncated line-clamp="2">七周掌握高频算法考点，学-练-测全方位夯实，剑指大厂 Offer！剑指大厂 Offer！剑指大厂 Offer！剑指大厂
+          Offer！剑指大厂 Offer！剑指大厂 Offer！剑指大厂 Offer！</el-text>
       </div>
       <div class="left">
         <img :src="tp" alt="" />
@@ -52,8 +52,10 @@
       width: 100%;
       height: 80px;
       margin-left: 20px;
+      margin-right: 20px;
 
       .el-text {
+        white-space: pre-wrap;
         line-height: 1.5;
       }
 

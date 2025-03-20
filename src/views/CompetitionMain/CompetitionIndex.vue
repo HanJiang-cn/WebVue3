@@ -1,7 +1,44 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-const checked1 = ref(true)
-const checked2 = ref(false)
+const checkList = ref([
+  {
+    title: '队伍信息',
+    content: '队伍信息展示'
+  },
+  {
+    title: '队伍成员',
+    content: '队伍成员展示'
+  },
+  {
+    title: '比赛项目',
+    content: '比赛项目展示'
+  }
+])
+const cities = ref([
+  {
+    value: 'beijing',
+    label: '全部'
+  },
+  {
+    value: 'shanghai',
+    label: '上海'
+  },
+  {
+    value: 'guangzhou',
+    label: '广州'
+  },
+  {
+    value: 'shenzhen',
+    label: '深圳'
+  },
+  {
+    value: 'hangzhou',
+    label: '杭州'
+  }
+])
+
+const checkGroup = ref([''])
+const checkboxGroup1 = ref(['beijing'])
 </script>
 <template>
   <div>
@@ -58,29 +95,23 @@ const checked2 = ref(false)
           </div>
           <div class="item-title">工科</div>
           <div class="item-content">
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+            <el-checkbox-group v-model="checkGroup">
+              <el-checkbox v-for="item in checkList" :key="item" :label="item.title" :value="item.content" />
+            </el-checkbox-group>
           </div>
           <div class="item-title">工科</div>
           <div class="item-content">
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
-            <el-checkbox v-model="checked1" label="数学建模" size="large" />
-            <el-checkbox v-model="checked2" label="船舶海洋" size="large" />
+            <el-checkbox-group v-model="checkGroup">
+              <el-checkbox v-for="item in checkList" :key="item" :label="item.title" :value="item.content" />
+            </el-checkbox-group>
           </div>
           <div class="item-title">竞赛级别</div>
-          <div class="item-content" style="margin-top: 15px;">
-            <button>不限</button>
+          <div class="item-group" style="margin-top: 15px;">
+            <el-radio-group v-model="checkboxGroup1">
+              <el-radio-button v-for="city in cities" :key="city" :value="city.value">
+                {{ city.label }}
+              </el-radio-button>
+            </el-radio-group>
           </div>
         </div>
       </div>
@@ -148,15 +179,32 @@ const checked2 = ref(false)
       }
 
       .item-content {
-        display: flex;
-        flex-direction: row;
-        align-items: top;
-        justify-content: space-between;
-        flex-wrap: wrap;
-
         .el-checkbox {
           margin-right: 30px;
           width: 104px;
+        }
+
+      }
+
+      // 2号按钮组
+      .item-group {
+        :deep(.el-radio-group) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          transition: all 0.3s ease;
+
+          .el-radio-button {
+            border-radius: 5px;
+            border: none;
+            color: #333;
+            font-size: 14px;
+
+            .el-radio-button__inner {
+              border-radius: 5px;
+              border: 0;
+            }
+          }
         }
       }
     }

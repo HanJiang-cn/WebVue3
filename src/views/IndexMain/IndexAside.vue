@@ -1,5 +1,14 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
+// import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const showChallenge = () => {
+  router.push({
+    path: '/submit'
+  })
+}
 </script>
 
 <template>
@@ -20,7 +29,7 @@
 
     <!-- 每日一题 -->
     <div class="daily-challenge">
-      <el-button type="danger" :icon="Fire" round class="challenge-btn">
+      <el-button type="danger" :icon="Fire" round class="challenge-btn" @click="showChallenge">
         今日挑战题
         <el-tag size="small" effect="dark" class="ml-2">Hard</el-tag>
       </el-button>
@@ -165,7 +174,7 @@
     color: #7d8db5;
     display: flex;
     align-items: center;
-    font-size: 13px;
+    font-size: 15px;
     margin: 15px 0;
 
     .el-icon {

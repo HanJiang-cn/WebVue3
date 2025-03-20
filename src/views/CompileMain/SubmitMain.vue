@@ -13,7 +13,6 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
   // 保存当前选中的标签页
   localStorage.setItem('activeTab', activeName.value)
 }
-
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 
 interface RuleForm {
@@ -304,7 +303,6 @@ const options = [
   }
 ]
 const locationOptions = ['简单', '适中', '困难']
-
 const rules = reactive<FormRules<RuleForm>>({
 
   region: [
@@ -371,7 +369,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       console.log('submit!')
       // 提交成功后清空表单
       resetForm(formEl)
-       ruleForm.region = [] // 清空 regionB 的选择状态
+      ruleForm.region = [] // 清空 regionB 的选择状态
       // 清空 LocalStorage 中的表单数据
       localStorage.removeItem('ruleForm')
     } else {
@@ -388,87 +386,94 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 </script>
 <template>
-<div class="create">
- <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-    <el-tab-pane label="单选题" name="first">
-     <el-form
-    ref="ruleFormRef"
-    style="max-width: 100%"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="auto"
-    class="demo-ruleForm"
-    :size="formSize"
-    status-icon
-  >
-    <el-form-item prop="region" label="分类">
-      <div class="m-4">
-    <el-cascader :show-all-levels="false"  v-model="ruleForm.region" :options="options" @change="handleChange" />
+  <div class="create">
+    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+      <el-tab-pane label="单选题" name="first">
+        <el-form ref="ruleFormRef" style="max-width: 100%" :model="ruleForm" :rules="rules" label-width="auto"
+          class="demo-ruleForm" :size="formSize" status-icon>
+          <el-form-item prop="region" label="分类">
+            <div class="m-4">
+              <el-cascader :show-all-levels="false" v-model="ruleForm.region" :options="options"
+                @change="handleChange" />
+            </div>
+          </el-form-item>
+
+          <el-form-item label="难度" prop="location">
+            <el-segmented v-model="ruleForm.location" :options="locationOptions" />
+          </el-form-item>
+          <el-form-item label="题目" prop="question">
+            <el-input v-model="ruleForm.question" type="textarea" />
+          </el-form-item>
+          <el-form-item label="选项" prop="resource" inline="false">
+            <el-radio-group v-model="ruleForm.resource" inline="false">
+              <div><el-radio value="Sponsorship" border>
+                  <span class="opt">A</span>
+                  <span class="inp"><input type="text" class="A"></span>
+                </el-radio></div>
+              <div><el-radio value="Venue" border>
+                  <span class="opt">B</span>
+                  <span class="inp"><input type="text" class="A"></span>
+                </el-radio></div>
+              <div><el-radio value="OptionC" border>
+                  <span class="opt">C</span>
+                  <span class="inp"><input type="text" class="A"></span>
+                </el-radio></div>
+              <div><el-radio value="OpotionD" border>
+                  <span class="opt">D</span>
+                  <span class="inp"><input type="text" class="A"></span>
+                </el-radio></div>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="解析" prop="desc">
+            <el-input v-model="ruleForm.desc" type="textarea" />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="submitForm(ruleFormRef)">
+              创建
+            </el-button>
+            <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <el-tab-pane label="多选题" name="second">
+        <MoreOptions></MoreOptions>
+      </el-tab-pane>
+      <el-tab-pane label="判断题" name="third">
+        <JudgeOption></JudgeOption>
+      </el-tab-pane>
+      <el-tab-pane label="填空题" name="fourth">
+        <BlanksOptions></BlanksOptions>
+      </el-tab-pane>
+      <el-tab-pane label="编程题" name="five">
+        <ProgramOption></ProgramOption>
+      </el-tab-pane>
+      <el-tab-pane label="简答题" name="six">
+        <ShortOption></ShortOption>
+      </el-tab-pane>
+    </el-tabs>
   </div>
-    </el-form-item>
-
-    <el-form-item label="难度"  prop="location">
-      <el-segmented v-model="ruleForm.location" :options="locationOptions" />
-    </el-form-item>
-<el-form-item label="题目" prop="question">
-      <el-input v-model="ruleForm.question" type="textarea" />
-    </el-form-item>
-    <el-form-item label="选项" prop="resource" inline="false">
-      <el-radio-group v-model="ruleForm.resource" inline="false">
-        <div><el-radio value="Sponsorship" border >
-          <span class="opt">A</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-radio></div>
-        <div><el-radio value="Venue" border>
-          <span class="opt">B</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-radio></div>
-        <div><el-radio value="OptionC" border>
-          <span class="opt">C</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-radio></div>
-        <div><el-radio value="OpotionD" border>
-          <span class="opt">D</span>
-          <span class="inp"><input type="text" class="A"></span>
-        </el-radio></div>
-      </el-radio-group>
-    </el-form-item>
-    <el-form-item label="解析" prop="desc">
-      <el-input v-model="ruleForm.desc" type="textarea" />
-    </el-form-item>
-
-    <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-        创建
-      </el-button>
-      <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-    </el-form-item>
-  </el-form>
-    </el-tab-pane>
-    <el-tab-pane label="多选题" name="second"><MoreOptions></MoreOptions></el-tab-pane>
-    <el-tab-pane label="判断题" name="third"><JudgeOption></JudgeOption></el-tab-pane>
-    <el-tab-pane label="填空题" name="fourth"><BlanksOptions></BlanksOptions></el-tab-pane>
-    <el-tab-pane label="编程题" name="five"><ProgramOption></ProgramOption></el-tab-pane>
-    <el-tab-pane label="简答题" name="six"><ShortOption></ShortOption></el-tab-pane>
-  </el-tabs>
-</div>
 </template>
 <style lang="less" scoped>
-.create{
+.create {
   max-width: 1500px;
-  .el-tabs{
+
+  .el-tabs {
     width: 100%;
     padding-left: 30px;
   }
 }
-.el-form-item--default{
+
+.el-form-item--default {
   margin-bottom: 25px;
 }
- .inp{
-    display: inline-block;
-    height: 30px;
-    margin-top: 6px;
- .A {
+
+.inp {
+  display: inline-block;
+  height: 30px;
+  margin-top: 6px;
+
+  .A {
     width: 1100px;
     height: 25px;
     border: none;
@@ -476,12 +481,14 @@ const resetForm = (formEl: FormInstance | undefined) => {
     margin-left: 10px;
     vertical-align: top;
   }
-  }
-    .opt{
-    float: left;
-    margin-top: 3px;
-   }
-.el-tabs{
+}
+
+.opt {
+  float: left;
+  margin-top: 3px;
+}
+
+.el-tabs {
   --el-tabs-header-height: 50px;
 }
 </style>
