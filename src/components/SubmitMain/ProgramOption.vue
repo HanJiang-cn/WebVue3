@@ -1,362 +1,53 @@
-<template>
-  <el-form
-    ref="ruleFormRef"
-    :model="ruleForm"
-    :rules="rules"
-    label-width="auto"
-    class="demo-ruleForm"
-    :size="formSize"
-    status-icon
-  >
-     <el-form-item label="分类" prop="regionP">
-      <div class="m-4">
-    <el-cascader :show-all-levels="false"  v-model="ruleForm.regionP" :options="options" @change="handleChange" />
-  </div>
-    </el-form-item>
-        <el-form-item label="难度" prop="locationP">
-      <el-segmented v-model="ruleForm.locationP" :options="locationPOptions" />
-    </el-form-item>
-    <!-- <div id="text"><TinymceEdit></TinymceEdit></div> -->
-     <el-form-item label="题目" prop="question">
-<TinymceEdit style="width: 85%;"></TinymceEdit>
-    </el-form-item>
-    <!-- <div class="test">
-        <el-form-item label="样本输入" prop="inp">
-      <el-input v-model="ruleForm.inp" type="textarea" />
-    </el-form-item>
-     <el-form-item label="样本输出" prop="exp">
-      <el-input v-model="ruleForm.exp" type="textarea" />
-    </el-form-item>
-    </div> -->
-  <div v-for="(sample, index) in ruleForm.samples" :key="index" class="sample-io">
-      <el-form-item :label="`样本输入 ${index + 1}`" :prop="`samples[${index}].inp`" :rules="rules.inp">
-        <el-input v-model="sample.inp" type="textarea" />
-      </el-form-item>
-      <el-form-item :label="`样本输出 ${index + 1}`" :prop="`samples[${index}].exp`" :rules="rules.exp">
-        <el-input v-model="sample.exp" type="textarea" />
-      </el-form-item>
-      <el-button type="danger" @click="removeSample(index)">删除</el-button>
-    </div>
-    <el-form-item>
-      <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
-    </el-form-item>
-    <el-form-item label="解析" prop="descP">
-      <el-input v-model="ruleForm.descP" type="textarea" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="submitForm(ruleFormRef)">
-         创建
-      </el-button>
-      <el-button @click="resetForm(ruleFormRef)">重置</el-button>
-    </el-form-item>
-  </el-form>
-</template>
-
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue'
-import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { addApi } from '@/api/question'
 import TinymceEdit from '@/components/TinymceEdit.vue'
-interface Sample {
-  inp: string
-  exp: string
-}
-interface RuleForm {
-  regionP: string[]
-  locationP: string
-   question:string
-  descP: string
-  inp: string
-  exp:string
-   samples: Sample[]
-}
-const formSize = ref<ComponentSize>('default')
-const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive<RuleForm>({
-  regionP: [],
-  locationP: '',
-  question: '',
-  descP: '',
-  samples: [{ inp: '', exp: '' }],
-  inp: '',
-  exp: ''
+const ruleFormRef = ref()
+const ruleForm = reactive({
+  answer: '',
+  content: '',
+  judgeCase:[{
+    input: '',
+    output: ''
+  }],
+  judgeConfig: {
+    memoryLimit: 1000,
+    stackLimit: 1000,
+    timeLimit: 1000
+  },
+  tags: [],
+  title: '',
 })
+const switchOptions = ref([])
+
 const options = [
   {
-    value: 'guide',
-    label: 'Guide',
+    value: '1',
+    label: '1',
     children: [
       {
-        value: 'disciplines',
-        label: 'Disciplines',
+        value: '2',
+        label: '2',
         children: [
           {
-            value: 'consistency',
-            label: 'Consistency'
+            value: '3',
+            label: '3'
           },
-          {
-            value: 'feedback',
-            label: 'Feedback'
-          },
-          {
-            value: 'efficiency',
-            label: 'Efficiency'
-          },
-          {
-            value: 'controllability',
-            label: 'Controllability'
-          }
         ]
       },
-      {
-        value: 'navigation',
-        label: 'Navigation',
-        children: [
-          {
-            value: 'side nav',
-            label: 'Side Navigation'
-          },
-          {
-            value: 'top nav',
-            label: 'Top Navigation'
-          }
-        ]
-      }
     ]
   },
-  {
-    value: 'component',
-    label: 'Component',
-    children: [
-      {
-        value: 'basic',
-        label: 'Basic',
-        children: [
-          {
-            value: 'layout',
-            label: 'Layout'
-          },
-          {
-            value: 'color',
-            label: 'Color'
-          },
-          {
-            value: 'typography',
-            label: 'Typography'
-          },
-          {
-            value: 'icon',
-            label: 'Icon'
-          },
-          {
-            value: 'button',
-            label: 'Button'
-          }
-        ]
-      },
-      {
-        value: 'form',
-        label: 'Form',
-        children: [
-          {
-            value: 'radio',
-            label: 'Radio'
-          },
-          {
-            value: 'checkbox',
-            label: 'Checkbox'
-          },
-          {
-            value: 'input',
-            label: 'Input'
-          },
-          {
-            value: 'input-number',
-            label: 'InputNumber'
-          },
-          {
-            value: 'select',
-            label: 'Select'
-          },
-          {
-            value: 'cascader',
-            label: 'Cascader'
-          },
-          {
-            value: 'switch',
-            label: 'Switch'
-          },
-          {
-            value: 'slider',
-            label: 'Slider'
-          },
-          {
-            value: 'time-picker',
-            label: 'TimePicker'
-          },
-          {
-            value: 'date-picker',
-            label: 'DatePicker'
-          },
-          {
-            value: 'datetime-picker',
-            label: 'DateTimePicker'
-          },
-          {
-            value: 'upload',
-            label: 'Upload'
-          },
-          {
-            value: 'rate',
-            label: 'Rate'
-          },
-          {
-            value: 'form',
-            label: 'Form'
-          }
-        ]
-      },
-      {
-        value: 'data',
-        label: 'Data',
-        children: [
-          {
-            value: 'table',
-            label: 'Table'
-          },
-          {
-            value: 'tag',
-            label: 'Tag'
-          },
-          {
-            value: 'progress',
-            label: 'Progress'
-          },
-          {
-            value: 'tree',
-            label: 'Tree'
-          },
-          {
-            value: 'pagination',
-            label: 'Pagination'
-          },
-          {
-            value: 'badge',
-            label: 'Badge'
-          }
-        ]
-      },
-      {
-        value: 'notice',
-        label: 'Notice',
-        children: [
-          {
-            value: 'alert',
-            label: 'Alert'
-          },
-          {
-            value: 'loading',
-            label: 'Loading'
-          },
-          {
-            value: 'message',
-            label: 'Message'
-          },
-          {
-            value: 'message-box',
-            label: 'MessageBox'
-          },
-          {
-            value: 'notification',
-            label: 'Notification'
-          }
-        ]
-      },
-      {
-        value: 'navigation',
-        label: 'Navigation',
-        children: [
-          {
-            value: 'menu',
-            label: 'Menu'
-          },
-          {
-            value: 'tabs',
-            label: 'Tabs'
-          },
-          {
-            value: 'breadcrumb',
-            label: 'Breadcrumb'
-          },
-          {
-            value: 'dropdown',
-            label: 'Dropdown'
-          },
-          {
-            value: 'steps',
-            label: 'Steps'
-          }
-        ]
-      },
-      {
-        value: 'others',
-        label: 'Others',
-        children: [
-          {
-            value: 'dialog',
-            label: 'Dialog'
-          },
-          {
-            value: 'tooltip',
-            label: 'Tooltip'
-          },
-          {
-            value: 'popover',
-            label: 'Popover'
-          },
-          {
-            value: 'card',
-            label: 'Card'
-          },
-          {
-            value: 'carousel',
-            label: 'Carousel'
-          },
-          {
-            value: 'collapse',
-            label: 'Collapse'
-          }
-        ]
-      }
-    ]
-  },
-  {
-    value: 'resource',
-    label: 'Resource',
-    children: [
-      {
-        value: 'axure',
-        label: 'Axure Components'
-      },
-      {
-        value: 'sketch',
-        label: 'Sketch Templates'
-      },
-      {
-        value: 'docs',
-        label: 'Design Documentation'
-      }
-    ]
-  }
 ]
 const locationPOptions = ['简单', '适中', '困难']
 
-const rules = reactive<FormRules<RuleForm>>({
-  regionP: [
+const rules ={
+  tags: [
     {
       required: true,
       message: '请选择分类',
       trigger: 'change',
-    },
+    }
   ],
 
   locationP: [
@@ -369,29 +60,34 @@ const rules = reactive<FormRules<RuleForm>>({
   question: [
     { required: true, message: '请输入题目', trigger: 'blur' },
   ],
-  descP: [
-    { required: true, message: '请填写解析', trigger: 'blur' },
+  content: [
+    { required: true, message: '请填写内容', trigger: 'blur' },
   ],
- inp: [
+ input: [
     { required: true, message: '请填写样本输入', trigger: 'blur' },
   ],
-  exp: [
+  output: [
     { required: true, message: '请填写样本输出', trigger: 'blur' },
   ],
-})
+  answer: [
+    { required: true, message: '请填写答案', trigger: 'blur' },
+  ],
+}
 
 const addSample = () => {
-  ruleForm.samples.push({ inp: '', exp: '' })
+  ruleForm.judgeCase.push({ input: '', output: '' })
+  console.log(ruleForm.judgeCase)
 }
 
 const removeSample = (index: number) => {
-  ruleForm.samples.splice(index, 1)
+  ruleForm.judgeCase.splice(index, 1)
+  console.log(ruleForm.judgeCase)
 }
+
 // 保存表单数据到 LocalStorage
 const saveFormToLocalStorage = () => {
   localStorage.setItem('ruleForm', JSON.stringify(ruleForm))
 }
-
 // 从 LocalStorage 恢复表单数据
 const loadFormFromLocalStorage = () => {
   const savedForm = localStorage.getItem('ruleForm')
@@ -399,40 +95,92 @@ const loadFormFromLocalStorage = () => {
     Object.assign(ruleForm, JSON.parse(savedForm))
   }
 }
-
 // 在组件挂载时加载表单数据和选中的标签页
 onMounted(() => {
   loadFormFromLocalStorage()
-
 })
-
 // 在表单数据变化时保存到 LocalStorage
 watch(ruleForm, () => {
   saveFormToLocalStorage()
 }, { deep: true })
-const handleChange = (value: unknown) => {
-  console.log(value)
-}
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate((valid, fields) => {
+const submitForm = () => {
+  ruleForm.tags = ruleForm.tags.concat(switchOptions.value)
+  console.log(ruleForm)
+
+  // 验证表单
+  ruleFormRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      console.log('submit!')
-      formEl.resetFields()
-      ruleForm.regionP = []
+      // 提交表单数据
+      const res = await addApi(ruleForm)
+      console.log(res)
+      // 提交成功后删除表单本地存储
+      ruleFormRef.value.resetFields()
+      localStorage.removeItem('ruleForm')
     } else {
-      console.log('error submit!', fields)
+      ElMessage({
+        message: '请填写完整信息',
+        type: 'warning',
+      })
     }
-  })
+  }
+  )
+
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-  ruleForm.regionP = []
+const resetForm = () => {
+  ruleFormRef.value.resetFields()
 }
-
 </script>
+<template>
+  <el-form
+  ref="ruleFormRef"
+  :model="ruleForm"
+  :rules="rules"
+  label-width="auto"
+  class="demo-ruleForm"
+  size="default"
+    status-icon
+  >
+     <el-form-item label="分类" prop="tags">
+      <div class="m-4">
+    <el-cascader v-model="ruleForm.tags" :options="options" />
+  </div>
+    </el-form-item>
+    <el-form-item label="难度" prop="locationP">
+      <el-segmented v-model="switchOptions" :options="locationPOptions" />
+    </el-form-item>
+    <el-form-item label="题目" prop="question">
+      <el-input v-model="ruleForm.title" type="textarea" />
+    </el-form-item>
+    <el-form-item label="内容" prop="content">
+      <TinymceEdit v-model="ruleForm.content" />
+    </el-form-item>
+  <div v-for="(judgeCase, index) in ruleForm.judgeCase" :key="index" class="sample-io">
+      <el-form-item :label="`样本输入 ${index + 1}`" :prop="`judgeCase.${index}.input`" :rules="rules.input">
+        <el-input v-model="judgeCase.input" type="textarea" />
+      </el-form-item>
+      <el-form-item :label="`样本输出 ${index + 1}`" :prop="`judgeCase.${index}.output`" :rules="rules.output">
+        <el-input v-model="judgeCase.output" type="textarea" />
+      </el-form-item>
+      <el-button type="danger" @click="removeSample(index)">删除</el-button>
+    </div>
+    <el-form-item>
+      <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
+    </el-form-item>
+    <!-- <el-form-item label="解析" prop="descP">
+      <el-input v-model="ruleForm.descP" type="textarea" />
+    </el-form-item> -->
+    <el-form-item label="答案" prop="answer">
+      <el-input v-model="ruleForm.answer" type="textarea" />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="submitForm()">
+        创建
+      </el-button>
+      <el-button @click="resetForm()">重置</el-button>
+    </el-form-item>
+  </el-form>
+</template>
 <style lang="less" scoped>
 #text{
   margin-bottom: 20px;
