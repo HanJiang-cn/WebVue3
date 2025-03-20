@@ -3,8 +3,9 @@ import { ElNotification } from 'element-plus'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: 'http://120.46.86.24:8080/api',
+  baseURL: '/api',
   timeout: 5000,
+  withCredentials: true,
 })
 
 // 添加请求拦截器
@@ -12,7 +13,6 @@ service.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
     console.log(config)
-    // 将 Cookie 中的 JSESSIONID 添加到请求头中
     return config
   },
   function (error) {

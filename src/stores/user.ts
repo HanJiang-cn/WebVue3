@@ -3,10 +3,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { loginApi } from '@/api/user'
 import { ElNotification } from 'element-plus'
-// import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore('user', () => {
-  // const id = ref(Cookies.get('JSESSIONID') || '')
   const userName = ref(sessionStorage.getItem('userName') || '')
   const userAccount = ref(sessionStorage.getItem('userAccount') || '')
   const userProfile = ref(sessionStorage.getItem('userProfile') || '')
@@ -17,8 +15,6 @@ export const useUserStore = defineStore('user', () => {
     try {
       const response = await loginApi(data)
       console.log(response)
-      // 登录成功, 存储数据到本地存储中
-      // Cookies.set('JSESSIONID', response.data.id, { expires: 7 })
       sessionStorage.setItem('userName', response.data.userName)
       sessionStorage.setItem('userAccount', response.data.userAccount)
       sessionStorage.setItem('userProfile', response.data.userProfile)
@@ -38,7 +34,6 @@ export const useUserStore = defineStore('user', () => {
     // 清除本地存储中的数据
     sessionStorage.clear()
     // 清除pinia中的数据
-    // id.value = ''
     userName.value = ''
     userAccount.value = ''
     userProfile.value = ''
@@ -50,7 +45,6 @@ export const useUserStore = defineStore('user', () => {
     })
   }
   return {
-    // id,
     userName,
     userAccount,
     userProfile,
