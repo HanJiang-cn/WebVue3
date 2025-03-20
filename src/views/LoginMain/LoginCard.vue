@@ -1,11 +1,16 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import ewm from '@/assets/ewm.png'
 import { useUserStore } from '@/stores/user'
 
+onMounted(() => {
+  const userStore = useUserStore()
+  console.log(userStore.id)
+
+})
 const userStore = useUserStore()
 const router = useRouter()
 const activeName = ref('1')

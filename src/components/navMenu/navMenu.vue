@@ -107,8 +107,8 @@ const handleLogout = () => {
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link>
-              学习
+            <el-button link @click="router.push('/community')">
+              社区
             </el-button>
           </el-col>
           <el-col :span="2">

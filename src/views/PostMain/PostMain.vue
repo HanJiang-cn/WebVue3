@@ -5,6 +5,7 @@ import LinkCard from '@/components/PostMain/LinkCard.vue'
 
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import { getPostApi } from '@/api/post'
 
 const qrCodeValue = ref(window.location.href)
 

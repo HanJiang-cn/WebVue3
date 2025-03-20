@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { loginApi } from '@/api/user'
+import { loginApi, getUserApiInfo } from '@/api/user'
 import { ElNotification } from 'element-plus'
 
 export const useUserStore = defineStore('user', () => {
@@ -36,6 +36,21 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  // 获取用户信息
+  const getUserInfo = async () => {
+    const response = await getUserApiInfo()
+    id.value = response.data.id
+    userName.value = response.data.userName
+    userAccount.value = response.data.userAccount
+    userProfile.value = response.data.userProfile
+    userRole.value = response.data.userRole
+    sessionStorage.setItem('id', response.data.id)
+    sessionStorage.setItem('userName', response.data.userName)
+    sessionStorage.setItem('userAccount', response.data.userAccount)
+    sessionStorage.setItem('userProfile', response.data.userProfile)
+    sessionStorage.setItem('userRole', response.data.userRole)
+  }
+
   const logout = () => {
     // 清除本地存储中的数据
     sessionStorage.clear()
@@ -58,5 +73,6 @@ export const useUserStore = defineStore('user', () => {
     userRole,
     login,
     logout,
+    getUserInfo,
   }
 })

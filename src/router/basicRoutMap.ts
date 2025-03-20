@@ -11,6 +11,18 @@ const routes = [
     path: '/user',
     name: 'User',
     component: () => import('@/layouts/UserLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'UserIndex',
+        component: () => import('@/views/UserMain/UserIndex.vue'),
+      },
+      {
+        path: 'setting',
+        name: 'SettingMain',
+        component: () => import('@/views/UserMain/SettingMain.vue'),
+      },
+    ],
   },
   // 题目列表
   {

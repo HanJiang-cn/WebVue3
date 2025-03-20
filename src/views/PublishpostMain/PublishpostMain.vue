@@ -3,12 +3,11 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElNotification } from 'element-plus'
+import { addPostApi } from '@/api/post'
 import TinymceEdit from '@/components/TinymceEdit.vue'
 
 // 表单引用
 const formRef = ref(null)
-
-// 响应式数据
 const form = reactive({
   title: '',
   content: '',
@@ -16,14 +15,12 @@ const form = reactive({
   tags: [],
   cover: null
 })
-
 const categories = ref([
   { value: 'tech', label: '技术分享' },
   { value: 'algorithm', label: '算法题解' },
   { value: 'life', label: '生活感悟' },
   { value: 'qa', label: '问题求助' }
 ])
-
 const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
 
 // 验证规则
@@ -32,11 +29,18 @@ const rules = reactive({
     { required: true, message: '标题不能为空', trigger: 'blur' },
     { min: 5, max: 50, message: '长度在5到50个字符', trigger: 'blur' }
   ],
+  content: [
+    { required: true, message: '内容不能为空', trigger: 'blur' },
+    { min: 20, message: '内容至少20个字符', trigger: 'blur' }
+  ],
   category: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
 })
 
+function uploadContent(data) {
+  form.content = data
+}
 // 处理封面图上传
 const handleCoverChange = (file) => {
   const reader = new FileReader()
@@ -48,22 +52,27 @@ const handleCoverChange = (file) => {
 
 // 提交表单
 const submitForm = async () => {
-  try {
-    await formRef.value.validate()
-    console.log('提交数据:', form)
-    ElNotification({
-      title: '成功',
-      message: '发布成功！',
-      type: 'success',
-    })
-    // 这里可以添加实际的提交逻辑
-  } catch (error) {
-    ElNotification({
-      title: '失败',
-      message: '请检查表单填写',
-      type: 'error',
-    })
-  }
+  form.tags.push(form.category)
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      // console.log('提交数据:', form)
+      const res = await addPostApi(form)
+      console.log(res)
+      if (res.code === 0) {
+        ElNotification({
+          title: '成功',
+          message: '发布成功！',
+          type: 'success',
+        })
+      }
+    } else {
+      ElNotification({
+        title: '失败',
+        message: '请检查表单填写',
+        type: 'error',
+      })
+    }
+  })
 }
 
 // 保存草稿
@@ -90,8 +99,9 @@ const saveDraft = () => {
       <el-input v-model="form.title" placeholder="请输入标题（最多50字）" maxlength="50" show-word-limit clearable>
       </el-input>
     </el-form-item>
-
-    <TinymceEdit class="form-section" />
+    <el-form-item prop="content" class="form-section">
+      <TinymceEdit class="form-section" @modelValue="uploadContent" style="width: 100%" />
+    </el-form-item>
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
@@ -166,6 +176,10 @@ const saveDraft = () => {
 
   .form-section {
     margin-bottom: 32px;
+  }
+
+  .form-section-content {
+    width: 100%;
   }
 
   .cover-upload {
