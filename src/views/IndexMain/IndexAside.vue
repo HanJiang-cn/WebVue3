@@ -2,8 +2,11 @@
 <script setup>
 // import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
+const userStore = useUserStore()
+
 const showChallenge = () => {
   router.push({
     path: '/submit'
@@ -17,7 +20,7 @@ const showChallenge = () => {
     <div class="user-card">
       <el-avatar :size="50" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
       <div class="user-meta">
-        <h3 class="username">Liko Coder</h3>
+        <h3 class="username">{{ userStore.userName ? userStore.userName : '请登录' }}</h3>
         <el-text class="user-rank">
           <el-icon>
             <CaretTop />

@@ -5,6 +5,7 @@ import { loginApi } from '@/api/user'
 import { ElNotification } from 'element-plus'
 
 export const useUserStore = defineStore('user', () => {
+  const id = ref(sessionStorage.getItem('id') || '')
   const userName = ref(sessionStorage.getItem('userName') || '')
   const userAccount = ref(sessionStorage.getItem('userAccount') || '')
   const userProfile = ref(sessionStorage.getItem('userProfile') || '')
@@ -14,7 +15,12 @@ export const useUserStore = defineStore('user', () => {
     // 登录接口, 成功后将相关数据存储到本地存储中, 否则抛出错误
     try {
       const response = await loginApi(data)
-      console.log(response)
+      id.value = response.data.id
+      userName.value = response.data.userName
+      userAccount.value = response.data.userAccount
+      userProfile.value = response.data.userProfile
+      userRole.value = response.data.userRole
+      sessionStorage.setItem('id', response.data.id)
       sessionStorage.setItem('userName', response.data.userName)
       sessionStorage.setItem('userAccount', response.data.userAccount)
       sessionStorage.setItem('userProfile', response.data.userProfile)
@@ -45,6 +51,7 @@ export const useUserStore = defineStore('user', () => {
     })
   }
   return {
+    id,
     userName,
     userAccount,
     userProfile,

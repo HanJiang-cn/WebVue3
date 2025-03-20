@@ -1,4 +1,41 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const router = useRouter()
+const userStore = useUserStore()
+const menuItems = ref([
+  { name: 'profile', label: '个人中心', icon: 'User' },
+  { name: 'settings', label: '账号设置', icon: 'Setting' },
+  { name: 'messages', label: '我的消息', icon: 'Message' },
+  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+])
+
+const handelLogin = () => {
+  router.push('/accounts/login')
+}
+const handelRegister = () => {
+  router.push('/accounts/register')
+}
+const handleMenuClick = (item: any) => {
+  if (item.name === 'profile') {
+    router.push('/user')
+  }
+}
+const handleLogout = () => {
+  ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    userStore.logout()
+    router.push('/')
+    location.reload()
+  })
+}
 </script>
 
 <template>
@@ -63,11 +100,10 @@
               <path d="M20 70 Q40 65 60 70 T100 65" stroke="#4CAF50" stroke-width="2" fill="none"
                 stroke-dasharray="5 3" />
             </svg>
-
           </el-col>
           <el-col :span="2">
-            <el-button link>
-              学习
+            <el-button link @click="router.push('/')">
+              主页
             </el-button>
           </el-col>
           <el-col :span="2">
@@ -114,7 +150,7 @@
     <el-col :span="6">
       <el-row justify="end" align="middle" style="height: 100%; width: 90%;">
         <!-- 登录情况下 -->
-        <!-- <el-row :gutter="40" justify="end" align="middle">
+        <el-row :gutter="40" justify="end" align="middle" v-show="userStore.id">
           <el-col :span="3">
             <el-button size="small" type="info" text>
               <el-icon :size="18">
@@ -130,11 +166,40 @@
             </el-button>
           </el-col>
           <el-col :span="3">
-            <el-avatar :size="25" style="margin-left: 3px;" />
+            <el-popover trigger="click" placement="bottom" :width="240" :offset="10">
+              <template #reference>
+                <el-avatar :size="25" class="cursor-pointer" />
+              </template>
+              <div class="user-menu">
+                <!-- 用户信息 -->
+                <div class="user-info">
+                  <el-avatar :size="40" />
+                  <div class="info">
+                    <h4 class="nickname">{{ userStore.userName }}</h4>
+                    <p class="email">{{ userStore.userName }}</p>
+                  </div>
+                </div>
+
+                <!-- 功能菜单 -->
+                <div class="menu-list">
+                  <div v-for="item in menuItems" :key="item.name" class="menu-item" @click="handleMenuClick(item)">
+                    <component :is="item.icon" class="icon" />
+                    <span>{{ item.label }}</span>
+                  </div>
+                </div>
+                <!-- 退出登录 -->
+                <div class="logout" @click="handleLogout">
+                  <el-icon>
+                    <SwitchButton />
+                  </el-icon>
+                  <span>退出登录</span>
+                </div>
+              </div>
+            </el-popover>
           </el-col>
-        </el-row> -->
+        </el-row>
         <!-- 未登录情况下 -->
-        <el-row justify="end" align="middle" style="height: 100%; width: 90%;">
+        <el-row justify="end" align="middle" style="height: 100%; width: 90%;" v-show="!userStore.id">
           <el-row :gutter="40" justify="end" align="middle">
             <el-col :span="3">
               <el-button size="small" type="info" text>
@@ -144,20 +209,14 @@
               </el-button>
             </el-col>
             <el-col :span="3">
-              <el-button size="small" text>
+              <el-button size="small" text @click="handelRegister">
                 注册
               </el-button>
-              <!-- <el-button size="small" text>
-              登录
-            </el-button> -->
             </el-col>
             <el-col :span="3">
-              <el-button size="small" text>
+              <el-button size="small" text @click="handelLogin">
                 登录
               </el-button>
-              <!-- <el-button size="small" text>
-              登录
-            </el-button> -->
             </el-col>
             <el-col :span="3">
               <el-button type="warning" plain>会员Plus</el-button>
@@ -213,6 +272,77 @@
 
 .el-icon {
   color: #737373
+}
+
+.user-menu {
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #ebeef5;
+
+    .info {
+      margin-left: 12px;
+
+      .nickname {
+        margin: 0;
+        font-size: 14px;
+        color: #303133;
+        font-weight: 600;
+      }
+
+      .email {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #909399;
+      }
+    }
+  }
+
+  .menu-list {
+    padding: 8px 0;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #303133;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #f5f7fa;
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 12px;
+        color: #409EFF;
+      }
+    }
+  }
+
+  .logout {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #f56c6c;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #fef0f0;
+    }
+
+    .el-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+    }
+  }
 }
 </style>
 

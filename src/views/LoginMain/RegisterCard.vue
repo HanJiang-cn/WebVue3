@@ -2,26 +2,26 @@
 <script setup>
 import { ref } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
+import { registerApi } from '@/api/user'
 
 const formData = ref({
-  username: '',
-  password: '',
-  confirm: '',
+  userAccount: '',
+  userPassword: '',
+  checkPassword: '',
   email: '',
   phone: '',
   code: ''
 })
-
+// 校验密码是否一致
 const validatePass2 = (rule, value, callback) => {
-  if (value !== formData.value.password) {
+  if (value !== formData.value.userPassword) {
     callback(new Error('两次输入密码不一致!'))
   } else {
     callback()
   }
 }
-
 const rules = {
-  username: [
+  userAccount: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 2, max: 12, message: '长度在 2 到 12 个字符', trigger: 'blur' }
   ],
@@ -33,11 +33,12 @@ const rules = {
     { required: true, message: '请输入手机号', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur' }
   ],
-  password: [
+  userPassword: [
     { required: true, message: '请输入密码', trigger: 'blur' },
     { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
   ],
-  confirm: [{ validator: validatePass2, trigger: 'blur' }],
+  // 校验密码是否一致，使用 validator 是为了可以传入参数
+  checkPassword: [{ validator: validatePass2, trigger: 'blur' }],
   code: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
     { len: 6, message: '验证码为6位数字', trigger: 'blur' }
@@ -49,13 +50,14 @@ const countdown = ref(0)
 const isSending = ref(false)
 
 const handleRegister = () => {
-  formRef.value.validate((valid) => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
+      const res = await registerApi(formData.value)
+      console.log(res)
       ElNotification({
         title: '注册成功',
         message: '欢迎加入我们！',
         type: 'success',
-        duration: 2000
       })
       formRef.value.resetFields()
     }
@@ -95,8 +97,8 @@ const handleSendCode = () => {
     </div>
 
     <el-form :model="formData" :rules="rules" ref="formRef" style="margin: 5px 25px;">
-      <el-form-item prop="username">
-        <el-input v-model="formData.username" placeholder="请输入用户名" prefix-icon="UserFilled" clearable />
+      <el-form-item prop="userAccount">
+        <el-input v-model="formData.userAccount" placeholder="请输入用户名" prefix-icon="UserFilled" clearable />
       </el-form-item>
 
       <el-form-item prop="email">
@@ -117,12 +119,14 @@ const handleSendCode = () => {
         </div>
       </el-form-item>
 
-      <el-form-item prop="password">
-        <el-input v-model="formData.password" type="password" placeholder="请输入密码" prefix-icon="Lock" show-password />
+      <el-form-item prop="userPassword">
+        <el-input v-model="formData.userPassword" type="password" placeholder="请输入密码" prefix-icon="Lock"
+          show-password />
       </el-form-item>
 
-      <el-form-item prop="confirm">
-        <el-input v-model="formData.confirm" type="password" placeholder="请再次确认密码" prefix-icon="Unlock" show-password />
+      <el-form-item prop="checkPassword">
+        <el-input v-model="formData.checkPassword" type="password" placeholder="请再次确认密码" prefix-icon="Lock"
+          show-password />
       </el-form-item>
 
       <el-button type="primary" class="submit-btn" @click="handleRegister">

@@ -69,7 +69,7 @@ import navMenu from '@/components/navMenu/navMenu.vue'
 .footer {
   // 固定在底部
   position: fixed;
-  bottom: 0;
+  // bottom: 0;
   width: 100%;
   color: #fff;
   height: 200px;

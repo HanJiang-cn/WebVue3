@@ -5,7 +5,9 @@ import HeatMap from '@/components/UserMain/HeatMap.vue'
 import { ref, reactive } from 'vue'
 import { useChart } from '@/hooks/useChart'
 // import { usePagination } from '@/hooks/usePagination'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const activeName = ref('1')
 const chartRef1 = ref(null)
 const format = (percentage) => (percentage === 100 ? 'Full' : `${percentage}分`)
@@ -139,9 +141,9 @@ const pageInfo = reactive({
     <el-avatar shape="square" :size="70"
       src="https://assets.leetcode.cn/aliyun-lc-upload/users/39WPa6NPut/avatar_1740320643.png?x-oss-process=image%2Fformat%2Cwebp" />
     <div class="user-avatar">
-      <p>Han_Jiang</p>
-      <p>hanjiang-cn</p>
-      <p>个人签名：长风破浪会有时，直挂云帆济沧海</p>
+      <p>{{ userStore.userName }}</p>
+      <p>{{ userStore.userGithub ? userStore.userGithub : '' }}</p>
+      <p>个人签名：{{ userStore.userProfile }}</p>
     </div>
   </el-row>
   <el-row style="width: 100%; margin-top: 40px;" :gutter="20">
