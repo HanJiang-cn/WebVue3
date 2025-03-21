@@ -1,311 +1,298 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
+<!-- eslint-disable vue/component-tags-order -->
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElLoading, ElButton } from 'element-plus'
-import { getPostApi } from '@/api/post'
-import CommentComponent from '@/components/CommentComponent.vue'
+import { ref, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import LinkCard from '@/components/PostMain/LinkCard.vue'
-import AuthorInfo from '@/components/PostMain/AuthorInfo.vue'
-import PostActions from '@/components/PostMain/PostActions.vue'
-import ShareComponent from '@/components/PostMain/ShareComponent.vue'
-import PostTOC from '@/components/PostMain/PostTOC.vue'
+import CommentComponent from '@/components/CommentComponent.vue'
 
-const router = useRouter()
-const qrCodeValue = ref(window.location.href)
-const postId = router.currentRoute.value.query.id
-const postData = ref(null)
-const loading = ref(false)
-const currentUser = ref({ id: 123 }) // 从store获取真实用户信息
-const headings = ref([])
-
-// 获取文章详情
-const fetchPostDetail = async () => {
-  try {
-    loading.value = true
-    const { data } = await getPostApi({ id: postId })
-    if (data.code === 0) {
-      postData.value = data.data
-    } else {
-      ElMessage.error('获取文章详情失败')
-    }
-  } catch (error) {
-    ElMessage.error('网络请求失败，请稍后重试')
-  } finally {
-    loading.value = false
-  }
-}
-
-// 权限判断
-// const isAuthor = computed(() => {
-//   return postData.value?.user?.id === currentUser.value.id
-// })
-
-// 删除文章
-const handleDelete = async () => {
-  try {
-    await ElMessageBox.confirm('确定要删除这篇文章吗？', '警告', {
-      type: 'warning',
-      confirmButtonText: '确定删除',
-      cancelButtonText: '取消'
-    })
-
-    const res = await deletePostApi({ id: postId })
-    if (res.code === 0) {
-      ElMessage.success('文章已删除')
-      router.push('/')
-    }
-  } catch (error) {
-    console.error('删除失败:', error)
-  }
-}
-
-// 生成目录
-const generateTOC = () => {
-  const contentElement = document.querySelector('.content-html')
-  if (!contentElement) return
-
-  const headingsArray = Array.from(contentElement.querySelectorAll('h2, h3'))
-  headings.value = headingsArray.map(heading => ({
-    id: heading.id || heading.textContent.toLowerCase().replace(/\s+/g, '-'),
-    text: heading.textContent,
-    level: parseInt(heading.tagName.substring(1), 10)
-  }))
-}
-
-// 观察内容变化更新目录
-const observer = new MutationObserver(generateTOC)
-onMounted(() => {
-  const contentElement = document.querySelector('.content-html')
-  if (contentElement) {
-    observer.observe(contentElement, {
-      childList: true,
-      subtree: true
-    })
-  }
+const post = ref({
+  id: 1,
+  title: 'Vue3 最佳实践指南',
+  author: {
+    id: 1,
+    name: '技术达人',
+    avatar: 'https://example.com/avatar.jpg',
+    bio: '前端开发专家 | Vue技术爱好者',
+    followers: 1234
+  },
+  content: '<p>这里是详细的帖子内容...</p>',
+  category: 'tech',
+  tags: ['前端', 'Vue3', '最佳实践'],
+  cover: 'https://example.com/cover.jpg',
+  views: 2560,
+  likes: 345,
+  comments: 42,
+  publishTime: '2023-08-15 10:24:36'
 })
 
-// 初始化加载
+const currentUrl = ref(window.location.href)
+
+// 模拟数据加载
 onMounted(() => {
-  if (!postId) {
-    ElMessage.error('无效的文章ID')
-    router.back()
-    return
-  }
-  fetchPostDetail()
+  // 这里可以添加获取帖子详情的API调用
 })
 
-// 处理复制链接
-const handleCopyLink = async () => {
-  try {
-    await navigator.clipboard.writeText(window.location.href)
-    ElMessage.success('链接已复制')
-  } catch (error) {
-    ElMessage.error('复制失败，请手动复制地址栏链接')
-  }
+const handleLike = () => {
+  post.value.likes++
+  ElMessage.success('点赞成功')
+}
+
+const handleFollow = () => {
+  ElMessage.info('已关注作者')
 }
 </script>
 
 <template>
   <div class="post-container">
-    <!-- 返回按钮 -->
-    <el-button class="back-btn" @click="router.back()" size="small">
-      <el-icon>
-        <ArrowLeft />
-      </el-icon>
-      返回
-    </el-button>
-
-    <!-- 操作栏 -->
-    <div class="post-actions-bar" v-if="isAuthor">
-      <el-button type="primary" @click="$router.push(`/edit?id=${postId}`)">
-        编辑文章
-      </el-button>
-      <el-button type="danger" @click="handleDelete">
-        删除文章
-      </el-button>
+    <!-- 作者信息 -->
+    <div class="author-section">
+      <div class="author-info">
+        <el-avatar :size="60" :src="post.author.avatar" />
+        <div class="author-details">
+          <h3>{{ post.author.name }}</h3>
+          <p class="bio">{{ post.author.bio }}</p>
+          <div class="meta">
+            <span>粉丝 {{ post.author.followers }}</span>
+            <span>·</span>
+            <span>{{ post.publishTime }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="author-actions">
+        <el-button type="primary" @click="handleFollow">关注</el-button>
+        <vue3-social-share :url="currentUrl" :title="post.title" class="share-buttons" />
+      </div>
     </div>
 
-    <!-- 目录导航 -->
-    <post-tOC :headings="headings" class="toc-container" />
+    <!-- 帖子内容 -->
+    <div class="post-content">
+      <h1 class="post-title">{{ post.title }}</h1>
 
-    <!-- 加载状态 -->
-    <el-skeleton v-if="loading" :rows="6" animated />
+      <div class="post-meta">
+        <el-tag type="info">{{ post.category }}</el-tag>
+        <el-tag v-for="(tag, index) in post.tags" :key="index" class="post-tag">
+          {{ tag }}
+        </el-tag>
+        <span class="views">阅读 {{ post.views }}</span>
+      </div>
 
-    <!-- 内容展示 -->
-    <template v-else-if="postData">
-      <!-- 头部信息 -->
-      <header class="post-header">
-        <author-info :avatar="postData.author.avatar" :name="postData.author.name" :publish-time="postData.createTime"
-          :tags="postData.tags" />
+      <img v-if="post.cover" :src="post.cover" class="post-cover">
 
-        <h1 class="post-title">{{ postData.title }}</h1>
+      <div class="content" v-html="post.content"></div>
+      <LinkCard url="https://vitepress.yiov.top/" title="Vitepress中文搭建教程" description="https://vitepress.yiov.top/"
+        logo="https://vitepress.yiov.top/logo.png" />
 
-        <div class="post-meta">
-          <time class="publish-time">{{ postData.createTime }}</time>
-          <span class="views">阅读 {{ postData.views }}</span>
-        </div>
-      </header>
+      <div class="post-actions">
+        <el-button type="danger" @click="handleLike">
+          <el-icon>
+            <Star />
+          </el-icon> 点赞 {{ post.likes }}
+        </el-button>
+      </div>
+    </div>
 
-      <!-- 正文内容 -->
-      <article class="post-content">
-        <div v-html="postData.content" class="content-html"></div>
-        <link-card v-for="link in postData.links" :key="link.url" v-bind="link" />
-      </article>
-
-      <!-- 互动操作栏 -->
-      <post-actions :likes="postData.likes" :collections="postData.collections" :comments="postData.comments"
-        :shares="postData.shares" @share="handleCopyLink" />
-
-      <!-- 分享组件 -->
-      <share-component :url="qrCodeValue" :title="postData?.title" class="share-container" />
-
-      <!-- 评论区域 -->
-      <section class="comment-section">
-        <h3 class="section-title">评论（{{ postData.commentCount }}）</h3>
-        <comment-component :comments="postData.comments" />
-      </section>
-    </template>
-
-    <!-- 数据为空状态 -->
-    <el-empty v-else description="文章不存在或已被删除" />
+    <!-- 评论区域 -->
+    <div class="comment-section">
+      <h3>评论（{{ post.comments }}）</h3>
+      <CommentComponent />
+    </div>
   </div>
 </template>
 
 <style lang="less" scoped>
 .post-container {
   max-width: 1200px;
-  margin: 20px auto;
-  padding: 32px;
-  background: var(--el-bg-color);
+  margin: 24px auto;
+  padding: 24px;
+  background: #fff;
   border-radius: 12px;
-  box-shadow: var(--el-box-shadow-light);
-}
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 
-.back-btn {
-  margin-bottom: 24px;
-  color: var(--el-text-color-secondary);
+  .author-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
 
-  &:hover {
-    color: var(--el-color-primary);
-  }
-}
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
 
-.post-header {
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--el-border-color-light);
-}
+      .author-details {
+        h3 {
+          margin: 0;
+          font-size: 1.2em;
+        }
 
-.post-title {
-  font-size: 32px;
-  line-height: 1.3;
-  color: var(--el-text-color-primary);
-  margin: 24px 0 16px;
-}
+        .bio {
+          margin: 4px 0;
+          color: #666;
+          font-size: 0.9em;
+        }
 
-.post-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
-
-  .publish-time::before {
-    content: '∙';
-    margin: 0 8px;
-  }
-}
-
-.post-actions-bar {
-  position: absolute;
-  top: -50px;
-  right: 0;
-  z-index: 10;
-}
-
-.toc-container {
-  position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-}
-
-.main-content {
-  position: relative;
-}
-
-.share-container {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  z-index: 100;
-}
-
-.post-content {
-  margin: 40px 0;
-  line-height: 1.8;
-  font-size: 16px;
-  color: var(--el-text-color-regular);
-
-  :deep(.content-html) {
-
-    h2,
-    h3 {
-      margin: 1.5em 0 1em;
-      color: var(--el-text-color-primary);
+        .meta {
+          display: flex;
+          gap: 8px;
+          color: #999;
+          font-size: 0.8em;
+        }
+      }
     }
 
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin: 16px 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .share-buttons {
+      margin-left: 16px;
     }
-
-    pre {
-      padding: 16px;
-      background: var(--el-fill-color-light);
-      border-radius: 8px;
-      overflow-x: auto;
-    }
-
-    blockquote {
-      border-left: 4px solid var(--el-border-color);
-      padding-left: 16px;
-      margin: 16px 0;
-      color: var(--el-text-color-secondary);
-    }
-  }
-}
-
-.comment-section {
-  margin-top: 48px;
-  padding-top: 32px;
-  border-top: 1px solid var(--el-border-color-light);
-
-  .section-title {
-    font-size: 20px;
-    margin-bottom: 24px;
-    color: var(--el-text-color-primary);
-  }
-}
-
-@media (max-width: 768px) {
-  .post-container {
-    padding: 24px 16px;
-    margin: 12px;
-  }
-
-  .post-title {
-    font-size: 24px;
   }
 
   .post-content {
-    font-size: 15px;
-    margin: 32px 0;
+    .post-title {
+      font-size: 2em;
+      margin: 0 0 16px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      color: #666;
+
+      .post-tag {
+        margin-right: 8px;
+      }
+
+      .views {
+        margin-left: auto;
+        font-size: 0.9em;
+      }
+    }
+
+    .post-cover {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .content {
+      line-height: 1.8;
+      font-size: 16px;
+
+      :deep(img) {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    .post-actions {
+      margin: 32px 0;
+      text-align: center;
+    }
+  }
+
+  .comment-section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #eee;
+
+    .comment-input {
+      margin-bottom: 32px;
+
+      .submit-btn {
+        margin-top: 12px;
+      }
+    }
+
+    .comment-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f5f5f5;
+
+      .comment-content {
+        flex: 1;
+
+        .comment-header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8px;
+
+          .username {
+            font-weight: 500;
+            margin-right: 8px;
+          }
+
+          .time {
+            color: #999;
+            font-size: 0.8em;
+          }
+        }
+
+        .comment-text {
+          margin: 0;
+          line-height: 1.6;
+        }
+
+        .comment-actions {
+          margin-top: 8px;
+        }
+      }
+
+      .reply-item {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 6px;
+
+        .reply-content {
+          .reply-header {
+            display: flex;
+            align-items: center;
+
+            .username {
+              font-size: 0.9em;
+              margin-right: 8px;
+            }
+
+            .time {
+              color: #999;
+              font-size: 0.8em;
+            }
+          }
+
+          .reply-text {
+            margin: 4px 0 0;
+            font-size: 0.9em;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .author-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+
+      .share-buttons {
+        margin-left: 0;
+      }
+    }
+
+    .post-title {
+      font-size: 1.5em !important;
+    }
   }
 }
 </style>
