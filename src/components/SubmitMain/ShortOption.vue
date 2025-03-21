@@ -14,8 +14,9 @@ const ruleForm = reactive({
   },
   tags: [],
   title: '',
+  diffcult: '',
 })
-const switchOptions = ref([])
+
 
 const options = [
   {
@@ -44,7 +45,7 @@ const rules = {
       trigger: 'change',
     }
   ],
-  location: [
+  diffcult: [
     {
       required: true,
       message: '请选择难度',
@@ -60,6 +61,7 @@ const rules = {
   answer: [
     { required: true, message: '请填写答案', trigger: 'blur' },
   ],
+
 
 }
 
@@ -82,8 +84,10 @@ onMounted(() => {
 watch(ruleForm, () => {
   saveFormToLocalStorage()
 }, { deep: true })
+
 const submitForm = () => {
-  ruleForm.tags = ruleForm.tags.concat(switchOptions.value)
+  // // 将选中的标签页添加到 tags 数组中
+  // ruleForm.tags = ruleForm.tags.concat(switchOptions.value)
   console.log(ruleForm)
 
   // 验证表单
@@ -92,7 +96,7 @@ const submitForm = () => {
       // 提交表单数据
       const res = await addApi(ruleForm)
       console.log(res)
-      // 提交成功后删除表单本地存储
+      // 提交成功后删除表单本地存储0
       ruleFormRef.value.resetFields()
       localStorage.removeItem('ruleForm')
     } else {
@@ -119,8 +123,8 @@ const resetForm = () => {
         <el-cascader v-model="ruleForm.tags" :options="options" />
       </div>
     </el-form-item>
-    <el-form-item label="难度" prop="tags">
-      <el-segmented v-model="switchOptions" :options="locationSOptions" />
+    <el-form-item label="难度" prop="diffcult">
+      <el-segmented v-model="ruleForm.diffcult" :options="locationSOptions" />
     </el-form-item>
     <el-form-item label="题目" prop="title">
       <el-input v-model="ruleForm.title" type="textarea" />
