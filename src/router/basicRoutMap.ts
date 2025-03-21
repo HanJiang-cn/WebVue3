@@ -21,6 +21,13 @@ const routes = [
         path: 'setting',
         name: 'SettingMain',
         component: () => import('@/views/UserMain/SettingMain.vue'),
+        children: [
+          {
+            path: '',
+            name: 'SettingIndex',
+            component: () => import('@/views/UserMain/SettingMain/SettingIndex.vue'),
+          },
+        ],
       },
     ],
   },
@@ -145,11 +152,23 @@ const routes = [
     name: 'Publishpost',
     component: () => import('@/layouts/PublishpostLayout.vue'),
   },
-  // 帖子详情
+  // 帖子
   {
     path: '/post',
     name: 'Post',
     component: () => import('@/layouts/PostLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'PostIndex',
+        component: () => import('@/views/PostMain/PostIndex.vue'),
+      },
+      {
+        path: 'detail',
+        name: 'PostDetail',
+        component: () => import('@/views/PostMain/PostDetail.vue'),
+      },
+    ],
   },
   {
     path: '/store',

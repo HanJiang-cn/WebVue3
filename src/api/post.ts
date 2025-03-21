@@ -26,7 +26,7 @@ interface EditPostData {
 }
 
 interface GetPostData {
-  id: number
+  id: string
 }
 
 function addPostApi(data: AddPostData): Promise<any> {

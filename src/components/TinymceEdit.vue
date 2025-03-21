@@ -1,11 +1,26 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, defineProps, onMounted } from 'vue'
 import Editor from '@tinymce/tinymce-vue'
 import Prism from 'prismjs'
 
 const emit = defineEmits(['modelValue'])
+const props = defineProps({
+  constEdit: {
+    type: String,
+    default: ''
+  }
+})
 const editorContent = ref('')
+onMounted(() => {
+  constup()
+})
+
+function constup() {
+  setTimeout(() => {
+    editorContent.value = props.constEdit
+  }, 1000)
+}
 
 function uploadContent() {
   emit('modelValue', editorContent.value)

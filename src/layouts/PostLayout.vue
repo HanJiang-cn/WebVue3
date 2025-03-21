@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
-import PostMain from '@/views/PostMain/PostMain.vue'
 
 </script>
 <template>
@@ -12,7 +11,7 @@ import PostMain from '@/views/PostMain/PostMain.vue'
     </div>
     <div class="main-layout">
       <div class="main">
-        <PostMain />
+        <RouterView />
       </div>
     </div>
 
