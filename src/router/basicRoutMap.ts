@@ -121,27 +121,27 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'Index',
+        name: 'TeamIndex',
         component: () => import('@/views/TeamMain/TeamMain.vue'),
       },
       {
         path: 'create',
-        name: 'Create',
+        name: 'TeamCreate',
         component: () => import('@/views/TeamMain/TeamMainCreate.vue'),
       },
       {
         path: 'list',
-        name: 'List',
+        name: 'TeamList',
         component: () => import('@/views/TeamMain/TeamMainList.vue'),
       },
       {
         path: 'manage',
-        name: 'Manage',
+        name: 'TeamManage',
         component: () => import('@/views/TeamMain/TeamMainManage.vue'),
       },
       {
         path: 'match',
-        name: 'Match',
+        name: 'TeamMatch',
         component: () => import('@/views/TeamMain/TeamMainMatch.vue'),
       },
     ],
@@ -200,6 +200,34 @@ const routes = [
         path: 'answer',
         name: 'CompetitionProblems',
         component: () => import('@/views/CompetitionMain/CompetitionProblems.vue'),
+      },
+    ],
+  },
+  // 管理员
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('@/layouts/AdminLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'AdminIndex',
+        component: () => import('@/views/AdminMain/AdminIndex.vue'),
+      },
+      {
+        path: 'post',
+        name: 'AdminPost',
+        component: () => import('@/views/AdminMain/AdminPost.vue'),
+      },
+      {
+        path: 'problem',
+        name: 'AdminProblem',
+        component: () => import('@/views/AdminMain/AdminProblem.vue'),
+      },
+      {
+        path: 'users',
+        name: 'AdminUser',
+        component: () => import('@/views/AdminMain/AdminUser.vue'),
       },
     ],
   },

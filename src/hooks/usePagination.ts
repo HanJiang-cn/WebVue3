@@ -8,7 +8,7 @@ export function usePagination(loadData: () => Promise<any>, initalPageSize = 10)
 
   // 使用 reactive 创建一个响应式的分页信息对象
   const pageInfo = reactive({
-    page: 1, // 当前页码
+    current: 1, // 当前页码
     pageSize: initalPageSize, // 每页显示的数量
   })
 
@@ -20,13 +20,13 @@ export function usePagination(loadData: () => Promise<any>, initalPageSize = 10)
 
   // 处理当前页码变化的函数
   const handleCurrentChange = (page: number) => {
-    pageInfo.page = page // 更新当前页码
+    pageInfo.current = page // 更新当前页码
     loadData() // 重新加载数据
   }
 
   // 重置分页信息的函数
   const resetPagination = () => {
-    pageInfo.page = 1 // 重置当前页码为 1
+    pageInfo.current = 1 // 重置当前页码为 1
     pageInfo.pageSize = initalPageSize // 重置每页显示数量为初始值
   }
 

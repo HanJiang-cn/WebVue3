@@ -10,6 +10,7 @@ const userStore = useUserStore()
 const menuItems = ref([
   { name: 'profile', label: '个人中心', icon: 'User' },
   { name: 'settings', label: '账号设置', icon: 'Setting' },
+  { name: 'admin', label: '管理员菜单', icon: 'Setting' },
   { name: 'messages', label: '我的消息', icon: 'Message' },
   { name: 'favorites', label: '我的收藏', icon: 'Star' }
 ])
@@ -37,6 +38,9 @@ const handleLogout = () => {
     router.push('/')
     location.reload()
   })
+}
+const handleNav = (name: string) => {
+  window.open(router.resolve({ path: name, }).href, '_self')
 }
 </script>
 
@@ -104,12 +108,12 @@ const handleLogout = () => {
             </svg>
           </el-col>
           <el-col :span="2">
-            <el-button link @click="router.push('/')">
+            <el-button link @click="handleNav('/')">
               主页
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link @click="router.push('/community')">
+            <el-button link @click="handleNav('/community')">
               社区
             </el-button>
           </el-col>

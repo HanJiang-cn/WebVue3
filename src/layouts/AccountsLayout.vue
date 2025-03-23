@@ -16,7 +16,9 @@ import navMenu from '@/components/navMenu/navMenu.vue'
       </div>
     </div>
     <div class="footer">
-      页脚相关信息
+      <div class="footer-content">
+        <p>© 2025 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa. All rights reserved.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -68,13 +70,24 @@ import navMenu from '@/components/navMenu/navMenu.vue'
 
 .footer {
   // 固定在底部
-  position: fixed;
-  // bottom: 0;
+  position: relative;
+  bottom: 0;
   width: 100%;
   color: #fff;
-  height: 200px;
+  height: 100%;
   border-top: #EBEBEB 1px solid;
   margin-top: 20px;
   background-color: #333;
+
+  .footer-content {
+    max-width: 1700px;
+    width: 100%;
+    height: 22.5vh;
+    margin: 0 auto;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+  }
 }
 </style>

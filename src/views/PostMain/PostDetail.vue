@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
@@ -13,7 +14,7 @@ const loading = ref(false)
 const postList = ref([])
 // 筛选条件
 const filter = reactive({
-  search: '',
+  title: '',
   sort: 'newest'
 })
 
@@ -24,7 +25,7 @@ const fetchPosts = () => {
 // 获取帖子列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getPostListApi({ ...pageInfo, searchText: filter.search })
+  const { data: { records, total } } = await getPostListApi({ ...pageInfo, title: filter.title })
   loading.value = false
   postList.value = records
   setTotals(Number(total))
@@ -33,6 +34,15 @@ const loadData = async () => {
   }))
 }
 
+// 浏览帖子
+const handleBrowse = (id) => {
+  window.open(router.resolve({
+    path: '/post',
+    query: {
+      id: id
+    }
+  }).href, '_blank')
+}
 // 编辑帖子
 const handleEdit = (id) => {
   window.open(router.resolve({
@@ -78,7 +88,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     </div>
     <!-- 筛选工具栏 -->
     <div class="filter-bar">
-      <el-input v-model="filter.search" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchPosts">
+      <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchPosts">
         <template #prefix>
           <el-icon>
             <Search />
@@ -97,7 +107,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       :header-cell-style="{ background: '#409EFF', color: 'white' }">
       <el-table-column prop="title" label="标题" min-width="250">
         <template #default="{ row }">
-          <span class="title-text">{{ row.title }}</span>
+          <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
           <el-tag v-if="row.isTop" effect="dark" type="info" size="small" style="margin-left: 8px">
             置顶
           </el-tag>
