@@ -89,6 +89,10 @@ const submitForm = () => {
       // 提交表单数据
       const res = await addApi(ruleForm)
       console.log(res)
+      ElMessage({
+        message: '提交成功',
+        type: 'success',
+      })
       // 提交成功后删除表单本地存储
       ruleFormRef.value.resetFields()
       localStorage.removeItem('ruleForm')
