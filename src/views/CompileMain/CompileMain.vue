@@ -1,15 +1,37 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import empty from '@/assets/empty-projects.svg'
+import { deleteApi,getApi} from '@/api/question'
+const questions = ref([
+])
 const activeIndex = ref('1')
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
 const radio1 = ref('全部')
 const radio2 = ref('全部')
 const radio3 = ref('全部')
 const radio4 = ref('全部')
+
+const loadData = async () => {
+  const { data: { records }} = await getApi({ ...pageInfo });
+  questions.value = records;
+  questions.value = records.map((records) => ({
+    ...records,
+  }));
+};
+
+onMounted(() => {
+  loadData();
+});
+const handleDelete = async (id: number) => {
+  try {
+    await deleteApi(id)
+    questions.value = questions.value.filter(q => q.id !== id)
+  } catch (error) {
+    console.error('删除失败', error)
+  }
+}
+const handleSelect = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath)
+}
 </script>
 
 <template>
@@ -89,9 +111,14 @@ const radio4 = ref('全部')
   </div>
  </div>
  <div class="content">
-  <img :src="empty">
+  <div  class="question" v-for="question in questions" :key="question.id">
+  <h3>题目:{{ question.title }}</h3>
+  <p>详情:{{ question.content }}</p>
+  <el-button @click="handleDelete(question.id)">删除</el-button>
+  </div>
+  <div><img :src="empty">
 <div class="empty-title">暂无试题</div>
-<div class="no-combo-tips">点击左侧 + 按钮，即可添加文件夹管理个人素材。</div>
+<div class="no-combo-tips">点击左侧 + 按钮，即可添加文件夹管理个人素材。</div></div>
 </div>
   </div>
 </template>
@@ -186,7 +213,29 @@ padding-top: 10px;
     font-size: 12px;
     line-height: 14px;
     }
+.question{
+  width: 100%;
+height: 105px;
+border: #c5c6c8 1px solid;
+border-radius: 10px;
+margin-bottom: 10px;
+padding: 15px;
+transition: all 0.3s ease;
+&:hover{
+  box-shadow:5px 5px 10px rgba(189, 187, 187, 0.3);
 
 }
-
+h3{
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+p{
+  font-size: 14px;
+  line-height: 20px;
+  color: rgb(125, 140, 165);
+  margin-bottom: 10px;
+}
+}
+}
 </style>

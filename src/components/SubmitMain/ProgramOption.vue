@@ -3,8 +3,8 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addApi } from '@/api/question'
 import TinymceEdit from '@/components/TinymceEdit.vue'
-const ruleFormRef = ref()
-const ruleForm = reactive({
+const addDataRef = ref()
+const addData = reactive({
   answer: '',
   content: '',
   judgeCase:[{
@@ -20,7 +20,9 @@ const ruleForm = reactive({
   title: '',
   diffcult: '',
 })
-
+function uploadContent(data: string) {
+  addData.content = data
+}
 const options = [
   {
     value: '1',
@@ -56,7 +58,7 @@ const rules ={
       trigger: 'change',
     }
   ],
-  question: [
+  title: [
     { required: true, message: '请输入题目', trigger: 'blur' },
   ],
   content: [
@@ -74,24 +76,24 @@ const rules ={
 }
 
 const addSample = () => {
-  ruleForm.judgeCase.push({ input: '', output: '' })
-  console.log(ruleForm.judgeCase)
+  addData.judgeCase.push({ input: '', output: '' })
+  console.log(addData.judgeCase)
 }
 
 const removeSample = (index: number) => {
-  ruleForm.judgeCase.splice(index, 1)
-  console.log(ruleForm.judgeCase)
+  addData.judgeCase.splice(index, 1)
+  console.log(addData.judgeCase)
 }
 
 // 保存表单数据到 LocalStorage
 const saveFormToLocalStorage = () => {
-  localStorage.setItem('ruleForm', JSON.stringify(ruleForm))
+  localStorage.setItem('addData', JSON.stringify(addData))
 }
 // 从 LocalStorage 恢复表单数据
 const loadFormFromLocalStorage = () => {
-  const savedForm = localStorage.getItem('ruleForm')
+  const savedForm = localStorage.getItem('addData')
   if (savedForm) {
-    Object.assign(ruleForm, JSON.parse(savedForm))
+    Object.assign(addData, JSON.parse(savedForm))
   }
 }
 // 在组件挂载时加载表单数据和选中的标签页
@@ -99,21 +101,26 @@ onMounted(() => {
   loadFormFromLocalStorage()
 })
 // 在表单数据变化时保存到 LocalStorage
-watch(ruleForm, () => {
+watch(addData, () => {
   saveFormToLocalStorage()
 }, { deep: true })
-const submitForm = () => {
-  console.log(ruleForm)
 
+const submitForm = () => {
+  console.log(addData)
   // 验证表单
-  ruleFormRef.value.validate(async (valid: boolean) => {
+  addDataRef.value.validate(async (valid: boolean) => {
     if (valid) {
       // 提交表单数据
-      const res = await addApi(ruleForm)
+      const res = await addApi(addData)
       console.log(res)
+      ElMessage({
+        message: '提交成功',
+        type: 'success',
+      })
       // 提交成功后删除表单本地存储
-      ruleFormRef.value.resetFields()
-      localStorage.removeItem('ruleForm')
+      addDataRef.value.resetFields()
+
+      localStorage.removeItem('addData')
     } else {
       ElMessage({
         message: '请填写完整信息',
@@ -126,34 +133,34 @@ const submitForm = () => {
 }
 
 const resetForm = () => {
-  ruleFormRef.value.resetFields()
+  addDataRef.value.resetFields()
 }
 </script>
 <template>
   <el-form
-  ref="ruleFormRef"
-  :model="ruleForm"
+  ref="addDataRef"
+  :model="addData"
   :rules="rules"
   label-width="auto"
-  class="demo-ruleForm"
+  class="demo-addData"
   size="default"
     status-icon
   >
      <el-form-item label="分类" prop="tags">
       <div class="m-4">
-    <el-cascader v-model="ruleForm.tags" :options="options" />
+    <el-cascader v-model="addData.tags" :options="options" />
   </div>
     </el-form-item>
     <el-form-item label="难度" prop="diffcult">
-      <el-segmented v-model="ruleForm.diffcult" :options="locationPOptions" />
+      <el-segmented v-model="addData.diffcult" :options="locationPOptions" />
     </el-form-item>
-    <el-form-item label="题目" prop="question">
-      <el-input v-model="ruleForm.title" type="textarea" />
+    <el-form-item label="题目" prop="title">
+      <el-input v-model="addData.title" type="textarea" />
     </el-form-item>
     <el-form-item label="内容" prop="content">
-      <TinymceEdit v-model="ruleForm.content"  />
+      <TinymceEdit v-model="addData.content" @modelValue="uploadContent" />
     </el-form-item>
-  <div v-for="(judgeCase, index) in ruleForm.judgeCase" :key="index" class="sample-io">
+  <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
       <el-form-item :label="`样本输入 ${index + 1}`" :prop="`judgeCase.${index}.input`" :rules="rules.input">
         <el-input v-model="judgeCase.input" type="textarea" />
       </el-form-item>
@@ -166,10 +173,10 @@ const resetForm = () => {
       <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
     </el-form-item>
     <!-- <el-form-item label="解析" prop="descP">
-      <el-input v-model="ruleForm.descP" type="textarea" />
+      <el-input v-model="addData.descP" type="textarea" />
     </el-form-item> -->
     <el-form-item label="答案" prop="answer">
-      <el-input v-model="ruleForm.answer" type="textarea" />
+      <el-input v-model="addData.answer" type="textarea" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm()">
