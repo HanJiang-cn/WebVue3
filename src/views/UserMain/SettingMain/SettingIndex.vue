@@ -1,21 +1,29 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
+import { updateUserApi } from '@/api/user'
+import { useUserStore } from '@/stores/user'
+import { ElNotification } from 'element-plus'
 
-const form = reactive({
-  avatar: 'https://avatar.example.com/user.jpg',
-  username: 'tech_pioneer',
-  realname: '',
-  email: 'user@example.com',
-  phone: '',
-  bio: '全栈开发者 | 开源爱好者 | 技术创作者',
-  gender: '',
-  birthday: '',
-  region: [],
-  github: '',
-  website: '',
-  tags: ['前端开发', 'Vue.js', 'Node.js']
+const form = ref({
+  userAvatar: '',
+  userName: '',
+  // realname: '',
+  // email: 'user@example.com',
+  // phone: '',
+  userProfile: '全栈开发者 | 开源爱好者 | 技术创作者',
+  // gender: '',
+  // birthday: '',
+  // region: [],
+  // github: '',
+  // website: '',
+  // tags: ['前端开发', 'Vue.js', 'Node.js']
 })
+const userStore = useUserStore()
+form.value = {
+  userName: userStore.userName,
+  userProfile: userStore.userProfile,
+}
 
 const inputVisible = ref(false)
 const inputValue = ref('')
@@ -33,7 +41,7 @@ const regionOptions = [
 ]
 
 const removeTag = (tag) => {
-  form.tags.splice(form.tags.indexOf(tag), 1)
+  form.value.tags.splice(form.value.tags.indexOf(tag), 1)
 }
 
 const showInput = () => {
@@ -45,7 +53,7 @@ const showInput = () => {
 
 const addTag = () => {
   if (inputValue.value) {
-    form.tags.push(inputValue.value)
+    form.value.tags.push(inputValue.value)
     inputValue.value = ''
   }
   inputVisible.value = false
@@ -55,8 +63,14 @@ const beforeAvatarUpload = (file) => {
   // 处理头像上传逻辑
 }
 
-const saveProfile = () => {
-  // 保存逻辑
+const saveProfile = async () => {
+  await updateUserApi(form.value)
+  userStore.getUserInfo()
+  ElNotification({
+    title: '成功',
+    message: '个人资料已更新',
+    type: 'success'
+  })
 }
 </script>
 
@@ -73,7 +87,7 @@ const saveProfile = () => {
         <div class="avatar-section">
           <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload">
             <div class="avatar-wrapper">
-              <el-avatar :size="120" :src="form.avatar" />
+              <el-avatar :size="120" :src="form.userAvatar" />
               <div class="upload-mask">
                 <el-icon :size="30">
                   <CameraFilled />
@@ -94,7 +108,7 @@ const saveProfile = () => {
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="用户名" required>
-                <el-input v-model="form.username" placeholder="请输入用户名" clearable />
+                <el-input v-model="form.userName" placeholder="请输入用户名" clearable />
               </el-form-item>
             </el-col>
 
@@ -120,7 +134,7 @@ const saveProfile = () => {
           </el-row>
 
           <el-form-item label="个人简介">
-            <el-input v-model="form.bio" type="textarea" :rows="3" maxlength="150" show-word-limit
+            <el-input v-model="form.userProfile" type="textarea" :rows="3" maxlength="150" show-word-limit
               placeholder="介绍一下你自己..." />
           </el-form-item>
 

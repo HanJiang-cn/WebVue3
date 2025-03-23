@@ -2,7 +2,10 @@
 <!-- eslint-disable vue/component-tags-order -->
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { getPostApi } from '@/api/post'
+import moment from 'moment'
 import LinkCard from '@/components/PostMain/LinkCard.vue'
 import CommentComponent from '@/components/CommentComponent.vue'
 
@@ -25,17 +28,30 @@ const post = ref({
   comments: 42,
   publishTime: '2023-08-15 10:24:36'
 })
-
+const postData = ref({})
+const postUser = ref({})
 const currentUrl = ref(window.location.href)
+const createTime = ref('')
 
 // 模拟数据加载
-onMounted(() => {
-  // 这里可以添加获取帖子详情的API调用
+onMounted(async () => {
+  const router = useRouter()
+  const id = router.currentRoute.value.query.id
+  try {
+    const { data } = await getPostApi({ id: id })
+    postData.value = data
+    postUser.value = data.user
+    createTime.value = moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
+  } catch (error) {
+    console.error('获取帖子详情失败:', error)
+  }
 })
 
-const handleLike = () => {
-  post.value.likes++
-  ElMessage.success('点赞成功')
+// 复制链接
+const handleCopyLink = () => {
+  const url = window.location.href // 当前页面链接
+  navigator.clipboard.writeText(url)
+  ElMessage.success('链接已复制到剪贴板')
 }
 
 const handleFollow = () => {
@@ -45,17 +61,26 @@ const handleFollow = () => {
 
 <template>
   <div class="post-container">
+    <!-- 返回按钮 -->
+    <div class="back-button">
+      <el-button type="text" @click="$router.back()">
+        <el-icon>
+          <ArrowLeft />
+        </el-icon>
+        <span>返回</span>
+      </el-button>
+    </div>
     <!-- 作者信息 -->
     <div class="author-section">
       <div class="author-info">
         <el-avatar :size="60" :src="post.author.avatar" />
         <div class="author-details">
-          <h3>{{ post.author.name }}</h3>
-          <p class="bio">{{ post.author.bio }}</p>
+          <h3>{{ postUser.userName }}</h3>
+          <p class="bio">{{ postUser.userProfile }}</p>
           <div class="meta">
             <span>粉丝 {{ post.author.followers }}</span>
             <span>·</span>
-            <span>{{ post.publishTime }}</span>
+            <span>{{ createTime }}</span>
           </div>
         </div>
       </div>
@@ -67,11 +92,11 @@ const handleFollow = () => {
 
     <!-- 帖子内容 -->
     <div class="post-content">
-      <h1 class="post-title">{{ post.title }}</h1>
+      <h1 class="post-title">{{ postData.title }}</h1>
 
       <div class="post-meta">
         <el-tag type="info">{{ post.category }}</el-tag>
-        <el-tag v-for="(tag, index) in post.tags" :key="index" class="post-tag">
+        <el-tag v-for="(tag, index) in postData.tagList" :key="index" class="post-tag">
           {{ tag }}
         </el-tag>
         <span class="views">阅读 {{ post.views }}</span>
@@ -79,16 +104,52 @@ const handleFollow = () => {
 
       <img v-if="post.cover" :src="post.cover" class="post-cover">
 
-      <div class="content" v-html="post.content"></div>
+      <div class="content" v-html="postData.content"></div>
       <LinkCard url="https://vitepress.yiov.top/" title="Vitepress中文搭建教程" description="https://vitepress.yiov.top/"
         logo="https://vitepress.yiov.top/logo.png" />
 
       <div class="post-actions">
-        <el-button type="danger" @click="handleLike">
+        <el-button>
+          <el-icon>
+            <Pointer />
+          </el-icon>
+          123
+        </el-button>
+        <el-button>
           <el-icon>
             <Star />
-          </el-icon> 点赞 {{ post.likes }}
+          </el-icon>
+          123
         </el-button>
+        <el-button>
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          123
+        </el-button>
+        <!-- 转发 -->
+        <el-popover placement="bottom" :width="200" trigger="click">
+          <template #reference>
+            <el-button>
+              <el-icon>
+                <ImportOutlined />
+              </el-icon>
+              转发
+            </el-button>
+          </template>
+          <template #default>
+            <vue-qrcode value="https://www.bilibili.com/video/BV1hq4y1s7VH/?spm_id_from=333.337.search-card.all.click"
+              width="180"></vue-qrcode>
+            <div style="text-align: center;">
+              <el-button @click="handleCopyLink">
+                <el-icon>
+                  <Link />
+                </el-icon>
+                复制链接
+              </el-button>
+            </div>
+          </template>
+        </el-popover>
       </div>
     </div>
 
@@ -108,6 +169,20 @@ const handleFollow = () => {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+
+  .back-button {
+    margin-bottom: 24px;
+
+    .el-button {
+      .el-icon {
+        font-size: 18px;
+      }
+
+      span {
+        font-size: 16px;
+      }
+    }
+  }
 
   .author-section {
     display: flex;

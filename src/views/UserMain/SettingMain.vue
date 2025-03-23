@@ -1,26 +1,13 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'
-import { updateApi } from '@/api/user'
-import { ElMessage } from 'element-plus'
 
-const userStore = useUserStore()
 const activeMenu = ref('profile')
 
 const handleMenuSelect = (index) => {
   activeMenu.value = index
 }
 
-const saveProfile = async () => {
-  await updateApi(formData.value).then((res) => {
-    if (res.code === 0) {
-      ElMessage.success('个人资料更新成功')
-      userStore.getUserInfo()
-    }
-  })
-  // 更新 store 中的用户信息
-}
 </script>
 
 

@@ -115,7 +115,6 @@ const checkboxGroup1 = ref(['beijing'])
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -130,7 +129,7 @@ const checkboxGroup1 = ref(['beijing'])
 }
 
 .main {
-  width: 85%;
+  width: 65%;
   height: 100%;
   margin: 0 auto;
   margin-top: 40px;

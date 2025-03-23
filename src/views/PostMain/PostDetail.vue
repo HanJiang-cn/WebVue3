@@ -1,187 +1,287 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElNotification, ElMessageBox } from 'element-plus'
-// import { getMyPostsApi, deletePostApi } from '@/api/post'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { getPostListApi, deletePostApi } from '@/api/post'
+import { usePagination } from '@/hooks/usePagination'
+import moment from 'moment'
 
-// 帖子列表数据
-const posts = ref([])
+const router = useRouter()
+// 数据相关
 const loading = ref(false)
-const pagination = reactive({
-  current: 1,
-  pageSize: 10,
-  total: 0
-})
-
+const postList = ref([])
 // 筛选条件
-const filters = reactive({
-  category: '',
-  status: ''
+const filter = reactive({
+  search: '',
+  sort: 'newest'
 })
 
+// 搜索帖子
+const fetchPosts = () => {
+  loadData()
+}
 // 获取帖子列表
-const fetchPosts = async () => {
+const loadData = async () => {
   loading.value = true
-  try {
-    const res = await getMyPostsApi({
-      page: pagination.current,
-      pageSize: pagination.pageSize,
-      ...filters
-    })
-
-    if (res.code === 0) {
-      posts.value = res.data.list
-      pagination.total = res.data.total
-    }
-  } finally {
-    loading.value = false
-  }
+  const { data: { records, total } } = await getPostListApi({ ...pageInfo, searchText: filter.search })
+  loading.value = false
+  postList.value = records
+  setTotals(Number(total))
+  postList.value = records.map((records) => ({
+    ...records,
+  }))
 }
 
+// 编辑帖子
+const handleEdit = (id) => {
+  window.open(router.resolve({
+    path: '/post/edit',
+    query: {
+      id: id
+    }
+  }).href, '_self')
+}
 // 删除帖子
-const handleDelete = async (postId) => {
+const handleDelete = async (id) => {
   try {
-    await ElMessageBox.confirm('确定要删除该帖子吗？', '警告', {
+    await ElMessageBox.confirm('确定要删除该帖子吗？', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
-
-    const res = await deletePostApi(postId)
-    if (res.code === 0) {
-      ElNotification.success({ title: '删除成功' })
-      fetchPosts()
-    }
+    await deletePostApi({ id: id })
+    ElMessage.success('删除成功')
+    fetchPosts()
   } catch (error) {
-    console.error('删除失败:', error)
+    // 取消删除不处理
   }
 }
 
-// 分页变化
-const handlePageChange = (newPage) => {
-  pagination.current = newPage
-  fetchPosts()
-}
-
 onMounted(() => {
-  fetchPosts()
+  loadData()
 })
+const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 </script>
 
 <template>
-  <div class="post-container">
-    <!-- 头部 -->
-    <div class="post-header">
-      <h1 class="post-title">我的帖子</h1>
-      <div class="post-tips">
+  <div class="my-posts-container">
+    <!-- 标题 -->
+    <div class="page-title">
+      <h1>我的帖子</h1>
+      <el-button type="primary" @click="$router.push('/post/create')">
         <el-icon>
-          <InfoFilled />
+          <Plus />
         </el-icon>
-        <span>共发布 {{ pagination.total }} 篇内容</span>
-      </div>
+        发布新帖
+      </el-button>
+    </div>
+    <!-- 筛选工具栏 -->
+    <div class="filter-bar">
+      <el-input v-model="filter.search" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchPosts">
+        <template #prefix>
+          <el-icon>
+            <Search />
+          </el-icon>
+        </template>
+      </el-input>
+
+      <el-select v-model="filter.sort" placeholder="排序方式" style="width: 150px; margin-left: 15px" @change="fetchPosts">
+        <el-option label="最新发布" value="newest" />
+        <el-option label="最近更新" value="updated" />
+      </el-select>
     </div>
 
-    <!-- 筛选条件 -->
-    <el-row :gutter="24" class="filter-section">
-      <el-col :span="8">
-        <el-select v-model="filters.category" placeholder="按分类筛选" clearable>
-          <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-      </el-col>
-      <el-col :span="8">
-        <el-select v-model="filters.status" placeholder="按状态筛选" clearable>
-          <el-option label="已发布" value="published" />
-          <el-option label="草稿" value="draft" />
-        </el-select>
-      </el-col>
-    </el-row>
-
-    <!-- 帖子表格 -->
-    <el-table :data="posts" v-loading="loading" class="post-table">
-      <el-table-column prop="title" label="标题" min-width="200" />
-      <el-table-column prop="category" label="分类" width="120">
+    <!-- 帖子列表 -->
+    <el-table :data="postList" v-loading="loading" style="width: 100%"
+      :header-cell-style="{ background: '#409EFF', color: 'white' }">
+      <el-table-column prop="title" label="标题" min-width="250">
         <template #default="{ row }">
-          {{categories.find(c => c.value === row.category)?.label || '-'}}
-        </template>
-      </el-table-column>
-      <el-table-column prop="tags" label="标签" width="180">
-        <template #default="{ row }">
-          <el-tag v-for="tag in row.tags" :key="tag" size="small" class="tag-margin">
-            {{ tag }}
+          <span class="title-text">{{ row.title }}</span>
+          <el-tag v-if="row.isTop" effect="dark" type="info" size="small" style="margin-left: 8px">
+            置顶
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="发布时间" width="180" />
+
+      <el-table-column prop="category" label="分类" width="120" />
+
+      <el-table-column label="时间" width="180">
+        <template #default="{ row }">
+          <div class="time-cell">
+            <div>发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm') }}</div>
+            <div v-if="row.updateTime">更新：{{ moment(row.updateTime).format('YYYY-MM-DD HH:mm') }}</div>
+          </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="viewCount" label="阅读量" width="100" align="center" />
+
       <el-table-column label="操作" width="120" fixed="right">
         <template #default="{ row }">
-          <el-button type="primary" link @click="$router.push(`/edit-post/${row.id}`)">编辑</el-button>
-          <el-button type="danger" link @click="handleDelete(row.id)">删除</el-button>
+          <el-button type="primary" link @click="handleEdit(row.id)">
+            编辑
+          </el-button>
+
+          <el-button type="danger" link @click="handleDelete(row.id)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 分页 -->
-    <el-pagination class="pagination" background layout="prev, pager, next" :current-page="pagination.current"
-      :page-size="pagination.pageSize" :total="pagination.total" @current-change="handlePageChange" />
+    <div class="pagination">
+      <el-pagination class="mr mt" v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize"
+        :page-sizes="[10, 20, 30, 40]" layout="sizes, prev, pager, next, jumper, total" :total="totals" background
+        @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    </div>
   </div>
 </template>
 
 <style lang="less" scoped>
-.post-container {
-  max-width: 1200px;
-  margin: 24px auto;
-  padding: 32px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+@primary-color: #409EFF;
+@hover-color: #66b1ff;
+@background-start: #f8fafe;
+@background-end: #e3f2fd;
+@text-color: #2c3e50;
+@subtext-color: #7f8c8d;
+@border-color: #ebeef5;
+@shadow-color: rgba(0, 0, 0, 0.04);
 
-  .post-header {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--el-border-color-light);
+.my-posts-container {
+  padding: 24px;
 
-    .post-title {
+  .page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      color: @text-color;
       font-size: 24px;
-      color: var(--el-text-color-primary);
-      margin-bottom: 8px;
     }
 
-    .post-tips {
-      display: flex;
-      align-items: center;
-      color: var(--el-text-color-secondary);
+    .el-button {
+      padding: 8px 16px;
       font-size: 14px;
+      background: @primary-color;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: @hover-color;
+      }
 
       .el-icon {
+        font-size: 16px;
         margin-right: 8px;
-        color: var(--el-color-info);
       }
     }
   }
 
-  .filter-section {
-    margin-bottom: 24px;
+  .filter-bar {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px @shadow-color;
   }
 
-  .post-table {
-    margin-top: 24px;
+  .title-text {
+    color: @text-color;
+    font-weight: 500;
 
-    .tag-margin {
-      margin: 2px;
+    &:hover {
+      color: @primary-color;
+      cursor: pointer;
     }
   }
 
-  .pagination {
-    margin-top: 24px;
-    justify-content: center;
+  .time-cell {
+    font-size: 12px;
+    color: @subtext-color;
+    line-height: 1.5;
   }
 
-  @media (max-width: 768px) {
-    padding: 24px 16px;
-    margin: 12px;
+  // 表格样式
+  :deep(.el-table) {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px @shadow-color;
 
-    .post-table {
-      overflow-x: auto;
+    th.el-table__cell {
+      background: @primary-color !important;
+      color: #fff;
+    }
+
+    tr:hover td {
+      background-color: lighten(@primary-color, 38%) !important;
+    }
+  }
+
+  // 分页样式
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px @shadow-color;
+  }
+}
+
+// 全局样式覆盖
+.el-button {
+  &--primary {
+    color: @primary-color;
+
+    &:hover {
+      color: @hover-color;
+    }
+  }
+}
+
+.el-tag {
+  &--info {
+    background-color: lighten(@primary-color, 33%);
+    border-color: lighten(@primary-color, 20%);
+    color: @primary-color;
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .my-posts-container {
+    padding: 12px;
+
+    .filter-bar {
+      flex-direction: column;
+      gap: 10px;
+
+      .el-input,
+      .el-select {
+        width: 100% !important;
+        margin-left: 0 !important;
+      }
+    }
+
+    :deep(.el-table) {
+
+      td,
+      th {
+        padding: 8px 0;
+      }
+
+      .cell {
+        font-size: 14px;
+      }
     }
   }
 }

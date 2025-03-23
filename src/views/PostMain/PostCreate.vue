@@ -114,33 +114,42 @@ const handleCoverChange = (file) => {
 // 提交表单
 const submitForm = async () => {
   submitting.value = true
-  try {
-    const valid = await formRef.value.validate()
-    if (!valid) return
-    const res = await addPostApi({
-      ...form,
-      tags: [...form.tags, form.category] // 将分类加入标签
-    })
-
-    if (res.code === 0) {
-      ElNotification({
-        title: '成功',
-        message: '发布成功！',
-        type: 'success',
-      })
-      localStorage.removeItem(DRAFT_KEY) // 清除草稿
-      formRef.value.resetFields()
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        const res = await addPostApi({
+          ...form,
+          tags: [...form.tags, form.category] // 将分类加入标签
+        })
+        console.log(res)
+        if (res.code === 0) {
+          ElNotification({
+            title: '成功',
+            message: '发布成功！',
+            type: 'success',
+          })
+          localStorage.removeItem(DRAFT_KEY) // 清除草稿
+          formRef.value.resetFields()
+          window.open(router.resolve({
+            path: '/',
+          }).href, '_self')
+        }
+        submitting.value = false
+        return
+      }
+      catch (error) {
+        ElNotification({
+          title: '发布失败',
+          message: error.message || '请检查网络连接后重试',
+          type: 'error'
+        })
+        submitting.value = false
+      }
     }
-  } catch (error) {
-    ElNotification({
-      title: '发布失败',
-      message: error.message || '请检查网络连接后重试',
-      type: 'error'
-    })
-  } finally {
-    submitting.value = false
-  }
+  })
+  submitting.value = false
 }
+
 // 清除草稿
 const clearDraft = () => {
   localStorage.removeItem(DRAFT_KEY)

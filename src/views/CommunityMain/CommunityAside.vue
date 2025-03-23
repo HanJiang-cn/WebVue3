@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, defineEmits } from 'vue'
+import { useRouter } from 'vue-router'
 
 const emits = defineEmits(['switch'])
 const input3 = ref('')
 const switchIndex = ref(1)
+const router = useRouter()
 
 const handleSwitch = () => {
   emits('switch')
@@ -11,8 +13,19 @@ const handleSwitch = () => {
 }
 
 const handlePost = () => {
-  // 在新的标签页中打开
-  window.open('/publishpost?=' + switchIndex.value, '_blank')
+  // 在当前标签页中打开
+  window.open(router.resolve({
+    path: '/post/create',
+    query: {
+      switchIndex: switchIndex.value
+    }
+  }).href, '_blank')
+}
+const handleMyPost = () => {
+  window.open(
+    router.resolve({
+      path: '/post/detail',
+    }).href, '_self')
 }
 </script>
 
@@ -30,7 +43,7 @@ const handlePost = () => {
   <div class="post" @click="handlePost">
     <span>{{ switchIndex % 2 === 0 ? '发表题目' : '发表帖子' }}</span>
   </div>
-  <div class="my-post">
+  <div class="my-post" @click="handleMyPost">
     <span>我的帖子</span>
   </div>
   <el-card>

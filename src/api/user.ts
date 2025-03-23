@@ -33,7 +33,7 @@ function registerApi(data: RegisterData): Promise<any> {
   return post(Api.Register, data)
 }
 
-function updateApi(data: UpdateData): Promise<any> {
+function updateUserApi(data: UpdateData): Promise<any> {
   return post(Api.Update, data)
 }
 
@@ -42,4 +42,4 @@ function getUserApiInfo() {
   return get(Api.GetUserInfo)
 }
 
-export { loginApi, registerApi, getUserApiInfo, updateApi }
+export { loginApi, registerApi, getUserApiInfo, updateUserApi }

@@ -23,6 +23,8 @@ const handelRegister = () => {
 const handleMenuClick = (item: any) => {
   if (item.name === 'profile') {
     router.push('/user')
+  } else if (item.name === 'settings') {
+    window.open(router.resolve({ path: '/user/setting', }).href, '_self')
   }
 }
 const handleLogout = () => {

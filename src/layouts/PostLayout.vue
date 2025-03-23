@@ -14,8 +14,8 @@ import navMenu from '@/components/navMenu/navMenu.vue'
         <RouterView />
       </div>
     </div>
-
   </div>
+  <el-backtop :right="100" :bottom="100" />
 </template>
 <style lang="less" scoped>
 .header {

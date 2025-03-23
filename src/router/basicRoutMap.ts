@@ -146,12 +146,6 @@ const routes = [
       },
     ],
   },
-  // 发布帖子
-  {
-    path: '/publishpost',
-    name: 'Publishpost',
-    component: () => import('@/layouts/PublishpostLayout.vue'),
-  },
   // 帖子
   {
     path: '/post',
@@ -168,13 +162,25 @@ const routes = [
         name: 'PostDetail',
         component: () => import('@/views/PostMain/PostDetail.vue'),
       },
+      {
+        path: 'edit',
+        name: 'PostEdit',
+        component: () => import('@/views/PostMain/PostEdit.vue'),
+      },
+      {
+        path: 'create',
+        name: 'PostCreate',
+        component: () => import('@/views/PostMain/PostCreate.vue'),
+      },
     ],
   },
+  // 课程中心
   {
     path: '/store',
     name: 'Store',
     component: () => import('@/layouts/StoreLayout.vue'),
   },
+  // 竞赛介绍
   {
     path: '/competition',
     name: 'Competition',

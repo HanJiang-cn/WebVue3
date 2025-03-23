@@ -6,7 +6,9 @@ import { ref, reactive } from 'vue'
 import { useChart } from '@/hooks/useChart'
 // import { usePagination } from '@/hooks/usePagination'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
 const activeName = ref('1')
 const chartRef1 = ref(null)
@@ -134,6 +136,9 @@ const pageInfo = reactive({
   pageSize: 10,
   total: 0,
 })
+const editUserInfo = () => {
+  window.open(router.resolve({ path: '/user/setting', }).href, '_self')
+}
 </script>
 
 <template>
@@ -169,7 +174,7 @@ const pageInfo = reactive({
             </div>
           </el-row>
           <el-row style="width: 100%;">
-            <el-button type="success" plain style="width: 100%;">编辑个人资料</el-button>
+            <el-button type="success" plain style="width: 100%;" @click="editUserInfo">编辑个人资料</el-button>
           </el-row>
           <el-row style="width: 100%;">
             <!-- <span>积分</span> -->

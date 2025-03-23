@@ -6,6 +6,7 @@ enum Api {
   DeletePost = '/post/delete',
   EditPost = '/post/edit',
   GetPost = '/post/get/vo',
+  GetPostList = '/post/my/list/page/vo',
 }
 
 interface AddPostData {
@@ -15,7 +16,7 @@ interface AddPostData {
 }
 
 interface DeletePostData {
-  id: number
+  id: string
 }
 
 interface EditPostData {
@@ -45,4 +46,8 @@ function getPostApi(data: GetPostData): Promise<any> {
   return get(Api.GetPost, data)
 }
 
-export { addPostApi, deletePostApi, editPostApi, getPostApi }
+function getPostListApi(data: any): Promise<any> {
+  return post(Api.GetPostList, data)
+}
+
+export { addPostApi, deletePostApi, editPostApi, getPostApi, getPostListApi }
