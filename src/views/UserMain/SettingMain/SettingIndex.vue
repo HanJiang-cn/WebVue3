@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref } from 'vue'
-import { updateUserApi } from '@/api/user'
+import { updateLoginUserApi } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { ElNotification } from 'element-plus'
 
@@ -64,7 +64,7 @@ const beforeAvatarUpload = (file) => {
 }
 
 const saveProfile = async () => {
-  await updateUserApi(form.value)
+  await updateLoginUserApi(form.value)
   userStore.getUserInfo()
   ElNotification({
     title: '成功',

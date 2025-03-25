@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { loginApi, getUserApiInfo } from '@/api/user'
+import { loginApi, getLoginUserInfoApi } from '@/api/user'
 import { ElNotification } from 'element-plus'
 
 export const useUserStore = defineStore('user', () => {
@@ -38,7 +38,7 @@ export const useUserStore = defineStore('user', () => {
 
   // 获取用户信息
   const getUserInfo = async () => {
-    const response = await getUserApiInfo()
+    const response = await getLoginUserInfoApi()
     id.value = response.data.id
     userName.value = response.data.userName
     userAccount.value = response.data.userAccount

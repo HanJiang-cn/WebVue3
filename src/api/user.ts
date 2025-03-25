@@ -33,13 +33,13 @@ function registerApi(data: RegisterData): Promise<any> {
   return post(Api.Register, data)
 }
 
-function updateUserApi(data: UpdateData): Promise<any> {
+function updateLoginUserApi(data: UpdateData): Promise<any> {
   return post(Api.Update, data)
 }
 
 // 获取用户信息
-function getUserApiInfo() {
+function getLoginUserInfoApi() {
   return get(Api.GetUserInfo)
 }
 
-export { loginApi, registerApi, getUserApiInfo, updateUserApi }
+export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi }

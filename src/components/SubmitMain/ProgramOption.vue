@@ -7,7 +7,7 @@ const addDataRef = ref()
 const addData = reactive({
   answer: '',
   content: '',
-  judgeCase:[{
+  judgeCase: [{
     input: '',
     output: ''
   }],
@@ -43,7 +43,7 @@ const options = [
 ]
 const locationPOptions = ['简单', '适中', '困难']
 
-const rules ={
+const rules = {
   tags: [
     {
       required: true,
@@ -64,7 +64,7 @@ const rules ={
   content: [
     { required: true, message: '请填写内容', trigger: 'blur' },
   ],
- input: [
+  input: [
     { required: true, message: '请填写样本输入', trigger: 'blur' },
   ],
   output: [
@@ -137,19 +137,12 @@ const resetForm = () => {
 }
 </script>
 <template>
-  <el-form
-  ref="addDataRef"
-  :model="addData"
-  :rules="rules"
-  label-width="auto"
-  class="demo-addData"
-  size="default"
-    status-icon
-  >
-     <el-form-item label="分类" prop="tags">
+  <el-form ref="addDataRef" :model="addData" :rules="rules" label-width="auto" class="demo-addData" size="default"
+    status-icon>
+    <el-form-item label="分类" prop="tags">
       <div class="m-4">
-    <el-cascader v-model="addData.tags" :options="options" />
-  </div>
+        <el-cascader v-model="addData.tags" :options="options" />
+      </div>
     </el-form-item>
     <el-form-item label="难度" prop="diffcult">
       <el-segmented v-model="addData.diffcult" :options="locationPOptions" />
@@ -158,9 +151,9 @@ const resetForm = () => {
       <el-input v-model="addData.title" type="textarea" />
     </el-form-item>
     <el-form-item label="内容" prop="content">
-      <TinymceEdit v-model="addData.content" @modelValue="uploadContent" />
+      <TinymceEdit v-model="addData.content" @modelValue="uploadContent" style="width: 100%;" />
     </el-form-item>
-  <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
+    <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
       <el-form-item :label="`样本输入 ${index + 1}`" :prop="`judgeCase.${index}.input`" :rules="rules.input">
         <el-input v-model="judgeCase.input" type="textarea" />
       </el-form-item>
@@ -187,21 +180,23 @@ const resetForm = () => {
   </el-form>
 </template>
 <style lang="less" scoped>
-#text{
+#text {
   margin-bottom: 20px;
   margin-left: 35px;
 }
-.test{
+
+.test {
   margin-bottom: 20px;
   border-bottom: 1px dashed #c0c4cc;
 }
+
 .sample-io {
   margin-bottom: 20px;
   border-bottom: 1px dashed #c0c4cc;
   padding-bottom: 20px;
 }
-.el-form-item--default{
+
+.el-form-item--default {
   margin-bottom: 25px;
 }
-
 </style>

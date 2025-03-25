@@ -116,7 +116,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
       <el-table-column prop="category" label="分类" width="120" />
 
-      <el-table-column label="时间" width="180">
+      <el-table-column label="时间" width="200">
         <template #default="{ row }">
           <div class="time-cell">
             <div>发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm') }}</div>
@@ -157,7 +157,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 @text-color: #2c3e50;
 @subtext-color: #7f8c8d;
 @border-color: #ebeef5;
-@shadow-color: rgba(0, 0, 0, 0.04);
+@shadow-color: rgba(64, 158, 255, 0.08); // 调整阴影色偏蓝
 
 .my-posts-container {
   padding: 24px;
@@ -166,131 +166,167 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px @shadow-color;
 
     h1 {
-      color: @text-color;
-      font-size: 24px;
+      color: darken(@primary-color, 10%);
+      font-size: 26px;
+      font-weight: 600;
+      margin: 0;
+      position: relative;
+      padding-left: 36px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 28px;
+        height: 28px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23409EFF" d="M3 3h18v2H3V3m0 4h12v2H3V7m0 4h18v2H3v-2m0 4h12v2H3v-2m0 4h18v2H3v-2"/></svg>');
+      }
     }
 
     .el-button {
-      padding: 8px 16px;
-      font-size: 14px;
-      background: @primary-color;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      transition: background 0.3s ease;
-
-      &:hover {
-        background: @hover-color;
-      }
-
-      .el-icon {
-        font-size: 16px;
-        margin-right: 8px;
-      }
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
   .filter-bar {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px @shadow-color;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px @shadow-color;
+
+    .el-input {
+      :deep(.el-input__wrapper) {
+        border-radius: 8px;
+        padding: 0 16px;
+        transition: box-shadow 0.3s;
+
+        &:hover {
+          box-shadow: 0 0 0 2px fade(@primary-color, 20%);
+        }
+      }
+    }
+
+    .el-select {
+      margin-left: 12px;
+
+      :deep(.el-input__wrapper) {
+        border-radius: 8px;
+      }
+    }
   }
 
   .title-text {
-    color: @text-color;
-    font-weight: 500;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s;
+    cursor: pointer;
 
     &:hover {
       color: @primary-color;
-      cursor: pointer;
+
+      &::after {
+        width: 100%;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: @primary-color;
+      transition: width 0.3s;
     }
   }
 
-  .time-cell {
-    font-size: 12px;
-    color: @subtext-color;
-    line-height: 1.5;
-  }
-
-  // 表格样式
   :deep(.el-table) {
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px @shadow-color;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    background: transparent;
 
     th.el-table__cell {
-      background: @primary-color !important;
-      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
     }
 
-    tr:hover td {
-      background-color: lighten(@primary-color, 38%) !important;
+    tr {
+      transition: transform 0.3s, box-shadow 0.3s;
     }
   }
 
-  // 分页样式
   .pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: flex-end;
-    padding: 15px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px @shadow-color;
-  }
-}
+    margin-top: 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px @shadow-color;
 
-// 全局样式覆盖
-.el-button {
-  &--primary {
-    color: @primary-color;
+    :deep(.btn-prev),
+    :deep(.btn-next),
+    :deep(.el-pager li) {
+      border-radius: 8px;
+      transition: all 0.3s;
 
-    &:hover {
-      color: @hover-color;
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px @shadow-color;
+      }
     }
   }
 }
 
-.el-tag {
-  &--info {
-    background-color: lighten(@primary-color, 33%);
-    border-color: lighten(@primary-color, 20%);
-    color: @primary-color;
-  }
-}
-
-// 响应式设计
 @media (max-width: 768px) {
   .my-posts-container {
-    padding: 12px;
+    padding: 16px;
 
-    .filter-bar {
+    .page-title {
       flex-direction: column;
-      gap: 10px;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px;
 
-      .el-input,
-      .el-select {
-        width: 100% !important;
-        margin-left: 0 !important;
+      h1 {
+        font-size: 22px;
+        padding-left: 28px;
+
+        &::before {
+          width: 24px;
+          height: 24px;
+        }
       }
     }
 
     :deep(.el-table) {
 
-      td,
-      th {
-        padding: 8px 0;
-      }
-
-      .cell {
-        font-size: 14px;
+      th,
+      td {
+        padding: 12px 0;
       }
     }
   }
