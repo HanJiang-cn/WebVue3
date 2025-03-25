@@ -1,16 +1,12 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import ewm from '@/assets/ewm.png'
 import { useUserStore } from '@/stores/user'
 
-onMounted(() => {
-  const userStore = useUserStore()
-  console.log(userStore.id)
-
-})
 const userStore = useUserStore()
 const router = useRouter()
 const activeName = ref('1')
@@ -72,13 +68,9 @@ const handleSubmitForm2 = async () => {
   form2.value.validate(async (valid) => {
     if (valid) {
       await userStore.login(formData.value.users)
-      router.push('/')
-    } else {
-      ElNotification({
-        title: '失败',
-        message: '用户名密码或账户有误',
-        type: 'error',
-      })
+      if (userStore.id) {
+        router.push('/')
+      }
     }
   })
 }

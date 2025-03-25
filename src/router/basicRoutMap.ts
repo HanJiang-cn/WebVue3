@@ -213,21 +213,34 @@ const routes = [
         path: '',
         name: 'AdminIndex',
         component: () => import('@/views/AdminMain/AdminIndex.vue'),
+        meta: {
+          needAuth: 'admin',
+        },
       },
       {
         path: 'post',
         name: 'AdminPost',
         component: () => import('@/views/AdminMain/AdminPost.vue'),
+        meta: {
+          needAuth: 'admin',
+        },
       },
       {
         path: 'problem',
         name: 'AdminProblem',
         component: () => import('@/views/AdminMain/AdminProblem.vue'),
+        meta: {
+          needAuth: 'admin',
+        },
       },
       {
         path: 'users',
         name: 'AdminUser',
         component: () => import('@/views/AdminMain/AdminUser.vue'),
+        // 权限设置
+        meta: {
+          needAuth: 'admin',
+        },
       },
     ],
   },

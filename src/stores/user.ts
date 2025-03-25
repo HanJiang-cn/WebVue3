@@ -3,16 +3,44 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { loginApi, getLoginUserInfoApi } from '@/api/user'
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore('user', () => {
-  const id = ref(sessionStorage.getItem('id') || '')
-  const userName = ref(sessionStorage.getItem('userName') || '')
-  const userAccount = ref(sessionStorage.getItem('userAccount') || '')
-  const userProfile = ref(sessionStorage.getItem('userProfile') || '')
-  const userRole = ref(sessionStorage.getItem('userRole') || '')
+  // Cookie名称和配置
+  const USER_COOKIE_KEY = 'user_info'
+  const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
+
+  // 从cookie中解析用户信息或初始化空值
+  const userCookie = Cookies.get(USER_COOKIE_KEY)
+  const initialUser = userCookie
+    ? JSON.parse(userCookie)
+    : {
+        id: '',
+        userName: '',
+        userAccount: '',
+        userProfile: '',
+        userRole: '',
+      }
+
+  const id = ref(initialUser.id)
+  const userName = ref(initialUser.userName)
+  const userAccount = ref(initialUser.userAccount)
+  const userProfile = ref(initialUser.userProfile)
+  const userRole = ref(initialUser.userRole)
+
+  // 更新cookie中的用户信息
+  const updateUserCookie = () => {
+    const userData = {
+      id: id.value,
+      userName: userName.value,
+      userAccount: userAccount.value,
+      userProfile: userProfile.value,
+      userRole: userRole.value,
+    }
+    Cookies.set(USER_COOKIE_KEY, JSON.stringify(userData), COOKIE_OPTIONS)
+  }
 
   const login = async (data: any) => {
-    // 登录接口, 成功后将相关数据存储到本地存储中, 否则抛出错误
     try {
       const response = await loginApi(data)
       id.value = response.data.id
@@ -20,18 +48,13 @@ export const useUserStore = defineStore('user', () => {
       userAccount.value = response.data.userAccount
       userProfile.value = response.data.userProfile
       userRole.value = response.data.userRole
-      sessionStorage.setItem('id', response.data.id)
-      sessionStorage.setItem('userName', response.data.userName)
-      sessionStorage.setItem('userAccount', response.data.userAccount)
-      sessionStorage.setItem('userProfile', response.data.userProfile)
-      sessionStorage.setItem('userRole', response.data.userRole)
+      updateUserCookie()
       ElNotification({
         title: '成功',
         message: '登陆成功',
         type: 'success',
       })
     } catch (error) {
-      // 抛出错误
       console.log('登录失败:', error)
     }
   }
@@ -44,17 +67,14 @@ export const useUserStore = defineStore('user', () => {
     userAccount.value = response.data.userAccount
     userProfile.value = response.data.userProfile
     userRole.value = response.data.userRole
-    sessionStorage.setItem('id', response.data.id)
-    sessionStorage.setItem('userName', response.data.userName)
-    sessionStorage.setItem('userAccount', response.data.userAccount)
-    sessionStorage.setItem('userProfile', response.data.userProfile)
-    sessionStorage.setItem('userRole', response.data.userRole)
+    updateUserCookie()
   }
 
   const logout = () => {
-    // 清除本地存储中的数据
-    sessionStorage.clear()
+    // 清除cookie中的用户信息
+    Cookies.remove(USER_COOKIE_KEY)
     // 清除pinia中的数据
+    id.value = ''
     userName.value = ''
     userAccount.value = ''
     userProfile.value = ''
@@ -65,6 +85,7 @@ export const useUserStore = defineStore('user', () => {
       type: 'success',
     })
   }
+
   return {
     id,
     userName,
