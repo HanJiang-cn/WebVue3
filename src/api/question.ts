@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { post, get } from '@/utils/http'
-export const getDetailApi = (id) => request.get(`/question/${id}`)
 enum Api {
   add = '/question/add',
   delete = '/question/delete',
   edit = '/question/edit',
   get = '/question/list/page/vo',
   getMy = '/question/my/list/page/vo',
+  getDetail = '/question/get/vo'
 }
 interface addData {
   answer: string
@@ -48,6 +48,9 @@ interface getMyData {
   title: string
   userId: number
 }
+interface getDetailData {
+  id: number
+}
 function addApi(data: addData) {
   return post(Api.add, data)
 }
@@ -63,4 +66,7 @@ function getApi(data: getData) {
 function getMyApi(data: getMyData) {
   return post(Api.getMy, data)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi }
+function getDetailApi(data: getDetailData) {
+  return get(Api.getDetail, data)
+}
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi }
