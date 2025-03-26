@@ -3,11 +3,11 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import { addApi } from '@/api/question'
 import { ElMessage } from 'element-plus'
-import MoreOptions from '@/components/SubmitMain/MoreOptions.vue'
-import JudgeOption from '@/components/SubmitMain/JudgeOption.vue'
-import BlanksOptions from '@/components/SubmitMain/BlanksOptions.vue'
-import ProgramOption from '@/components/SubmitMain/ProgramOption.vue'
-import ShortOption from '@/components/SubmitMain/ShortOption.vue'
+import MoreOptions from '@/components/QuestionMain/SubmitMain/MoreOptions.vue'
+import JudgeOption from '@/components/QuestionMain/SubmitMain/JudgeOption.vue'
+import BlanksOptions from '@/components/QuestionMain/SubmitMain/BlanksOptions.vue'
+import ProgramOption from '@/components/QuestionMain/SubmitMain/ProgramOption.vue'
+import ShortOption from '@/components/QuestionMain/SubmitMain/ShortOption.vue'
 const activeName = ref(localStorage.getItem('activeTab') || 'first')
 
 const handleClick = (tab: TabsPaneContext, event: Event) => {

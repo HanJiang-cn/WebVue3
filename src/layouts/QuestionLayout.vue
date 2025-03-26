@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import navMenu from '@/components/navMenu/navMenu.vue'
-import ProblemsetMain from '@/views/ProblemsetMain/ProblemsetMain.vue'
 
 </script>
-
 <template>
   <div class="default-layout">
     <div class="header">
@@ -13,16 +11,12 @@ import ProblemsetMain from '@/views/ProblemsetMain/ProblemsetMain.vue'
     </div>
     <div class="main-layout">
       <div class="main">
-        <ProblemsetMain />
+        <RouterView />
       </div>
     </div>
-    <div class="footer">
-      页脚相关信息
-    </div>
   </div>
+  <el-backtop :right="100" :bottom="100" />
 </template>
-
-
 <style lang="less" scoped>
 .header {
   height: 50px;
@@ -54,24 +48,5 @@ import ProblemsetMain from '@/views/ProblemsetMain/ProblemsetMain.vue'
     // margin-top: 40px;
   }
 
-  // .aside {
-  //   width: 350px;
-  //   padding-top: 50px;
-  //   color: #333;
-  //   text-align: right;
-
-  //   .aside-content {
-  //     text-align: left;
-  //     height: 100%;
-  //   }
-  // }
-}
-
-.footer {
-  color: #fff;
-  height: 200px;
-  border-top: #EBEBEB 1px solid;
-  margin-top: 20px;
-  background-color: #333;
 }
 </style>

@@ -71,6 +71,13 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
+// 新增
+const handleCreate = () => {
+  const url = router.resolve({
+    path: '/submit',
+  }).href
+  window.open(url, '_blank')
+}
 </script>
 
 <template>
@@ -80,7 +87,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         <h2 style="display: inline-block;">试题库</h2>
         <div id="right">
           <div class="right">
-            <a href="#"> <el-button id="create" type="primary" round>新增试题</el-button></a>
+            <el-button id="create" type="primary" round @click="handleCreate">新增试题</el-button>
             <span> <input placeholder="请输入题号或其他关键词进行搜索" type="text">
             </span>
           </div>

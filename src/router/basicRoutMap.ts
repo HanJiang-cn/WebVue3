@@ -31,12 +31,6 @@ const routes = [
       },
     ],
   },
-  // 题目列表
-  {
-    path: '/problemset',
-    name: 'Problemset',
-    component: () => import('@/layouts/ProblemsetLayout.vue'),
-  },
   // 登录&注册
   {
     path: '/accounts',
@@ -113,23 +107,33 @@ const routes = [
     name: 'Contest',
     component: () => import('@/layouts/ContestLayout.vue'),
   },
-  // 试题库
+  // 题目
   {
-    path: '/compile',
-    name: 'Compile',
-    component: () => import('@/layouts/CompileLayout.vue'),
-  },
-  {
-    path: '/question/edit',
-    name: 'QuestionEdit',
-    component: () => import('@/views/CompileMain/CompileEdit.vue'),
-    props: (route: { query: { id: unknown } }) => ({ id: route.query.id }) // 推荐使用props接收参数
-  },
-  // 提交题目
-  {
-    path: '/submit',
-    name: 'Submit',
-    component: () => import('@/layouts/SubmitLayout.vue'),
+    path: '/question',
+    name: 'Question',
+    component: () => import('@/layouts/QuestionLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'QuestionIndex',
+        component: () => import('@/views/QuestionMain/QuestionIndex.vue'),
+      },
+      {
+        path: 'compile',
+        name: 'QuestionCompile',
+        component: () => import('@/views/QuestionMain/QuestionCompile.vue'),
+      },
+      {
+        path: 'edit',
+        name: 'QuestionEdit',
+        component: () => import('@/views/QuestionMain/QuestionEdit.vue'),
+      },
+      {
+        path: 'submit',
+        name: 'QuestionSubmit',
+        component: () => import('@/views/QuestionMain/QuestionSubmit.vue'),
+      },
+    ],
   },
   // 组队
   {
