@@ -14,14 +14,14 @@ const loading = ref(false)
 
 // 查询条件
 const searchParams = ref({
-  name: '',
+  title: '',
   id: '',
   content: '',
 })
 // 重置查询条件
 const handleReset = () => {
   searchParams.value = {
-    name: '',
+    title: '',
     id: '',
     content: '',
   }
@@ -31,7 +31,7 @@ const handleReset = () => {
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getPostList({ ...pageInfo, userName: searchParams.value.name })
+  const { data: { records, total } } = await getPostList({ ...pageInfo, title: searchParams.value.title, id: searchParams.value.id, content: searchParams.value.content })
 
   // 并行请求用户信息
   const userRequests = records.map(record =>
@@ -90,7 +90,7 @@ const handleDelete = async (id) => {
   <el-card>
     <el-row :gutter="24">
       <el-col :span="6">
-        <el-input placeholder="请输入标题" v-model="searchParams.name"></el-input>
+        <el-input placeholder="请输入标题" v-model="searchParams.title"></el-input>
       </el-col>
       <el-col :span="6">
         <el-input placeholder="请输入内容" v-model="searchParams.content"></el-input>

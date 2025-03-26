@@ -7,10 +7,16 @@ import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userStore = useUserStore()
-const menuItems = ref([
+const menuItemsAdmin = ref([
   { name: 'profile', label: '个人中心', icon: 'User' },
   { name: 'settings', label: '账号设置', icon: 'Setting' },
   { name: 'admin', label: '管理员菜单', icon: 'Setting' },
+  { name: 'messages', label: '我的消息', icon: 'Message' },
+  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+])
+const menuItems = ref([
+  { name: 'profile', label: '个人中心', icon: 'User' },
+  { name: 'settings', label: '账号设置', icon: 'Setting' },
   { name: 'messages', label: '我的消息', icon: 'Message' },
   { name: 'favorites', label: '我的收藏', icon: 'Star' }
 ])
@@ -23,9 +29,15 @@ const handelRegister = () => {
 }
 const handleMenuClick = (item: any) => {
   if (item.name === 'profile') {
-    router.push('/user')
+    handleNav('/user')
   } else if (item.name === 'settings') {
-    window.open(router.resolve({ path: '/user/setting', }).href, '_self')
+    handleNav('/user/setting')
+  } else if (item.name === 'admin') {
+    handleNav('/admin')
+  } else if (item.name === 'messages') {
+    handleNav('/accounts/notifications')
+  } else if (item.name === 'favorites') {
+    handleNav('/accounts/collection')
   }
 }
 const handleLogout = () => {
@@ -165,7 +177,7 @@ const handleNav = (name: string) => {
             </el-button>
           </el-col>
           <el-col :span="3">
-            <el-button size="small" text>
+            <el-button size="small" text @click="handleNav('/accounts/notifications')">
               <el-icon :size="18">
                 <BellFilled />
               </el-icon>
@@ -187,7 +199,13 @@ const handleNav = (name: string) => {
                 </div>
 
                 <!-- 功能菜单 -->
-                <div class="menu-list">
+                <div class="menu-list" v-if="userStore.userRole === 'admin'">
+                  <div v-for="item in menuItemsAdmin" :key="item.name" class="menu-item" @click="handleMenuClick(item)">
+                    <component :is="item.icon" class="icon" />
+                    <span>{{ item.label }}</span>
+                  </div>
+                </div>
+                <div class="menu-list" v-else>
                   <div v-for="item in menuItems" :key="item.name" class="menu-item" @click="handleMenuClick(item)">
                     <component :is="item.icon" class="icon" />
                     <span>{{ item.label }}</span>

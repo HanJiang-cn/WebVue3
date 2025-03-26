@@ -150,15 +150,6 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 </template>
 
 <style lang="less" scoped>
-@primary-color: #409EFF;
-@hover-color: #66b1ff;
-@background-start: #f8fafe;
-@background-end: #e3f2fd;
-@text-color: #2c3e50;
-@subtext-color: #7f8c8d;
-@border-color: #ebeef5;
-@shadow-color: rgba(64, 158, 255, 0.08); // 调整阴影色偏蓝
-
 .my-posts-container {
   padding: 24px;
 
@@ -170,10 +161,10 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     padding: 20px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 20px @shadow-color;
+    box-shadow: 0 4px 20px rgba(64, 158, 255, 0.08);
 
     h1 {
-      color: darken(@primary-color, 10%);
+      color: darken(#409EFF, 10%);
       font-size: 26px;
       font-weight: 600;
       margin: 0;
@@ -206,7 +197,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     padding: 16px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 20px @shadow-color;
+    box-shadow: 0 4px 20px rgba(64, 158, 255, 0.08);
 
     .el-input {
       :deep(.el-input__wrapper) {
@@ -215,7 +206,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         transition: box-shadow 0.3s;
 
         &:hover {
-          box-shadow: 0 0 0 2px fade(@primary-color, 20%);
+          box-shadow: 0 0 0 2px fade(#409EFF, 20%);
         }
       }
     }
@@ -236,7 +227,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     cursor: pointer;
 
     &:hover {
-      color: @primary-color;
+      color: #409EFF;
 
       &::after {
         width: 100%;
@@ -250,7 +241,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       left: 0;
       width: 0;
       height: 1px;
-      background: @primary-color;
+      background: #409EFF;
       transition: width 0.3s;
     }
   }
@@ -285,7 +276,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     padding: 16px;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 20px @shadow-color;
+    box-shadow: 0 4px 20px rgba(64, 158, 255, 0.08);
 
     :deep(.btn-prev),
     :deep(.btn-next),
@@ -295,7 +286,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px @shadow-color;
+        box-shadow: 0 4px 8px rgba(64, 158, 255, 0.08);
       }
     }
   }

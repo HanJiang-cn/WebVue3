@@ -16,12 +16,14 @@ const userId = ref('')
 const searchParams = ref({
   name: '',
   id: '',
+  userRole: '',
 })
 // 重置查询条件
 const handleReset = () => {
   searchParams.value = {
     name: '',
     id: '',
+    userRole: '',
   }
   loadData()
 }
@@ -29,7 +31,7 @@ const handleReset = () => {
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total }, } = await getUserList({ ...pageInfo, userName: searchParams.value.name })
+  const { data: { records, total }, } = await getUserList({ ...pageInfo, userName: searchParams.value.name, id: searchParams.value.id, userRole: searchParams.value.userRole })
   loading.value = false
   dataList.value = records
   setTotals(Number(total))
@@ -77,11 +79,17 @@ const handleDelete = (id) => {
       <el-col :span="6">
         <el-input placeholder="请输入用户ID" v-model="searchParams.id"></el-input>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
+        <el-select v-model="searchParams.userRole" placeholder="请选择用户角色">
+          <el-option label="管理员" value="admin" />
+          <el-option label="普通用户" value="user" />
+        </el-select>
+      </el-col>
+      <el-col :span="5">
         <el-button type="primary" @click="loadData">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="3">
         <el-button class="fr" type="primary" @click="handleEdit(0)">新增用户</el-button>
       </el-col>
     </el-row>

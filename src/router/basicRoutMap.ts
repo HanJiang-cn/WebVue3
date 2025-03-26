@@ -41,19 +41,32 @@ const routes = [
   {
     path: '/accounts',
     name: 'Accounts',
-    redirect: '/accounts/login',
+    // redirect: '/accounts/login',
     component: () => import('@/layouts/AccountsLayout.vue'),
     children: [
+      // 登录
       {
         path: 'login',
         name: 'Login',
-        component: () => import('@/views/LoginMain/LoginCard.vue'),
+        component: () => import('@/views/AccountsMain/LoginCard.vue'),
       },
       // 注册
       {
         path: 'register',
         name: 'Register',
-        component: () => import('@/views/LoginMain/RegisterCard.vue'),
+        component: () => import('@/views/AccountsMain/RegisterCard.vue'),
+      },
+      // 通知
+      {
+        path: 'notifications',
+        name: 'Notifications',
+        component: () => import('@/views/AccountsMain/NotificationsView.vue'),
+      },
+      // 收藏
+      {
+        path: 'collection',
+        name: 'Collection',
+        component: () => import('@/views/AccountsMain/CollectionView.vue'),
       },
     ],
   },
