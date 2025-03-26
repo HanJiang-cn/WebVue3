@@ -162,6 +162,8 @@ const clearDraft = () => {
     type: 'success',
     duration: 2000
   })
+  // 刷新页面
+  window.location.reload()
 }
 // 保存草稿
 const saveDraft = () => {
