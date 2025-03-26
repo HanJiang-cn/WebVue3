@@ -5,6 +5,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
 import { addPostApi } from '@/api/post'
 import TinymceEdit from '@/components/TinymceEdit.vue'
+import router from '@/router'
 
 // 表单引用
 const formRef = ref(null)
@@ -130,9 +131,10 @@ const submitForm = async () => {
           })
           localStorage.removeItem(DRAFT_KEY) // 清除草稿
           formRef.value.resetFields()
-          window.open(router.resolve({
-            path: '/',
-          }).href, '_self')
+          // window.open(router.resolve({
+          //   path: '/post/detail',
+          // }).href, '_self')
+          router.push('/post/detail')
         }
         submitting.value = false
         return

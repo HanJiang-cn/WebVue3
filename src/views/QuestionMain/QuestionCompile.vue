@@ -77,7 +77,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 // 新增
 const handleCreate = () => {
   const url = router.resolve({
-    path: '/submit',
+    path: '/question/submit',
   }).href
   window.open(url, '_blank')
 }
@@ -98,7 +98,7 @@ const handleCreate = () => {
       </div>
       <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" style="width: 100%;">
         <el-tab-pane label="公共" name="first">
-     <QuestionCompile></QuestionCompile>
+          <QuestionCompile></QuestionCompile>
         </el-tab-pane>
         <el-tab-pane label="我创建的" name="second">
           <QuestionCompileOv></QuestionCompileOv>
@@ -248,4 +248,3 @@ const handleCreate = () => {
   }
 }
 </style>
-
