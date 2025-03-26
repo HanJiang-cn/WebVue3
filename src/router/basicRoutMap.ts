@@ -119,6 +119,12 @@ const routes = [
     name: 'Compile',
     component: () => import('@/layouts/CompileLayout.vue'),
   },
+  {
+    path: '/question/edit',
+    name: 'QuestionEdit',
+    component: () => import('@/views/CompileMain/CompileEdit.vue'),
+    props: (route: { query: { id: unknown } }) => ({ id: route.query.id }) // 推荐使用props接收参数
+  },
   // 提交题目
   {
     path: '/submit',
