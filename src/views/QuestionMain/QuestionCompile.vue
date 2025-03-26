@@ -8,9 +8,8 @@ import { usePagination } from '@/hooks/usePagination'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import moment from 'moment'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-
-const userStore = useUserStore()
+import QuestionCompileOv from '@/components/QuestionMain/SubmitMain/QuestionCompileOv.vue'
+import QuestionCompile from '@/components/QuestionMain/QuestionCompile.vue'
 const router = useRouter()
 const questions = ref([])
 const myQuestions = ref([])
@@ -55,6 +54,7 @@ const handleDelete = async (id) => {
     await deleteApi({ id: id })
     ElMessage.success('删除成功')
     loadMyData()
+    loadData()
   } catch (error) {
     // 取消删除不处理
   }
@@ -72,12 +72,12 @@ onMounted(() => {
   loadData()
   loadMyData()
 })
-const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData, loadMyData)
+const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
 // 新增
 const handleCreate = () => {
   const url = router.resolve({
-    path: '/question/submit',
+    path: '/submit',
   }).href
   window.open(url, '_blank')
 }
@@ -96,195 +96,12 @@ const handleCreate = () => {
           </div>
         </div>
       </div>
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" style="width: 100%;"
-        :before-leave="userStore.id === ''">
+      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" style="width: 100%;">
         <el-tab-pane label="公共" name="first">
-          <div class="menu">
-            <div class="column">
-              <span class="heading">方向</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="Java" value="Java" />
-                    <el-radio-button label="Web" value="Web" />
-                    <el-radio-button label="C++" value="C++" />
-                    <el-radio-button label="多选" value="Pathon" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">知识点</span>
-              <div>
-                <el-radio-group v-model="radio2" size="large">
-                  <el-radio-button label="全部" value="全部" />
-                </el-radio-group>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">题型</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio3" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="编程题" value="编程题" />
-                    <el-radio-button label="单选" value="单选" />
-                    <el-radio-button label="多选" value="多选" />
-                    <el-radio-button label="判断" value="判断" />
-                    <el-radio-button label="填空" value="填空" />
-                    <el-radio-button label="简答" value="简答" />
-                    <el-radio-button label="程序填空" value="程序填空" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">方向</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio4" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="简单" value="简单" />
-                    <el-radio-button label="适中" value="适中" />
-                    <el-radio-button label="困难" value="困难" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content">
-            <template v-if="questions.length === 0 && !loading">
-              <img :src="empty">
-              <div class="empty-title">暂无试题</div>
-              <div class="no-combo-tips">点击左侧 + 按钮，即可添加文件夹管理个人素材。</div>
-            </template>
-            <template v-else>
-              <el-table :data="questions" v-loading="loading" style="width: 100%"
-                :header-cell-style="{ background: '#409EFF', color: 'white' }">
-                <el-table-column prop="title" label="题目" min-width="250">
-                  <template #default="{ row }">
-                    <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="tags" label="难度" width="120" />
-                <template>
-                </template>
-                <el-table-column prop="current" label="时间" width="180">
-                  <template #default="{ row }">
-                    <div class="time-cell" style="font-size: 12px;">
-                      <div>发布：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
-                      <div v-if="row.current">更新：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
-                    </div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="content" label="内容" width="400" align="center" />
-              </el-table>
-              <el-pagination class="mr mt" v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize"
-                :page-sizes="[10, 20, 30, 40]" layout="sizes, prev, pager, next, jumper, total" :total="totals"
-                background @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-            </template>
-
-          </div>
+     <QuestionCompile></QuestionCompile>
         </el-tab-pane>
         <el-tab-pane label="我创建的" name="second">
-          <div class="menu">
-            <div class="column">
-              <span class="heading">方向</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio1" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="Java" value="Java" />
-                    <el-radio-button label="Web" value="Web" />
-                    <el-radio-button label="C++" value="C++" />
-                    <el-radio-button label="多选" value="Pathon" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">知识点</span>
-              <div>
-                <el-radio-group v-model="radio2" size="large">
-                  <el-radio-button label="全部" value="全部" />
-                </el-radio-group>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">题型</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio3" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="编程题" value="编程题" />
-                    <el-radio-button label="单选" value="单选" />
-                    <el-radio-button label="多选" value="多选" />
-                    <el-radio-button label="判断" value="判断" />
-                    <el-radio-button label="填空" value="填空" />
-                    <el-radio-button label="简答" value="简答" />
-                    <el-radio-button label="程序填空" value="程序填空" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-            <div class="column">
-              <span class="heading">方向</span>
-              <div class="select">
-                <div>
-                  <el-radio-group v-model="radio4" size="large">
-                    <el-radio-button label="全部" value="全部" />
-                    <el-radio-button label="简单" value="简单" />
-                    <el-radio-button label="适中" value="适中" />
-                    <el-radio-button label="困难" value="困难" />
-                  </el-radio-group>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="content">
-            <template v-if="myQuestions.length === 0 && !loading">
-              <img :src="empty">
-              <div class="empty-title">暂无试题</div>
-              <div class="no-combo-tips">点击左侧 + 按钮，即可添加文件夹管理个人素材。</div>
-            </template>
-            <template v-else>
-              <el-table :data="myQuestions" v-loading="loading" style="width: 100%"
-                :header-cell-style="{ background: '#409EFF', color: 'white' }">
-                <el-table-column prop="title" label="题目" min-width="250">
-                  <template #default="{ row }">
-                    <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="tags" label="难度" width="120" />
-                <template>
-                </template>
-                <el-table-column prop="current" label="时间" width="180">
-                  <template #default="{ row }">
-                    <div class="time-cell" style="font-size: 12px;">
-                      <div>发布：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
-                      <div v-if="row.current">更新：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
-                    </div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="content" label="内容" width="300" align="center" />
-                <el-table-column label="操作" width="120" fixed="right">
-                  <template #default="{ row }">
-                    <el-button type="primary" link @click="handleEdit(row.id)">
-                      编辑
-                    </el-button>
-                    <el-button type="danger" link @click="handleDelete(row.id)">
-                      删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-pagination class="mr mt" v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize"
-                :page-sizes="[10, 20, 30, 40]" layout="sizes, prev, pager, next, jumper, total" :total="totals"
-                background @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-            </template>
-
-          </div>
+          <QuestionCompileOv></QuestionCompileOv>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -429,6 +246,6 @@ const handleCreate = () => {
       margin-bottom: 10px;
     }
   }
-
 }
 </style>
+
