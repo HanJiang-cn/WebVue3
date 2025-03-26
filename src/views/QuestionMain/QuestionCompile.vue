@@ -8,6 +8,9 @@ import { usePagination } from '@/hooks/usePagination'
 import { ElMessageBox, ElMessage } from 'element-plus'
 import moment from 'moment'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 const router = useRouter()
 const questions = ref([])
 const myQuestions = ref([])
@@ -69,12 +72,12 @@ onMounted(() => {
   loadData()
   loadMyData()
 })
-const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
+const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData, loadMyData)
 
 // 新增
 const handleCreate = () => {
   const url = router.resolve({
-    path: '/submit',
+    path: '/question/submit',
   }).href
   window.open(url, '_blank')
 }
@@ -93,7 +96,8 @@ const handleCreate = () => {
           </div>
         </div>
       </div>
-      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" style="width: 100%;">
+      <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick" style="width: 100%;"
+        :before-leave="userStore.id === ''">
         <el-tab-pane label="公共" name="first">
           <div class="menu">
             <div class="column">
@@ -425,5 +429,6 @@ const handleCreate = () => {
       margin-bottom: 10px;
     }
   }
+
 }
 </style>

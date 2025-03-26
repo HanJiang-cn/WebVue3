@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addApi } from '@/api/question'
 import TinymceEdit from '@/components/TinymceEdit.vue'
 const addDataRef = ref()
-const addData = ref({
+const addData = reactive({
   answer: '',
   content: '',
   judgeCase: [{
@@ -21,7 +21,7 @@ const addData = ref({
   diffcult: '',
 })
 function uploadContent(data: string) {
-  addData.value.content = data
+  addData.content = data
 }
 const options = [
   {
@@ -76,13 +76,13 @@ const rules = {
 }
 
 const addSample = () => {
-  addData.value.judgeCase.push({ input: '', output: '' })
-  console.log(addData.value.judgeCase)
+  addData.judgeCase.push({ input: '', output: '' })
+  console.log(addData.judgeCase)
 }
 
 const removeSample = (index: number) => {
-  addData.value.judgeCase.splice(index, 1)
-  console.log(addData.value.judgeCase)
+  addData.judgeCase.splice(index, 1)
+  console.log(addData.judgeCase)
 }
 
 // 保存表单数据到 LocalStorage
@@ -127,7 +127,9 @@ const submitForm = () => {
         type: 'warning',
       })
     }
-  })
+  }
+  )
+
 }
 
 const resetForm = () => {
