@@ -15,29 +15,41 @@ const radio1 = ref('全部')
 const radio2 = ref('全部')
 const radio3 = ref('全部')
 const radio4 = ref('全部')
-
-const handleClick = (tab, event) => {
-  console.log(tab, event)
-}
+// 增加独立的分页状态管理
+const [pageInfoAll, setTotalsAll] = usePagination(loadData)
+const [pageInfoMy, setTotalsMy] = usePagination(loadMyData)
+// const loadData = async () => {
+//   loading.value = true
+//   const { data: { records, total } } = await getApi({ ...pageInfo })
+//   loading.value = false
+//   questions.value = records
+//   setTotals(Number(total))
+//   questions.value = records.map((records) => ({
+//     ...records,
+//   }))
+// }
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo })
-  loading.value = false
+  const { data: { records, total } } = await getApi({ ...pageInfoAll.value })
   questions.value = records
-  setTotals(Number(total))
-  questions.value = records.map((records) => ({
-    ...records,
-  }))
+  setTotalsAll(Number(total))  // 使用独立的分页设置
 }
+// const loadMyData = async () => {
+//   loading.value = true
+//   const { data: { records, total } } = await getMyApi({ ...pageInfo })
+//   loading.value = false
+//   myQuestions.value = records
+//   setTotals(Number(total))
+//   myQuestions.value = records.map((records) => ({
+//     ...records,
+//   }))
+// }
+
 const loadMyData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getMyApi({ ...pageInfo })
-  loading.value = false
+  const { data: { records, total } } = await getMyApi({ ...pageInfoMy.value })
   myQuestions.value = records
-  setTotals(Number(total))
-  myQuestions.value = records.map((records) => ({
-    ...records,
-  }))
+  setTotalsMy(Number(total))  // 使用独立的分页设置
 }
 onMounted(() => {
   loadData()
@@ -45,8 +57,6 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 </script>
-
-
 <script lang="ts" setup></script>
 <template><div>
         <div class="menu">
@@ -130,9 +140,23 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
                 </el-table-column>
                 <el-table-column prop="content" label="内容" width="400" align="center" />
               </el-table>
-              <el-pagination class="mr mt" v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize"
-                :page-sizes="[10, 20, 30, 40]" layout="sizes, prev, pager, next, jumper, total" :total="totals"
-                background @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+               <el-pagination
+    v-if="activeTab === 'all'"
+    :current-page="pageInfoAll.current"
+    :page-size="pageInfoAll.pageSize"
+    :total="totalsAll"
+    @size-change="pageInfoAll.handleSizeChange"
+    @current-change="pageInfoAll.handleCurrentChange"
+  />
+
+  <el-pagination
+    v-if="activeTab === 'my'"
+    :current-page="pageInfoMy.current"
+    :page-size="pageInfoMy.pageSize"
+    :total="totalsMy"
+    @size-change="pageInfoMy.handleSizeChange"
+    @current-change="pageInfoMy.handleCurrentChange"
+  />
             </template>
 
           </div>

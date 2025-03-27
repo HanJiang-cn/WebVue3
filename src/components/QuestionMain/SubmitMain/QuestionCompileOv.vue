@@ -16,11 +16,6 @@ const radio1 = ref('全部')
 const radio2 = ref('全部')
 const radio3 = ref('全部')
 const radio4 = ref('全部')
-const activeName = ref('first')
-
-const handleClick = (tab, event) => {
-  console.log(tab, event)
-}
 const loadData = async () => {
   loading.value = true
   const { data: { records, total } } = await getApi({ ...pageInfo })

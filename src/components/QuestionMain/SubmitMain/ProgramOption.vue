@@ -138,6 +138,9 @@ const submitForm = () => {
 const resetForm = () => {
   addDataRef.value.resetFields()
 }
+const handelBack = () => {
+  router.push('/question/compile')
+}
 </script>
 <template>
   <el-form ref="addDataRef" :model="addData" :rules="rules" label-width="auto" class="demo-addData" size="default"
@@ -179,6 +182,7 @@ const resetForm = () => {
         创建
       </el-button>
       <el-button @click="resetForm()">重置</el-button>
+      <el-button @click="handelBack">返回</el-button>
     </el-form-item>
   </el-form>
 </template>

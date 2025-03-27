@@ -130,8 +130,8 @@ const handleNav = (name: string) => {
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link>
-              学习
+            <el-button link @click="handleNav('/question/compile')">
+              题库
             </el-button>
           </el-col>
           <el-col :span="2">

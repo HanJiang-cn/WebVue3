@@ -9,7 +9,7 @@ const userStore = useUserStore()
 
 const showChallenge = () => {
   router.push({
-    path: '/submit'
+    path: '/question'
   })
 }
 </script>
