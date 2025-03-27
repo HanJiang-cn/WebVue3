@@ -4,7 +4,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { getPostApi } from '@/api/post'
+import { getPostApi, thumbPostApi, favourPostApi } from '@/api/post'
 import moment from 'moment'
 import LinkCard from '@/components/PostMain/LinkCard.vue'
 import CommentComponent from '@/components/CommentComponent.vue'
@@ -32,30 +32,73 @@ const postData = ref({})
 const postUser = ref({})
 const currentUrl = ref(window.location.href)
 const createTime = ref('')
+const router = useRouter()
+const id = router.currentRoute.value.query.id
 
-// 模拟数据加载
-onMounted(async () => {
-  const router = useRouter()
-  const id = router.currentRoute.value.query.id
+const getPostInfor = async () => {
   try {
     const { data } = await getPostApi({ id: id })
     postData.value = data
     postUser.value = data.user
     createTime.value = moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
+    likeCount.value = data.thumbNum
+    favoriteCount.value = data.favourNum
   } catch (error) {
     console.error('获取帖子详情失败:', error)
   }
+}
+onMounted(() => {
+  getPostInfor()
 })
 
+// 互动相关逻辑
+const isLiked = ref(false)
+const likeCount = ref(123)
+const isFavorited = ref(false)
+const favoriteCount = ref(123)
 // 复制链接
 const handleCopyLink = () => {
   const url = window.location.href // 当前页面链接
   navigator.clipboard.writeText(url)
   ElMessage.success('链接已复制到剪贴板')
 }
-
-const handleFollow = () => {
-  ElMessage.info('已关注作者')
+// 点赞处理
+const handleLike = async () => {
+  try {
+    const { data } = await thumbPostApi({
+      postId: id,
+    })
+    if (data === 1) {
+      isLiked.value = true
+      getPostInfor()
+      ElMessage.success('点赞成功')
+    } else {
+      isLiked.value = false
+      getPostInfor()
+      ElMessage.error('取消点赞')
+    }
+  } catch (error) {
+    console.error('点赞失败:', error)
+  }
+}
+// 收藏处理
+const handleFavorite = async () => {
+  try {
+    const { data } = await favourPostApi({
+      postId: id,
+    })
+    if (data === 1) {
+      isFavorited.value = true
+      getPostInfor()
+      ElMessage.success('收藏成功')
+    } else {
+      isFavorited.value = false
+      getPostInfor()
+      ElMessage.error('取消收藏')
+    }
+  } catch (error) {
+    console.error('收藏失败:', error)
+  }
 }
 </script>
 
@@ -109,28 +152,23 @@ const handleFollow = () => {
         logo="https://vitepress.yiov.top/logo.png" />
 
       <div class="post-actions">
-        <el-button>
-          <el-icon>
-            <Pointer />
+        <el-button @click="handleLike" :class="{ 'liked': isLiked }">
+          <el-icon :color="isLiked ? '#f56c6c' : ''">
+            <LikeOutlined />
           </el-icon>
-          123
+          {{ likeCount }}
         </el-button>
-        <el-button>
-          <el-icon>
+
+        <el-button @click="handleFavorite" :class="{ 'favorited': isFavorited }">
+          <el-icon :color="isFavorited ? '#e6a23c' : ''">
             <Star />
           </el-icon>
-          123
+          {{ favoriteCount }}
         </el-button>
-        <el-button>
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          123
-        </el-button>
-        <!-- 转发 -->
-        <el-popover placement="bottom" :width="200" trigger="click">
+
+        <el-popover placement="bottom" :width="200" trigger="click" class="share-popover">
           <template #reference>
-            <el-button>
+            <el-button class="share-btn">
               <el-icon>
                 <ImportOutlined />
               </el-icon>
@@ -138,10 +176,9 @@ const handleFollow = () => {
             </el-button>
           </template>
           <template #default>
-            <vue-qrcode value="https://www.bilibili.com/video/BV1hq4y1s7VH/?spm_id_from=333.337.search-card.all.click"
-              width="180"></vue-qrcode>
-            <div style="text-align: center;">
-              <el-button @click="handleCopyLink">
+            <div class="qrcode-container">
+              <vue-qrcode :value="currentUrl" :width="180" class="qrcode" />
+              <el-button @click="handleCopyLink" type="primary" style="width: 100%;">
                 <el-icon>
                   <Link />
                 </el-icon>
@@ -264,41 +301,123 @@ const handleFollow = () => {
       }
     }
 
+
     .post-actions {
       margin: 32px 0;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+
+      :deep(.el-button) {
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .el-icon {
+          margin-right: 6px;
+          transition: color 0.3s ease;
+        }
+      }
+
+      .liked {
+        color: #f56c6c;
+        border-color: #f56c6c;
+      }
+
+      .favorited {
+        color: #e6a23c;
+        border-color: #e6a23c;
+      }
+
+      .share-btn:hover {
+        color: var(--el-color-primary);
+        border-color: var(--el-color-primary);
+      }
+
+
+      .qrcode-container {
+        padding: 12px;
+        // text-align: center;
+
+        .qrcode {
+          margin-bottom: 12px;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          padding: 8px;
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+.comment-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #eee;
+
+  .comment-input {
+    margin-bottom: 32px;
+
+    .submit-btn {
+      margin-top: 12px;
     }
   }
 
-  .comment-section {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid #eee;
+  .comment-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #f5f5f5;
 
-    .comment-input {
-      margin-bottom: 32px;
+    .comment-content {
+      flex: 1;
 
-      .submit-btn {
-        margin-top: 12px;
+      .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .username {
+          font-weight: 500;
+          margin-right: 8px;
+        }
+
+        .time {
+          color: #999;
+          font-size: 0.8em;
+        }
+      }
+
+      .comment-text {
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .comment-actions {
+        margin-top: 8px;
       }
     }
 
-    .comment-item {
+    .reply-item {
       display: flex;
-      gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid #f5f5f5;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 6px;
 
-      .comment-content {
-        flex: 1;
-
-        .comment-header {
+      .reply-content {
+        .reply-header {
           display: flex;
           align-items: center;
-          margin-bottom: 8px;
 
           .username {
-            font-weight: 500;
+            font-size: 0.9em;
             margin-right: 8px;
           }
 
@@ -308,66 +427,31 @@ const handleFollow = () => {
           }
         }
 
-        .comment-text {
-          margin: 0;
-          line-height: 1.6;
-        }
-
-        .comment-actions {
-          margin-top: 8px;
-        }
-      }
-
-      .reply-item {
-        display: flex;
-        gap: 12px;
-        margin-top: 16px;
-        padding: 12px;
-        background: #f9f9f9;
-        border-radius: 6px;
-
-        .reply-content {
-          .reply-header {
-            display: flex;
-            align-items: center;
-
-            .username {
-              font-size: 0.9em;
-              margin-right: 8px;
-            }
-
-            .time {
-              color: #999;
-              font-size: 0.8em;
-            }
-          }
-
-          .reply-text {
-            margin: 4px 0 0;
-            font-size: 0.9em;
-            color: #666;
-          }
+        .reply-text {
+          margin: 4px 0 0;
+          font-size: 0.9em;
+          color: #666;
         }
       }
     }
   }
+}
 
-  @media (max-width: 768px) {
-    padding: 16px;
+@media (max-width: 768px) {
+  padding: 16px;
 
-    .author-section {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
+  .author-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
 
-      .share-buttons {
-        margin-left: 0;
-      }
+    .share-buttons {
+      margin-left: 0;
     }
+  }
 
-    .post-title {
-      font-size: 1.5em !important;
-    }
+  .post-title {
+    font-size: 1.5em !important;
   }
 }
 </style>
