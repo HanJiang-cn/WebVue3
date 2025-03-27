@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElNotification, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { editApi, getDetailApi } from '@/api/question'
 
