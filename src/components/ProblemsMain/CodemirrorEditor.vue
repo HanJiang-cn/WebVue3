@@ -1,61 +1,62 @@
-<template>
-  <div class="vscode-editor">
-    <!-- 添加语言选择器 -->
-    <div class="top">
-      <el-select v-model="selectedMode" @change="handleModeChange" class="mode-select">
-        <el-option v-for="(name, mode) in languageOptions" :value="mode" :key="name">{{ name }}</el-option>
-      </el-select>
-      <div>
-        <el-button type="primary" @click="handleSumbit">提交</el-button>
-        <el-button type="primary" @click="handleReset">重置</el-button>
-        <el-button type="primary" @click="handleSever" style="margin-right: 10px;">保存</el-button>
-      </div>
-    </div>
-    <Codemirror v-model:value="code" :options="cmOptions" ref="cmRef" class="edit" height="90%" width="100%">
-    </Codemirror>
-  </div>
-</template>
-
-<script lang="ts" setup>
+<!-- eslint-disable vue/block-lang -->
+<script setup>
 import { ref, reactive } from "vue"
-import "codemirror/mode/javascript/javascript.js"
-import "codemirror/mode/python/python.js"
-import "codemirror/mode/xml/xml.js"
 
-import "codemirror/mode/css/css.js"
+// 语言包
+import "codemirror/mode/clike/clike.js" // java
+import "codemirror/mode/python/python.js" // python
+import "codemirror/mode/htmlmixed/htmlmixed.js" // html
+import "codemirror/mode/javascript/javascript.js" // javascript
+
 import "codemirror/theme/base16-light.css"
+
+// 语法检查
+import "codemirror/mode/javascript/javascript.js"
+import "codemirror/addon/lint/lint.css"
+import "codemirror/addon/lint/lint.js"
+import "codemirror/addon/lint/json-lint"
+
 import Codemirror from "codemirror-editor-vue3"
-import type { CmComponentRef } from "codemirror-editor-vue3"
-import type { EditorConfiguration } from "codemirror"
+// import { Editor, EditorConfiguration } from "codemirror"
 import { ElMessageBox, ElNotification } from "element-plus"
 
+// 代码内容
 const code = ref(
-  `// 使用 ref 和 reactive
-      import { ref, reactive } from 'vue'
-
-      // 基本类型用 ref
-      const count = ref(0)
-      const increment = () => count.value++
-
-      // 对象用 reactive
-      const user = reactive({
-        name: 'Alice',
-        age: 25,
-        updateName(newName) {
-          this.name = newName
-        }
-      })`
+  `function findSequence(goal) {
+  function find(start, history) {
+    if (start == goal)
+      return history;
+    else if (start > goal)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}`
 );
-const cmRef = ref<CmComponentRef>()
+const cmRef = ref()
 
 // 添加语言切换相关代码
 const selectedMode = ref("javascript")
-const languageOptions = reactive({
-  javascript: "JavaScript",
-  python: "Python",
-  html: "HTML",
-  css: "CSS"
-})
+const languageOptions = [
+  {
+    name: "JavaScript",
+    mode: "javascript",
+  },
+  {
+    name: "Python",
+    mode: "text/x-python",
+  },
+  {
+    name: "Java",
+    mode: "text/x-java",
+  },
+  {
+    name: "HTML",
+    mode: "text/html",
+  },
+]
 
 const handleModeChange = () => {
   // cmRef.value.cminstance 是 CodeMirror 实例
@@ -65,31 +66,36 @@ const handleModeChange = () => {
     // 这里我们设置 mode 为 selectedMode.value
     cmRef.value.cminstance.setOption("mode", selectedMode.value)
     // 根据语言切换示例代码
-    if (selectedMode.value === 'python') {
+    if (selectedMode.value === 'text/x-python') {
       code.value = 'def hello():\n    print("Hello World!")'
-    } else if (selectedMode.value === 'html') {
+    } else if (selectedMode.value === 'text/html') {
       code.value = '<div class="container">\n  <h1>Hello</h1>\n</div>'
-    } else {
-      code.value = `// 使用 ref 和 reactive
-      import { ref, reactive } from 'vue'
+    } else if (selectedMode.value === 'text/x-java') {
+      code.value = `public class HelloWorld {
 
-      // 基本类型用 ref
-      const count = ref(0)
-      const increment = () => count.value++
-
-      // 对象用 reactive
-      const user = reactive({
-        name: 'Alice',
-        age: 25,
-        updateName(newName) {
-          this.name = newName
-        }
-      })`
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}`
+    } else if (selectedMode.value === 'javascript') {
+      code.value = `function findSequence(goal) {
+  function find(start, history) {
+    if (start == goal)
+      return history;
+    else if (start > goal)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}`
     }
   }
 }
 
-const cmOptions: EditorConfiguration = reactive({
+// 配置 CodeMirror 实例
+const cmOptions = reactive({
   mode: selectedMode.value,
   theme: "base16-light",
   readOnly: false,
@@ -186,6 +192,24 @@ const handleSever = () => {
   })
 }
 </script>
+
+<template>
+  <div class="vscode-editor">
+    <!-- 添加语言选择器 -->
+    <div class="top">
+      <el-select v-model="selectedMode" @change="handleModeChange" class="mode-select">
+        <el-option v-for="item in languageOptions" :value="item.mode" :label="item.name" :key="item" />
+      </el-select>
+      <div>
+        <el-button type="primary" @click="handleSumbit">提交</el-button>
+        <el-button type="primary" @click="handleReset">重置</el-button>
+        <el-button type="primary" @click="handleSever" style="margin-right: 10px;">保存</el-button>
+      </div>
+    </div>
+    <Codemirror v-model:value="code" :options="cmOptions" ref="cmRef" class="edit" height="90%" width="100%">
+    </Codemirror>
+  </div>
+</template>
 
 <style lang="less" scoped>
 .vscode-editor {

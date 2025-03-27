@@ -9,6 +9,9 @@ const handleSolution = () => {
   router.push({
     path: '/problems/solution/content',
     query: {
+      // 保留所有现有参数
+      ...router.currentRoute.value.query,
+      // 添加新的参数
       solutionId: 1
     }
   })

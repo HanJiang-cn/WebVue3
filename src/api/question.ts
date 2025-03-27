@@ -6,7 +6,8 @@ enum Api {
   edit = '/question/edit',
   get = '/question/list/page/vo',
   getMy = '/question/my/list/page/vo',
-  getDetail = '/question/get/vo'
+  getDetail = '/question/get/vo',
+  ceshi = '/question/question_submit/list/page',
 }
 interface addData {
   answer: string
@@ -69,4 +70,9 @@ function getMyApi(data: getMyData) {
 function getDetailApi(data: getDetailData) {
   return get(Api.getDetail, data)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi }
+
+function ceshiApi(data: any) {
+  return post(Api.ceshi, data)
+}
+
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi }

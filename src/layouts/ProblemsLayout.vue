@@ -25,13 +25,22 @@ const Visable = () => {
 }
 
 const handleTabChange = () => {
-  // console.log('Tab切换')
-  // // 切换路由
-  // router.push({ path: '/problems/question' })
   if (activeName.value === '1') {
-    router.push({ path: '/problems/question' })
+    router.push({
+      path: '/problems/question',
+      query: {
+        // 保留所有现有参数
+        ...router.currentRoute.value.query
+      }
+    })
   } else if (activeName.value === '2') {
-    router.push({ path: '/problems/solution' })
+    router.push({
+      path: '/problems/solution',
+      query: {
+        // 保留所有现有参数
+        ...router.currentRoute.value.query
+      }
+    })
   }
 }
 
@@ -102,7 +111,7 @@ onMounted(() => {
           <el-col :span="8" class="right">
             <div>
               <el-button size="small" type="info" text>
-                <el-icon :size="18">
+                <el-icon :size="18" @click="router.push('/problems/search')">
                   <Search />
                 </el-icon>
               </el-button>

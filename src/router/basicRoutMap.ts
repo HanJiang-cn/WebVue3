@@ -133,6 +133,11 @@ const routes = [
         name: 'QuestionSubmit',
         component: () => import('@/views/QuestionMain/QuestionSubmit.vue'),
       },
+      {
+        path: 'ceshi',
+        name: 'QuestionDetail',
+        component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
+      },
     ],
   },
   // 组队
