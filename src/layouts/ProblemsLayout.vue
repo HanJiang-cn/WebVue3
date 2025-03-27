@@ -7,7 +7,6 @@ import { useRouter } from 'vue-router'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
 
-
 const router = useRouter()
 const visible = ref(false)
 const visible1 = ref(false)
@@ -53,6 +52,29 @@ onMounted(() => {
     activeName.value = '2'
   }
 })
+
+// 测试结果
+const TestResults = [
+  {
+    content: '测试用例1的内容',
+    status: 'ok',
+  }
+]
+const handleTestResultsData = (value) => {
+  const data = ref({})
+  data.value = value
+  if (data.value.status === 'ok') {
+    TestResults.push({
+      content: '编译成功！',
+      status: 'ok',
+    })
+  } else {
+    TestResults.push({
+      content: '编译失败！',
+      status: 'error',
+    })
+  }
+}
 </script>
 
 <template>
@@ -164,7 +186,7 @@ onMounted(() => {
                     </el-icon>
                     <span>代码</span>
                   </template>
-                  <CodemirrorEditor style="width: 98%; height: 68%;" />
+                  <CodemirrorEditor @TestResultsData="handleTestResultsData" style="width: 98%; height: 68%;" />
                   <!-- <CodemirrorEditor /> -->
                   <el-tabs v-model="activeName2" type="card" class="vscode">
                     <!-- 测试 -->

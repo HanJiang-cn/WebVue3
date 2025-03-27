@@ -121,7 +121,20 @@ const routes = [
       {
         path: 'compile',
         name: 'QuestionCompile',
+        redirect: '/question/compile/public',
         component: () => import('@/views/QuestionMain/QuestionCompile.vue'),
+        children: [
+          {
+            path: 'public',
+            name: 'QuestionCompilePublicLibrary',
+            component: () => import('@/views/QuestionMain/QuestionCompile/PublicLibrary.vue'),
+          },
+          {
+            path: 'private',
+            name: 'QuestionCompilePrivateLibrary',
+            component: () => import('@/views/QuestionMain/QuestionCompile/PrivateLibrary.vue'),
+          },
+        ],
       },
       {
         path: 'edit',

@@ -1,7 +1,11 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, reactive } from "vue"
-
+import { ref, reactive, computed, defineEmits } from "vue"
+import { useRouter } from "vue-router"
+import { submitQuestionApi } from "@/api/question"
+// import { Editor, EditorConfiguration } from "codemirror"
+import { ElMessageBox, ElNotification } from "element-plus"
+import Codemirror from "codemirror-editor-vue3"
 // 语言包
 import "codemirror/mode/clike/clike.js" // java
 import "codemirror/mode/python/python.js" // python
@@ -16,29 +20,25 @@ import "codemirror/addon/lint/lint.css"
 import "codemirror/addon/lint/lint.js"
 import "codemirror/addon/lint/json-lint"
 
-import Codemirror from "codemirror-editor-vue3"
-// import { Editor, EditorConfiguration } from "codemirror"
-import { ElMessageBox, ElNotification } from "element-plus"
-
 // 代码内容
 const code = ref(
-  `function findSequence(goal) {
-  function find(start, history) {
-    if (start == goal)
-      return history;
-    else if (start > goal)
-      return null;
-    else
-      return find(start + 5, "(" + history + " + 5)") ||
-             find(start * 3, "(" + history + " * 3)");
-  }
-  return find(1, "1");
+  `public class HelloWorld {
+
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
 }`
 );
 const cmRef = ref()
 
+const emit = defineEmits(["TestResultsData"])
+const router = useRouter()
 // 添加语言切换相关代码
-const selectedMode = ref("javascript")
+const selectedMode = ref("text/x-java")
+// 通过selectedMode获取选择器的name属性值
+const selectedModeName = computed(() => {
+  return languageOptions.find((item) => item.mode === selectedMode.value)?.name || "";
+})
 const languageOptions = [
   {
     name: "JavaScript",
@@ -49,7 +49,7 @@ const languageOptions = [
     mode: "text/x-python",
   },
   {
-    name: "Java",
+    name: "java",
     mode: "text/x-java",
   },
   {
@@ -116,7 +116,13 @@ const handleSumbit = () => {
       type: 'warning',
     }
   )
-    .then(() => {
+    .then(async () => {
+      const res = await submitQuestionApi({
+        code: code.value,
+        language: selectedModeName.value,
+        questionId: router.currentRoute.value.query.id
+      })
+      emit("TestResultsData", res.data)
       ElNotification({
         title: '成功',
         message: '已经成功提交',
@@ -151,28 +157,33 @@ const handleReset = () => {
       if (cmRef.value?.cminstance) {
         // cmRef.value.cminstance.setOption 是 CodeMirror 实例的方法
         // 可以通过这个方法来设置 CodeMirror 的配置
+        // 这里我们设置 mode 为 selectedMode.value
         cmRef.value.cminstance.setOption("mode", selectedMode.value)
         // 根据语言切换示例代码
-        if (selectedMode.value === 'python') {
+        if (selectedMode.value === 'text/x-python') {
           code.value = 'def hello():\n    print("Hello World!")'
-        } else if (selectedMode.value === 'html') {
+        } else if (selectedMode.value === 'text/html') {
           code.value = '<div class="container">\n  <h1>Hello</h1>\n</div>'
-        } else {
-          code.value = `// 使用 ref 和 reactive
-      import { ref, reactive } from 'vue'
+        } else if (selectedMode.value === 'text/x-java') {
+          code.value = `public class HelloWorld {
 
-      // 基本类型用 ref
-      const count = ref(0)
-      const increment = () => count.value++
-
-      // 对象用 reactive
-      const user = reactive({
-        name: 'Alice',
-        age: 25,
-        updateName(newName) {
-          this.name = newName
-        }
-      })`
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}`
+        } else if (selectedMode.value === 'javascript') {
+          code.value = `function findSequence(goal) {
+  function find(start, history) {
+    if (start == goal)
+      return history;
+    else if (start > goal)
+      return null;
+    else
+      return find(start + 5, "(" + history + " + 5)") ||
+             find(start * 3, "(" + history + " * 3)");
+  }
+  return find(1, "1");
+}`
         }
       }
     })
@@ -183,13 +194,6 @@ const handleReset = () => {
         type: 'error',
       })
     })
-}
-const handleSever = () => {
-  ElNotification({
-    title: '成功',
-    message: '已保存代码',
-    type: 'success',
-  })
 }
 </script>
 
@@ -203,7 +207,6 @@ const handleSever = () => {
       <div>
         <el-button type="primary" @click="handleSumbit">提交</el-button>
         <el-button type="primary" @click="handleReset">重置</el-button>
-        <el-button type="primary" @click="handleSever" style="margin-right: 10px;">保存</el-button>
       </div>
     </div>
     <Codemirror v-model:value="code" :options="cmOptions" ref="cmRef" class="edit" height="90%" width="100%">

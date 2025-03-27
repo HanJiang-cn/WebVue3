@@ -1,8 +1,12 @@
 <!-- eslint-disable vue/no-parsing-error -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
+import { onMounted, ref } from 'vue'
 import CommentComponent from '@/components/CommentComponent.vue'
+import { getDetailApi } from '@/api/question'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const tableData = [
   {
     date: '2023-06-01',
@@ -42,6 +46,27 @@ const tableData = [
 
 
 ]
+const questionData = ref({})
+
+const getQuestionInfo = async () => {
+  const { data } = await getDetailApi({ id: router.currentRoute.value.query.id })
+  // console.log(res)
+  questionData.value = data
+}
+
+onMounted(() => {
+  getQuestionInfo()
+})
+
+// < !-- < el - tag type = "success" >
+//   简单
+//   </el - tag >
+//   < !-- < el - tag type = "info" >
+// 数组
+//   </el - tag >
+// <el-tag type="warning">
+//     JavaScript -->
+// </el-tag>
 </script>
 
 <template>
@@ -49,20 +74,12 @@ const tableData = [
   <!-- 题目 -->
   <el-row>
     <h1>
-      这是一个题的题目
+      {{ questionData.title }}
     </h1>
   </el-row>
   <!-- 标签 -->
   <el-row style="margin-top: 10px;">
-    <el-tag type="success">
-      简单
-    </el-tag>
-    <el-tag type="info">
-      数组
-    </el-tag>
-    <el-tag type="warning">
-      JavaScript
-    </el-tag>
+    <el-tag type="success" v-for="item in questionData.tags" :key="item">{{ item }}</el-tag>
   </el-row>
   <!-- 题目描述 -->
   <!-- 提交记录&评论 -->
@@ -72,7 +89,9 @@ const tableData = [
         <h3>
           题目描述
         </h3>
-        <p>
+        <div v-html="questionData.content">
+        </div>
+        <!-- <p>
           给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
         </p>
         <li>
@@ -80,39 +99,20 @@ const tableData = [
         </li>
         <li>
           你可以按任意顺序返回答案。
-        </li>
+        </li> -->
       </div>
       <div class="example">
-        <p>
-          示例 1：
-        </p>
-        <p>
-          输入：nums = [2,7,11,15], target = 9
-        </p>
-        <p>
-          输出：[0,1]
-        </p>
-        <p>
-          解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
-        </p>
-        <p>
-          示例 2：
-        </p>
-        <p>
-          输入：nums = [3,2,4], target = 6
-        </p>
-        <p>
-          输出：[1,2]
-        </p>
-        <p>
-          示例 3：
-        </p>
-        <p>
-          输入：nums = [3,3], target = 6
-        </p>
-        <p>
-          输出：[0,1]
-        </p>
+        <div>
+          <p>
+            示例 1：
+          </p>
+          <p>
+            输入：nums = [2,7,11,15], target = 9
+          </p>
+          <p>
+            输出：[0,1]
+          </p>
+        </div>
       </div>
       <div class="hint">
         <h3>
@@ -255,6 +255,7 @@ const tableData = [
 
   // 题目描述
   .topic-content {
+    width: 100%;
     // margin-top: 10px;
     line-height: 1.6;
     position: relative;
