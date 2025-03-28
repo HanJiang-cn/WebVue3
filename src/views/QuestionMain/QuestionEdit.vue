@@ -4,71 +4,57 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { editApi, getDetailApi } from '@/api/question'
+import TinymceEdit from '@/components/TinymceEdit.vue'
 
 const router = useRouter()
 const questionId = ref(router.currentRoute.value.query.id)
+
 const form = reactive({
-  title: '',
-  difficulty: 1,
+  answer: '',
+  content: '',
+  judgeCase: [{
+    input: '',
+    output: ''
+  }],
+  judgeConfig: {
+    memoryLimit: 1000,
+    stackLimit: 1000,
+    timeLimit: 1000
+  },
   tags: [],
-  questionType: 'single', // 新增题型标识（根据实际数据初始化）
-  // options: [],           // 选择题选项
-  //   // options: [
-//   //   { label: 'A', content: '', correct: false },
-//   //   { label: 'B', content: '', correct: false },
-//   //   { label: 'C', content: '', correct: false },
-//   //   { label: 'D', content: '', correct: false }
-//   // ],
-  answer: '',            // 填空题答案
-  judgeCase: []          // 编程题用例
+  title: '',
+  diffcult: '',
 })
-// 在获取题目详情时初始化题型
+// 从后端获取题目详情
 const fetchQuestionDetail = async () => {
   try {
     const { code, data } = await getDetailApi({ id: questionId.value })
     if (code === 0) {
-      Object.assign(form, {
-        title: data.title,
-        difficulty: data.difficulty,
-        tags: data.tags,
-        // 根据 tags 判断题型
-        questionType: getQuestionType(data.tags)
-      })
-
-      // 根据题型初始化数据
-      switch(form.questionType) {
-        case 'single':
-          form.options = data.options || []
-          break
-        case 'fill':
-          form.answer = data.answer || ''
-          break
-        case 'program':
-          form.judgeCase = data.judgeCase || []
-          break
-      }
+      Object.assign(form, data
+      // {
+      //   title: data.title,
+      //   difficulty: data.difficulty,
+      //   tags: data.tags,
+      //   // 根据 tags 判断题型
+      //   answer: data.answer,
+      //   content: data.content,
+      //   // 处理 judgeCase
+      //   judgeCase: data.judgeCase.map(jc => ({
+      //     input: jc.input,
+      //     output: jc.output
+      //   }))
+      // }
+    )
+    console.log(form)
     }
   } catch (error) {
     // ...错误处理
   }
 }
-
-// 根据 tags 判断题型类型的方法
-const getQuestionType = (tags) => {
-  if (tags.includes('1')) return 'single'
-  if (tags.includes('2')) return 'fill'
-  if (tags.includes('3')) return 'program'
-  return 'single' // 默认类型
+function uploadContent(data) {
+  addData.content = data
+  console.log(data)
 }
-// // 添加选项（选择题）
-// const addOption = () => {
-//   form.options.push({
-//     label: String.fromCharCode(65 + form.options.length),
-//     content: '',
-//     correct: false
-//   })
-// }
-
 // 添加测试用例（编程题）
 const addSample = () => {
   form.judgeCase.push({
@@ -115,38 +101,17 @@ onMounted(() => {
 </script>
 <template>
   <div class="question-edit-container">
-    <div class="title">新建试题</div>
+    <div class="title">修改试题</div>
     <el-form label-width="120px">
-      <!-- 公共部分 -->
       <el-form-item label="题目名称">
         <el-input v-model="form.title" placeholder="请输入题目名称" />
       </el-form-item>
-
-      <!-- 动态部分 -->
-      <!-- <template v-if="form.questionType === 'single'">
-        <el-form-item label="题目选项">
-          <div v-for="(option, index) in form.options" :key="index" class="option-item">
-            <el-checkbox v-model="option.correct">正确答案</el-checkbox>
-            <el-input
-              v-model="option.content"
-              :placeholder="`选项 ${String.fromCharCode(65 + index)} 内容`"
-              style="width: 300px; margin-left: 20px;"
-            />
-          </div>
-          <el-button @click="addOption">添加选项</el-button>
-        </el-form-item>
-      </template> -->
-
-      <template v-if="form.questionType === 'fill'">
-        <el-form-item label="正确答案">
-          <el-input v-model="form.answer" type="textarea" :rows="3" />
-        </el-form-item>
-      </template>
-
-      <template v-else-if="form.questionType === 'program'">
+      <el-form-item label="内容" prop="content">
+      <TinymceEdit :constEdit="form.content" @modelValue="uploadContent" style="width: 100%;" />
+    </el-form-item>
         <div v-for="(judgeCase, index) in form.judgeCase" :key="index" class="sample-io">
           <el-form-item :label="`输入用例 ${index + 1}`">
-            <el-input v-model="judgeCase.input" type="textarea" />
+            <el-input v-model="judgeCase.input"  type="textarea" />
           </el-form-item>
           <el-form-item :label="`输出用例 ${index + 1}`">
             <el-input v-model="judgeCase.output" type="textarea" />
@@ -157,9 +122,7 @@ onMounted(() => {
         <el-form-item label="正确答案">
           <el-input v-model="form.answer" type="textarea" :rows="3" />
         </el-form-item>
-      </template>
 
-      <!-- 公共提交部分 -->
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交修改</el-button>
         <el-button @click="router.go(-1)">返回</el-button>
@@ -170,9 +133,10 @@ onMounted(() => {
 
 <style scoped>
 .question-edit-container {
-  max-width: 800px;
+  min-width: 1000px;
   margin: 20px auto;
   padding: 30px;
+  padding-right: 40px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);

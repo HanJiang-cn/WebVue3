@@ -1,4 +1,5 @@
-<script lang="ts" setup>
+<!-- eslint-disable vue/block-lang -->
+<script  setup>
 import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addApi } from '@/api/question'
@@ -23,8 +24,9 @@ const addData = reactive({
   title: '',
   diffcult: '',
 })
-function uploadContent(data: string) {
+function uploadContent(data) {
   addData.content = data
+  console.log(data)
 }
 const options = [
   {
@@ -36,8 +38,8 @@ const options = [
         label: '2',
         children: [
           {
-            value: '3',
-            label: '3'
+            value: 'JAVA',
+            label: 'JAVA'
           },
         ]
       },
@@ -83,7 +85,7 @@ const addSample = () => {
   console.log(addData.judgeCase)
 }
 
-const removeSample = (index: number) => {
+const removeSample = (index) => {
   addData.judgeCase.splice(index, 1)
   console.log(addData.judgeCase)
 }
@@ -111,7 +113,7 @@ watch(addData, () => {
 const submitForm = () => {
   console.log(addData)
   // 验证表单
-  addDataRef.value.validate(async (valid: boolean) => {
+  addDataRef.value.validate(async (valid) => {
     if (valid) {
       // 提交表单数据
       const res = await addApi(addData)
@@ -137,7 +139,11 @@ const submitForm = () => {
 
 const resetForm = () => {
   addDataRef.value.resetFields()
+  //手动清空judgeCase
+  addData.judgeCase = [{ input: '', output: '' }]
+  window.location.reload()
 }
+
 const handelBack = () => {
   router.push('/question/compile')
 }
@@ -171,9 +177,7 @@ const handelBack = () => {
     <el-form-item>
       <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
     </el-form-item>
-    <!-- <el-form-item label="解析" prop="descP">
-      <el-input v-model="addData.descP" type="textarea" />
-    </el-form-item> -->
+
     <el-form-item label="答案" prop="answer">
       <el-input v-model="addData.answer" type="textarea" />
     </el-form-item>
