@@ -63,7 +63,8 @@
         <div class="title">
           <h3>竞赛信息</h3>
         </div>
-        <h3 style="text-align: center;"><a href="#" style="color:#409EFF; font-size: 22px;">【3.23正式考场｜点击此处可进入考场】</a>
+        <h3 style="text-align: center;"><a href="/competition/answer"
+            style="color:#409EFF; font-size: 22px;">【3.23正式考场｜点击此处可进入考场】</a>
         </h3>
         <div class="topic">
           <strong>参赛须知</strong>

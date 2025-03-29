@@ -38,7 +38,7 @@ const cities = ref([
 ])
 
 const checkGroup = ref([''])
-const checkboxGroup1 = ref(['beijing'])
+const checkboxGroup1 = ref('beijing')
 </script>
 <template>
   <div>
@@ -129,7 +129,8 @@ const checkboxGroup1 = ref(['beijing'])
 }
 
 .main {
-  width: 65%;
+  display: flex;
+  justify-content: center;
   height: 100%;
   margin: 0 auto;
   margin-top: 40px;

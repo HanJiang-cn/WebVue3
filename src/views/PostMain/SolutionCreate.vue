@@ -5,7 +5,6 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
 import { addPostApi } from '@/api/post'
 import TinymceEdit from '@/components/TinymceEdit.vue'
-import router from '@/router'
 import Cookies from 'js-cookie'
 
 // 表单引用
@@ -42,7 +41,7 @@ const rules = reactive({
 })
 
 // 草稿相关操作
-const DRAFT_KEY = 'post_draft'
+const DRAFT_KEY = 'solution_draft'
 const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
 // const
 
@@ -94,37 +93,6 @@ onMounted(() => {
 // 处理富文本内容上传
 function uploadContent(data) {
   form.content = data
-}
-
-// 处理封面图上传
-const handleCoverChange = (file) => {
-  // 校验图片大小和类型
-  const isImage = file.raw.type.startsWith('image/')
-  const isLt2M = file.size / 1024 / 1024 < 2
-
-  if (!isImage) {
-    ElNotification({
-      title: '文件类型错误',
-      message: '只能上传图片文件',
-      type: 'error'
-    })
-    return false
-  }
-
-  if (!isLt2M) {
-    ElNotification({
-      title: '文件过大',
-      message: '图片大小不能超过 2MB',
-      type: 'error'
-    })
-    return false
-  }
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    form.cover = e.target.result
-  }
-  reader.readAsDataURL(file.raw)
 }
 
 // 提交表单
@@ -210,23 +178,6 @@ const submitForm = async () => {
         </el-form-item>
       </el-col>
     </el-row>
-
-    <!-- 封面图上传 -->
-    <el-form-item label="封面图" class="form-section">
-      <el-upload action="#" :auto-upload="false" :show-file-list="false" :on-change="handleCoverChange"
-        accept="image/jpeg,image/png">
-        <div class="cover-upload">
-          <img v-if="form.cover" :src="form.cover" class="cover-preview">
-          <div v-else class="upload-placeholder">
-            <el-icon :size="32">
-              <Camera />
-            </el-icon>
-            <div class="upload-text">点击上传封面</div>
-            <div class="upload-tips">建议尺寸：800x450，支持JPG/PNG格式</div>
-          </div>
-        </div>
-      </el-upload>
-    </el-form-item>
 
     <!-- 提交栏 -->
     <div class="submit-bar">

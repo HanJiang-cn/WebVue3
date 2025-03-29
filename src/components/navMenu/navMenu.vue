@@ -12,7 +12,8 @@ const menuItemsAdmin = ref([
   { name: 'settings', label: '账号设置', icon: 'Setting' },
   { name: 'admin', label: '管理员菜单', icon: 'Setting' },
   { name: 'messages', label: '我的消息', icon: 'Message' },
-  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+  { name: 'favorites', label: '我的收藏', icon: 'Star' },
+  { name: 'problems', label: '题目中心', icon: 'FileTextOutlined' },
 ])
 const menuItems = ref([
   { name: 'profile', label: '个人中心', icon: 'User' },
@@ -38,6 +39,8 @@ const handleMenuClick = (item: any) => {
     handleNav('/accounts/notifications')
   } else if (item.name === 'favorites') {
     handleNav('/accounts/collection')
+  } else if (item.name === 'problems') {
+    handleNav('/question/compile')
   }
 }
 const handleLogout = () => {
@@ -130,33 +133,32 @@ const handleNav = (name: string) => {
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link @click="handleNav('/question/compile')">
+            <el-button link @click="handleNav('/question')">
               题库
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link>
-              学习
+            <el-button link @click="handleNav('/competition')">
+              竞赛
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button link>
-              学习
+            <el-button link @click="handleNav('/team')">
+              组队
             </el-button>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="5">
             <el-dropdown trigger="click" popper-class="dow-top">
               <span class="el-dropdown-link">
-                菜单
+                其它页面
                 <el-icon class="el-icon--right">
                   <arrow-down />
                 </el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>Action 1</el-dropdown-item>
-                  <el-dropdown-item>Action 2</el-dropdown-item>
-                  <el-dropdown-item>Action 3</el-dropdown-item>
+                  <el-dropdown-item @click="handleNav('/store')">课程中心</el-dropdown-item>
+                  <el-dropdown-item @click="handleNav('/contest')">竞赛排名</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>

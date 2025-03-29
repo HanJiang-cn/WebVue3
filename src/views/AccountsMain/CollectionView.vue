@@ -1,53 +1,41 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 // 当前选中的菜单项
 const activeMenu = ref('all')
+// 获取当前路由的路径
+const currentPath = router.currentRoute.value.path
 
 // 菜单项列表
 const menuItems = [
   { key: 'all', label: '全部收藏' },
-  { key: 'posts', label: '帖子' },
-  { key: 'discussions', label: '讨论' },
-  { key: 'problems', label: '题目' },
-  { key: 'solutions', label: '题解' }
+  { key: 'post', label: '帖子' },
+  { key: 'discussion', label: '讨论' },
+  { key: 'problem', label: '题目' },
+  { key: 'solution', label: '题解' }
 ]
 
-// 模拟收藏数据
-const collections = {
-  all: [
-    { id: 1, title: 'Vue3 响应式原理', type: '帖子', time: '2023-05-10' },
-    { id: 2, title: '关于组件通信的讨论', type: '讨论', time: '2023-05-12' },
-    { id: 3, title: '两数之和', type: '题目', time: '2023-05-15' },
-    { id: 4, title: '动态规划解题思路', type: '题解', time: '2023-05-18' }
-  ],
-  posts: [
-    { id: 1, title: 'Vue3 响应式原理', time: '2023-05-10' },
-    { id: 5, title: 'Element Plus 使用技巧', time: '2023-05-20' }
-  ],
-  discussions: [
-    { id: 2, title: '关于组件通信的讨论', time: '2023-05-12' },
-    { id: 6, title: '前端工程化实践', time: '2023-05-22' }
-  ],
-  problems: [
-    { id: 3, title: '两数之和', time: '2023-05-15' },
-    { id: 7, title: '二叉树遍历', time: '2023-05-25' }
-  ],
-  solutions: [
-    { id: 4, title: '动态规划解题思路', time: '2023-05-18' },
-    { id: 8, title: '贪心算法应用', time: '2023-05-28' }
-  ]
+// 初始化菜单选中项
+const clickedMenu = () => {
+  if (currentPath === '/accounts/collection/all') {
+    activeMenu.value = 'all'
+  } else if (currentPath === '/accounts/collection/post') {
+    activeMenu.value = 'post'
+  }
 }
-
-// 获取当前显示的收藏列表
-const currentCollections = ref(collections.all)
 
 // 切换菜单
 const handleMenuChange = (key) => {
   activeMenu.value = key
-  currentCollections.value = collections[key]
+  router.push(`/accounts/collection/${key}`)
 }
+
+onMounted(() => {
+  clickedMenu()
+})
 </script>
 
 <template>
@@ -63,14 +51,16 @@ const handleMenuChange = (key) => {
 
     <!-- 右侧内容 -->
     <div class="content-side">
-      <div class="collection-header">
+      <!-- <div class="collection-header">
         <h2>{{menuItems.find(item => item.key === activeMenu).label}}</h2>
-        <el-input placeholder="搜索收藏内容" class="search-input" :suffix-icon="Search" />
+        <el-input placeholder="搜索收藏内容" class="search-input" suffix-icon="Search" />
       </div>
 
-      <el-divider />
+      <el-divider /> -->
 
-      <div class="collection-list">
+      <router-view />
+
+      <!-- <div class="collection-list">
         <el-card v-for="item in currentCollections" :key="item.id" class="collection-item" shadow="hover">
           <div class="item-content">
             <h3>{{ item.title }}</h3>
@@ -80,24 +70,18 @@ const handleMenuChange = (key) => {
             </div>
           </div>
           <div class="item-actions">
-            <el-button type="danger" size="small" :icon="Delete">取消收藏</el-button>
+            <el-button type="danger" size="small" icon="Delete">取消收藏</el-button>
           </div>
         </el-card>
       </div>
 
-      <el-pagination class="pagination" :page-size="10" :pager-count="5" layout="prev, pager, next" :total="50" />
+      <el-pagination class="pagination" v-model:current-page="pageInfo.current" layout="prev, pager, next, total"
+        :total="totals" background @current-change="handleCurrentChange" /> -->
     </div>
   </div>
 </template>
 
 <style lang="less" scoped>
-// 定义颜色变量
-@primary-color: #409eff;
-@hover-color: #f5f7fb;
-@border-color: #e4e7ed;
-@text-main: #303133;
-@text-secondary: #606266;
-
 .collection-container {
   display: flex;
   min-height: 100vh;
@@ -154,7 +138,7 @@ const handleMenuChange = (key) => {
         margin: 0;
         font-size: 24px;
         font-weight: 600;
-        color: @text-main;
+        color: #303133;
         position: relative;
         padding-left: 12px;
 
@@ -166,7 +150,7 @@ const handleMenuChange = (key) => {
           transform: translateY(-50%);
           width: 4px;
           height: 20px;
-          background: @primary-color;
+          background: #409eff;
           border-radius: 2px;
         }
       }
@@ -189,7 +173,7 @@ const handleMenuChange = (key) => {
 
     .el-divider {
       margin: 16px 0;
-      background-color: rgba(@border-color, 0.4);
+      background-color: rgba(#e4e7ed, 0.4);
     }
 
     .collection-list {
@@ -201,7 +185,7 @@ const handleMenuChange = (key) => {
         border-radius: 12px;
         overflow: hidden;
         background: rgba(255, 255, 255, 0.9);
-        border: 1px solid rgba(@border-color, 0.3);
+        border: 1px solid rgba(#e4e7ed, 0.3);
 
         &:hover {
           transform: translateY(-2px);
@@ -223,7 +207,7 @@ const handleMenuChange = (key) => {
             margin: 0 0 8px 0;
             font-size: 16px;
             font-weight: 500;
-            color: @text-main;
+            color: #303133;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -239,15 +223,15 @@ const handleMenuChange = (key) => {
               display: inline-flex;
               align-items: center;
               padding: 4px 8px;
-              background: rgba(@primary-color, 0.1);
-              color: @primary-color;
+              background: rgba(#409eff, 0.1);
+              color: #409eff;
               border-radius: 4px;
               font-weight: 500;
               letter-spacing: 0.5px;
             }
 
             .item-time {
-              color: @text-secondary;
+              color: #606266;
               font-size: 12px;
             }
           }
@@ -279,7 +263,7 @@ const handleMenuChange = (key) => {
       :deep(.el-pagination.is-background .btn-next),
       :deep(.el-pagination.is-background .el-pager li) {
         background: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(@border-color, 0.4);
+        border: 1px solid rgba(#e4e7ed, 0.4);
         border-radius: 8px;
         margin: 0 4px;
         transition: all 0.2s ease;
@@ -290,7 +274,7 @@ const handleMenuChange = (key) => {
         }
 
         &.is-active {
-          border-color: @primary-color;
+          border-color: #409eff;
         }
       }
     }

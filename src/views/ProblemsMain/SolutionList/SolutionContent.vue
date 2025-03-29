@@ -1,9 +1,57 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommentComponent from '@/components/CommentComponent.vue'
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { thumbPostApi, favourPostApi } from '@/api/post'
 
 const handleBack = () => {
   window.history.back()
+}
+
+// 互动相关逻辑
+const isLiked = ref(false)
+const likeCount = ref(123)
+const isFavorited = ref(false)
+const favoriteCount = ref(123)
+
+// 点赞处理
+const handleLike = async () => {
+  try {
+    const { data } = await thumbPostApi({
+      postId: id,
+    })
+    if (data === 1) {
+      isLiked.value = true
+      getPostInfor()
+      ElMessage.success('点赞成功')
+    } else {
+      isLiked.value = false
+      getPostInfor()
+      ElMessage.error('取消点赞')
+    }
+  } catch (error) {
+    console.error('点赞失败:', error)
+  }
+}
+// 收藏处理
+const handleFavorite = async () => {
+  try {
+    const { data } = await favourPostApi({
+      postId: id,
+    })
+    if (data === 1) {
+      isFavorited.value = true
+      getPostInfor()
+      ElMessage.success('收藏成功')
+    } else {
+      isFavorited.value = false
+      getPostInfor()
+      ElMessage.error('取消收藏')
+    }
+  } catch (error) {
+    console.error('收藏失败:', error)
+  }
 }
 </script>
 
@@ -42,6 +90,21 @@ const handleBack = () => {
     <el-col :span="24" class="content">
       <div class="solution-content">
         题解内容
+      </div>
+      <div class="post-actions">
+        <el-button @click="handleLike" :class="{ 'liked': isLiked }">
+          <el-icon :color="isLiked ? '#f56c6c' : ''">
+            <LikeOutlined />
+          </el-icon>
+          {{ likeCount }}
+        </el-button>
+
+        <el-button @click="handleFavorite" :class="{ 'favorited': isFavorited }">
+          <el-icon :color="isFavorited ? '#e6a23c' : ''">
+            <Star />
+          </el-icon>
+          {{ favoriteCount }}
+        </el-button>
       </div>
       <div class="comment">
         <CommentComponent></CommentComponent>
@@ -140,6 +203,57 @@ const handleBack = () => {
         font-weight: 600;
         color: #2c3e50;
         margin-bottom: 10px;
+      }
+    }
+
+    .post-actions {
+      margin: 32px 0;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+
+      :deep(.el-button) {
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .el-icon {
+          margin-right: 6px;
+          transition: color 0.3s ease;
+        }
+      }
+
+      .liked {
+        color: #f56c6c;
+        border-color: #f56c6c;
+      }
+
+      .favorited {
+        color: #e6a23c;
+        border-color: #e6a23c;
+      }
+
+      .share-btn:hover {
+        color: var(--el-color-primary);
+        border-color: var(--el-color-primary);
+      }
+
+
+      .qrcode-container {
+        padding: 12px;
+        // text-align: center;
+
+        .qrcode {
+          margin-bottom: 12px;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          padding: 8px;
+          background: white;
+        }
       }
     }
   }

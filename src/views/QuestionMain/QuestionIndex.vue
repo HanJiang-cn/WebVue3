@@ -334,7 +334,7 @@ const attrs = ref([
     border: none;
     background-color: rgba(59, 130, 246, 0.08);
     font-size: 16px;
-    padding: 12px 14px;
+    padding: 12px 13px;
 
     .el-icon {
       margin-right: 10px;

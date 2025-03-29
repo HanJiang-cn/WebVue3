@@ -14,12 +14,15 @@ const handleSwitch = () => {
 
 const handlePost = () => {
   // 在当前标签页中打开
-  window.open(router.resolve({
-    path: '/post/create',
-    query: {
-      switchIndex: switchIndex.value
-    }
-  }).href, '_blank')
+  if (switchIndex.value % 2 === 0) {
+    window.open(router.resolve({
+      path: '/post/solutioncreate',
+    }).href, '_blank')
+  } else {
+    window.open(router.resolve({
+      path: '/post/create',
+    }).href, '_blank')
+  }
 }
 const handleMyPost = () => {
   window.open(

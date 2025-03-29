@@ -60,7 +60,20 @@ const routes = [
       {
         path: 'collection',
         name: 'Collection',
+        redirect: '/accounts/collection/all',
         component: () => import('@/views/AccountsMain/CollectionView.vue'),
+        children: [
+          {
+            path: 'all',
+            name: 'CollectionAll',
+            component: () => import('@/views/AccountsMain/CollectionView/CollectionAll.vue'),
+          },
+          {
+            path: 'post',
+            name: 'CollectionPost',
+            component: () => import('@/views/AccountsMain/CollectionView/CollectionPost.vue'),
+          },
+        ],
       },
     ],
   },
@@ -212,6 +225,11 @@ const routes = [
         path: 'create',
         name: 'PostCreate',
         component: () => import('@/views/PostMain/PostCreate.vue'),
+      },
+      {
+        path: 'solutioncreate',
+        name: 'SolutionCreate',
+        component: () => import('@/views/PostMain/SolutionCreate.vue'),
       },
     ],
   },

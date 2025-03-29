@@ -4,6 +4,7 @@
 import logo from '@/assets/logo.webp'
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getDetailApi } from '@/api/question'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
 
@@ -48,7 +49,7 @@ onMounted(() => {
   const currentRoute = router.currentRoute.value
   if (currentRoute.path === '/problems/question') {
     activeName.value = '1'
-  } else if (currentRoute.path === '/problems/solution') {
+  } else if (currentRoute.path === '/problems/solution' || currentRoute.path === '/problems/solution/content') {
     activeName.value = '2'
   }
 })
@@ -75,6 +76,66 @@ const handleTestResultsData = (value) => {
     })
   }
 }
+
+// 用户菜单
+import { ElMessageBox } from 'element-plus'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const menuItemsAdmin = ref([
+  { name: 'profile', label: '个人中心', icon: 'User' },
+  { name: 'settings', label: '账号设置', icon: 'Setting' },
+  { name: 'admin', label: '管理员菜单', icon: 'Setting' },
+  { name: 'messages', label: '我的消息', icon: 'Message' },
+  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+])
+const menuItems = ref([
+  { name: 'profile', label: '个人中心', icon: 'User' },
+  { name: 'settings', label: '账号设置', icon: 'Setting' },
+  { name: 'messages', label: '我的消息', icon: 'Message' },
+  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+])
+
+const handleMenuClick = (item) => {
+  if (item.name === 'profile') {
+    handleNav('/user')
+  } else if (item.name === 'settings') {
+    handleNav('/user/setting')
+  } else if (item.name === 'admin') {
+    handleNav('/admin')
+  } else if (item.name === 'messages') {
+    handleNav('/accounts/notifications')
+  } else if (item.name === 'favorites') {
+    handleNav('/accounts/collection')
+  }
+}
+const handleLogout = () => {
+  ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    userStore.logout()
+    router.push('/')
+    location.reload()
+  })
+}
+const handleNav = (name) => {
+  window.open(router.resolve({ path: name, }).href, '_self')
+}
+
+// 题目
+const questionData = ref({})
+
+const getQuestionInfo = async () => {
+  const { data } = await getDetailApi({ id: router.currentRoute.value.query.id })
+  // console.log(res)
+  questionData.value = data
+}
+
+onMounted(() => {
+  getQuestionInfo()
+})
 </script>
 
 <template>
@@ -128,7 +189,7 @@ const handleTestResultsData = (value) => {
             </div>
           </el-col>
           <el-col :span="8" class="center">
-            <span>这是一个题的题目</span>
+            <span>{{ questionData.title }}</span>
           </el-col>
           <el-col :span="8" class="right">
             <div>
@@ -139,7 +200,43 @@ const handleTestResultsData = (value) => {
               </el-button>
             </div>
             <div>
-              <el-avatar :size="25" style="margin-left: 3px;" />
+              <el-popover trigger="click" placement="bottom" :width="240" :offset="10">
+                <template #reference>
+                  <el-avatar :size="25" class="cursor-pointer" />
+                </template>
+                <div class="user-menu">
+                  <!-- 用户信息 -->
+                  <div class="user-info">
+                    <el-avatar :size="25" />
+                    <div class="info">
+                      <h4 class="nickname">{{ userStore.userName }}</h4>
+                      <p class="email">{{ userStore.userName }}</p>
+                    </div>
+                  </div>
+
+                  <!-- 功能菜单 -->
+                  <div class="menu-list" v-if="userStore.userRole === 'admin'">
+                    <div v-for="item in menuItemsAdmin" :key="item.name" class="menu-item"
+                      @click="handleMenuClick(item)">
+                      <component :is="item.icon" class="icon" />
+                      <span>{{ item.label }}</span>
+                    </div>
+                  </div>
+                  <div class="menu-list" v-else>
+                    <div v-for="item in menuItems" :key="item.name" class="menu-item" @click="handleMenuClick(item)">
+                      <component :is="item.icon" class="icon" />
+                      <span>{{ item.label }}</span>
+                    </div>
+                  </div>
+                  <!-- 退出登录 -->
+                  <div class="logout" @click="handleLogout">
+                    <el-icon>
+                      <SwitchButton />
+                    </el-icon>
+                    <span>退出登录</span>
+                  </div>
+                </div>
+              </el-popover>
             </div>
           </el-col>
         </el-row>
@@ -230,7 +327,81 @@ const handleTestResultsData = (value) => {
 </template>
 
 <style lang="less" scoped>
+.user-menu {
+  position: relative;
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #ebeef5;
+
+    .info {
+      margin-left: 12px;
+
+      .nickname {
+        margin: 0;
+        font-size: 14px;
+        color: #303133;
+        font-weight: 600;
+      }
+
+      .email {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #909399;
+      }
+    }
+  }
+
+  .menu-list {
+    padding: 8px 0;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #303133;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #f5f7fa;
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 12px;
+        color: #409EFF;
+      }
+    }
+  }
+
+  .logout {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #f56c6c;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #fef0f0;
+    }
+
+    .el-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+    }
+  }
+}
+
 .common-layout {
+
   .el-header {
     display: flex;
     align-items: center;
