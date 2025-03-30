@@ -9,6 +9,7 @@ enum Api {
   getDetail = '/question/get/vo',
   ceshi = '/question/question_submit/list/page',
   submitQuestion = '/question/question_submit/do',
+  getMyDetial='/question/get'
 }
 interface addData {
   answer: string
@@ -53,6 +54,9 @@ interface getMyData {
 interface getDetailData {
   id: number
 }
+interface getMyDetial{
+  id:number
+}
 interface submitQuestionData {
   code: string
   language: string
@@ -77,6 +81,9 @@ function getMyApi(data: getMyData) {
 function getDetailApi(data: getDetailData) {
   return get(Api.getDetail, data)
 }
+function getMyDetialApi(data: getMyDetial) {
+  return get(Api.getMyDetial, data)
+}
 function submitQuestionApi(data: submitQuestionData) {
   return post(Api.submitQuestion, data)
 }
@@ -85,4 +92,4 @@ function ceshiApi(data: any) {
   return post(Api.ceshi, data)
 }
 
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi }
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMyDetialApi }

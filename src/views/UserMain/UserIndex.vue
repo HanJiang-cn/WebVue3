@@ -139,11 +139,6 @@ const pageInfo = reactive({
 const editUserInfo = () => {
   window.open(router.resolve({ path: '/user/setting', }).href, '_self')
 }
-
-// 前往竞赛页面
-const toCompetition = () => {
-  window.open(router.resolve({ path: '/competition/detail', }).href, '_blank')
-}
 </script>
 
 <template>
@@ -404,7 +399,7 @@ const toCompetition = () => {
                 :size="size" :disabled="disabled" layout="total, prev, pager, next, jumper" :total="1000"
                 @size-change="handleSizeChange" @current-change="handleCurrentChange" />
             </el-tab-pane>
-            <!-- 竞赛 -->
+            <!-- 题单 -->
             <el-tab-pane name="2">
               <template #label>
                 <span class="title">
@@ -418,7 +413,7 @@ const toCompetition = () => {
                 </span>
               </template>
               <div class="sheet">
-                <div class="sheet-item" @click="toCompetition">
+                <div class="sheet-item">
                   <span>1. 绿桥杯软件和信息技术专业人才大赛</span>
                   <span class="sheet-item__action">查看详细</span>
                 </div>
