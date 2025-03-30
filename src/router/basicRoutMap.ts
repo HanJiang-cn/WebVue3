@@ -205,6 +205,11 @@ const routes = [
         name: 'TeamMatch',
         component: () => import('@/views/TeamMain/TeamMainMatch.vue'),
       },
+      {
+        path: 'join',
+        name: 'TeamJoin',
+        component: () => import('@/views/TeamMain/TeamMainJoin.vue'),
+      },
     ],
   },
   // 帖子

@@ -66,21 +66,23 @@ const topTeams = ref([
   // 更多数据...
 ])
 
-const teamInfo = ref({
-  name: '极客先锋队',
-  description: '专注算法竞赛与创新开发',
-  members: 5,
-  maxMembers: 8,
-  createTime: '2023-06-01',
-  updateTime: '2023-08-15',
-  captain: '张三',
-  status: '活跃'
-})
-
-const activities = ref([
-  { time: '08-20', content: '获得全国编程大赛季军' },
-  { time: '08-12', content: '新增成员：李四' },
-  { time: '08-01', content: '创建队伍' }
+const joinedTeams = ref([
+  {
+    name: '极客先锋队',
+    score: 4500,
+    rank: 1,
+    members: 5,
+    status: '活跃',
+    progress: 80
+  },
+  {
+    name: '代码艺术家',
+    score: 3800,
+    rank: 3,
+    members: 6,
+    status: '集训中',
+    progress: 65
+  }
 ])
 
 const handleCreate = () => {
@@ -89,14 +91,11 @@ const handleCreate = () => {
 const handleMatch = () => {
   router.push('/team/match')
 }
-const handleManage = () => {
-  router.push('/team/manage')
-}
 const handleList = () => {
   router.push('/team/list')
 }
 const handleJoin = () => {
-  router.push('/team/detail')
+  router.push('/team/join')
 }
 </script>
 
@@ -207,69 +206,48 @@ const handleJoin = () => {
               </template>
               <div class="action-buttons">
                 <el-button type="primary" icon="Plus" class="action-btn" @click="handleCreate">创建队伍</el-button>
-                <el-button type="info" icon="Search" class="action-btn" @click="handleJoin">加入队伍</el-button>
+                <el-button type="warning" icon="Search" class="action-btn" @click="handleJoin">加入队伍</el-button>
                 <el-button type="success" icon="Search" class="action-btn" @click="handleMatch">匹配队伍</el-button>
-                <el-button type="warning" icon="Edit" class="action-btn" @click="handleManage">管理队伍</el-button>
                 <el-button type="info" icon="View" class="action-btn" @click="handleList">查看队伍</el-button>
-                <el-button type="danger" class="action-btn">退出队伍</el-button>
               </div>
             </el-card>
 
-            <!-- 队伍信息 -->
-            <el-card class="info-card">
+            <el-card class="joined-teams-card">
               <template #header>
                 <div class="card-header">
                   <el-icon>
-                    <User />
+                    <UserFilled />
                   </el-icon>
-                  <span>队伍信息</span>
+                  <span>我的队伍（2/5）</span>
+                  <el-tag type="info" size="small" class="ml-10">当前排名</el-tag>
                 </div>
               </template>
-              <div class="info-item">
-                <label>名称：</label>
-                <span>{{ teamInfo.name }}</span>
-              </div>
-              <div class="info-item">
-                <label>描述：</label>
-                <p>{{ teamInfo.description }}</p>
-              </div>
-              <div class="info-item">
-                <label>队长：</label>
-                <p>{{ teamInfo.description }}</p>
-              </div>
-              <div class="info-item">
-                <label>人数：</label>
-                <p>3/5</p>
-              </div>
-              <div class="info-item">
-                <label>积分：</label>
-                <el-progress> </el-progress>
-              </div>
-              <div class="info-item">
-                <label>创建时间：</label>
-                <span>{{ teamInfo.createTime }}</span>
-              </div>
-              <div class="info-item">
-                <label>最后更新：</label>
-                <span>{{ teamInfo.updateTime }}</span>
-              </div>
-            </el-card>
 
-            <!-- 队伍动态 -->
-            <el-card class="activity-card">
-              <template #header>
-                <div class="card-header">
-                  <el-icon>
-                    <Clock />
-                  </el-icon>
-                  <span>队伍动态</span>
+              <div class="team-ranking">
+                <div v-for="(team, index) in joinedTeams" :key="index" class="team-item" @click="viewTeamDetail(team)">
+                  <div class="rank-badge" :class="{
+                    'gold': team.rank === 1,
+                    'silver': team.rank === 2,
+                    'bronze': team.rank === 3
+                  }">
+                    #{{ team.rank }}
+                  </div>
+                  <div class="team-info">
+                    <div class="team-name">{{ team.name }}</div>
+                    <div class="team-stats">
+                      <el-tag size="small" :type="team.status === '活跃' ? 'success' : 'info'">
+                        {{ team.status }}
+                      </el-tag>
+                      <div class="score">
+                        <el-icon>
+                          <StarFilled />
+                        </el-icon>
+                        {{ team.score }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </template>
-              <el-timeline>
-                <el-timeline-item v-for="(act, index) in activities" :key="index" :timestamp="act.time">
-                  {{ act.content }}
-                </el-timeline-item>
-              </el-timeline>
+              </div>
             </el-card>
           </el-affix>
         </div>
@@ -454,34 +432,76 @@ const handleJoin = () => {
     }
   }
 
-  .info-card {
-    margin-top: 20px;
+  .joined-teams-card {
+    margin-bottom: 20px;
+    border: 2px solid #67c23a;
+    border-radius: 12px;
 
-    .info-item {
-      margin: 10px 0;
+    .team-ranking {
+      .team-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin: 8px 0;
+        background: #f8fafc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
 
-      label {
-        display: block;
-        color: @info-color;
-        font-size: 0.9em;
-        margin-bottom: 4px;
-      }
+        &:hover {
+          transform: translateX(5px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
-      p {
-        margin: 4px 0;
-        color: #606266;
-      }
-    }
-  }
+        .rank-badge {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 12px;
 
-  .activity-card {
-    margin-top: 20px;
+          &.gold {
+            background: linear-gradient(45deg, #FFD700, #FFC107);
+          }
 
-    .el-timeline {
-      padding-left: 20px;
+          &.silver {
+            background: linear-gradient(45deg, #C0C0C0, #909399);
+          }
 
-      &-item {
-        font-size: 0.9em;
+          &.bronze {
+            background: linear-gradient(45deg, #CD7F32, #E6A23C);
+          }
+        }
+
+        .team-info {
+          flex: 1;
+
+          .team-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+          }
+
+          .team-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .score {
+              color: #606266;
+              font-size: 0.9em;
+              display: flex;
+              align-items: center;
+
+              i {
+                color: #FFC107;
+                margin-right: 4px;
+              }
+            }
+          }
+        }
       }
     }
   }

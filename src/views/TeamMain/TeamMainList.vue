@@ -2,7 +2,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { myTeamListApi } from '@/api/team'
+import { myTeamListApi, myJoinTeamListApi } from '@/api/team'
 import TeamList from "@/components/TeamMain/TeamList.vue"
 
 const router = useRouter()
@@ -10,13 +10,21 @@ const dialogVisible = ref(false)
 const activeName = ref('first')
 
 // 获取队伍列表
+// 我创建的
 const teamList = ref([])
 const getTeamList = async () => {
   const { data } = await myTeamListApi()
   teamList.value = data
 }
+// 我加入的
+const joinTeamList = ref([])
+const getJoinTeamList = async () => {
+  const { data } = await myJoinTeamListApi()
+  joinTeamList.value = data
+}
 onMounted(() => {
   getTeamList()
+  getJoinTeamList()
 })
 
 const jump = () => {
@@ -69,29 +77,34 @@ const jump = () => {
         <!-- 队伍列表容器 -->
         <div class="team-list">
           <!-- 队伍卡片 -->
-          <div class="team-card" v-for="team in 3" :key="team">
+          <div class="team-card" v-for="team in joinTeamList" :key="team.id">
             <div class="card-header">
-              <h3 class="team-name">前端开发小队 {{ name }}</h3>
+              <h3 class="team-name">{{ team.name }}</h3>
 
             </div>
 
             <div class="team-info">
               <div class="info-item">
                 <span>队伍Id：</span>
-                <span>123</span>
+                <span>{{ team.id }}</span>
               </div>
               <div class="info-item">
-                <span>队伍名称：</span>
-                <span>徐致豪666</span>
+                <span>创建人：</span>
+                <span>{{ team.createUser.userName }}</span>
+              </div>
+              <div class="info-item">
+                <span>队伍状态：</span>
+                <span>{{ team.status === 0 ? '公开' : team.status === 1 ? '私密' : '公开加密' }}</span>
               </div>
               <div class="info-item">
                 <span>队伍人数：</span>
-                <span>6</span>
+                <span>1/{{ team.maxNum }}</span>
               </div>
             </div>
 
             <div class="team-info-button">
               <el-button type="primary" @click="dialogVisible = true">队伍信息</el-button>
+              <el-button type="danger" plain @click="leaveTeam(team.id)">退出队伍</el-button>
             </div>
           </div>
         </div>
@@ -264,13 +277,16 @@ const jump = () => {
       .el-button {
         flex: 1;
         transition: all 0.3s;
-        background: linear-gradient(45deg, #409EFF, #66b1ff);
-        border-color: transparent;
-        color: white;
 
-        &:hover {
-          opacity: 0.9;
-          transform: translateY(-1px);
+        &:first-child {
+          background: linear-gradient(45deg, #409EFF, #66b1ff);
+          border-color: transparent;
+          color: white;
+
+          &:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+          }
         }
       }
     }

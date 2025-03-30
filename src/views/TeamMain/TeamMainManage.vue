@@ -12,6 +12,7 @@ const dialogVisible = ref(false)
     <div class="box2">
       <div class="add">
         <el-button type="primary" @click="dialogVisible = true">添加人员</el-button>
+        <el-button type="danger" plain>删除队伍</el-button>
       </div>
       <div class="people">
         <div class="main">
