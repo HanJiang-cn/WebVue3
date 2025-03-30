@@ -127,7 +127,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <div class="no-combo-tips">点击左侧 + 按钮，即可添加文件夹管理个人素材。</div>
     </template>
     <template v-else>
-      <el-table :data="questions" v-loading="loading" style="width: 100%" @row-click="handleRowClick"
+      <el-table :data="questions" v-loading="loading" style="width: 100%"
         :header-cell-style="{ background: '#409EFF', color: 'white' }">
         <el-table-column prop="title" label="题目" min-width="250">
           <template #default="{ row }">
@@ -302,4 +302,29 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     }
   }
 }
+.title-text {
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      color: #409EFF;
+
+      &::after {
+        width: 100%;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #409EFF;
+      transition: width 0.3s;
+    }
+  }
 </style>
