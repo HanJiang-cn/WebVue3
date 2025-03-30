@@ -1,4 +1,5 @@
 <!-- eslint-disable vue/block-lang -->
+
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -16,43 +17,33 @@ const form = reactive({
     input: '',
     output: ''
   }],
-  judgeConfig: {
-    memoryLimit: 1000,
-    stackLimit: 1000,
-    timeLimit: 1000
-  },
   tags: [],
   title: '',
-  diffcult: '',
 })
-// 从后端获取题目详情
+//修改后的获取题目详情方法
 const fetchQuestionDetail = async () => {
   try {
     const { code, data } = await getDetailApi({ id: questionId.value })
     if (code === 0) {
-      Object.assign(form, data
-      // {
-      //   title: data.title,
-      //   difficulty: data.difficulty,
-      //   tags: data.tags,
-      //   // 根据 tags 判断题型
-      //   answer: data.answer,
-      //   content: data.content,
-      //   // 处理 judgeCase
-      //   judgeCase: data.judgeCase.map(jc => ({
-      //     input: jc.input,
-      //     output: jc.output
-      //   }))
-      // }
-    )
-    console.log(form)
+      // 转换测试用例格式
+      if (typeof data.judgeCase === 'string') {
+        data.judgeCase = JSON.parse(data.judgeCase)
+      }
+
+      // 保留原有judgeCase结构
+      form.judgeCase.splice(0, form.judgeCase.length, ...(data.judgeCase || []))
+
+      // 使用Object.assign需要排除judgeCase字段
+      const { judgeCase, ...rest } = data
+      Object.assign(form, rest)
     }
+    console.log(data)
   } catch (error) {
-    // ...错误处理
+    ElMessage.error('获取题目详情失败: ' + error.message)
   }
 }
 function uploadContent(data) {
-  addData.content = data
+  form.content = data
   console.log(data)
 }
 // 添加测试用例（编程题）
@@ -77,6 +68,7 @@ const handleSubmit = async () => {
 
     const { code, message } = await editApi(payload)
 
+
     // 明确处理所有 code 情况
     if (code === 0) {
       ElMessage.success('修改成功')
@@ -84,7 +76,8 @@ const handleSubmit = async () => {
     } else {
       ElMessage.warning(message || '修改未完全生效') // 差异化提示
     }
-  } catch (error) {
+  }
+  catch (error) {
     // 显示具体错误信息
     ElMessage.error(error.message || '请求发送失败')
   }
@@ -125,13 +118,13 @@ onMounted(() => {
 
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交修改</el-button>
-        <el-button @click="router.go(-1)">返回</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <style scoped>
+
 .question-edit-container {
   min-width: 1000px;
   margin: 20px auto;
