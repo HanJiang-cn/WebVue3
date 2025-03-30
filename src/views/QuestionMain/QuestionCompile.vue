@@ -39,8 +39,8 @@ const handleCreate = () => {
         <div id="right">
           <div class="right">
             <el-button id="create" type="primary" round @click="handleCreate">新增试题</el-button>
-            <span> <input placeholder="请输入题号或其他关键词进行搜索" type="text">
-            </span>
+            <el-button id="create" type="primary" round @click="handleCreate">创建试卷</el-button>
+            <el-input placeholder="请输入题号或其他关键词进行搜索" />
           </div>
         </div>
       </div>
@@ -73,28 +73,21 @@ const handleCreate = () => {
     }
 
     #create {
-      margin-right: 20px;
+      // margin-right: 20px;
       margin-bottom: 30px;
       height: 35px;
     }
 
-    span {
-      display: inline-block;
-      width: 200px;
+    .el-input {
+      border-radius: 19px;
       height: 35px;
+      width: 100%;
+      padding-left: 20px;
 
-      input {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        border-radius: 19px;
-        height: 35px;
-        width: 369px;
+      :deep(.el-input__wrapper) {
         padding-left: 20px;
-        background-color: #f6f7f9;
-        border: none;
+        border-radius: 20px;
       }
-
     }
   }
 }
