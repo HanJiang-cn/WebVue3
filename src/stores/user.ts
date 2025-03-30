@@ -20,6 +20,7 @@ export const useUserStore = defineStore('user', () => {
         userAccount: '',
         userProfile: '',
         userRole: '',
+        tags: [],
       }
 
   const id = ref(initialUser.id)
@@ -27,6 +28,7 @@ export const useUserStore = defineStore('user', () => {
   const userAccount = ref(initialUser.userAccount)
   const userProfile = ref(initialUser.userProfile)
   const userRole = ref(initialUser.userRole)
+  const tags = ref(initialUser.tags)
 
   // 更新cookie中的用户信息
   const updateUserCookie = () => {
@@ -36,10 +38,12 @@ export const useUserStore = defineStore('user', () => {
       userAccount: userAccount.value,
       userProfile: userProfile.value,
       userRole: userRole.value,
+      tags: tags.value,
     }
     Cookies.set(USER_COOKIE_KEY, JSON.stringify(userData), COOKIE_OPTIONS)
   }
 
+  // 登录
   const login = async (data: any) => {
     try {
       const response = await loginApi(data)
@@ -48,6 +52,8 @@ export const useUserStore = defineStore('user', () => {
       userAccount.value = response.data.userAccount
       userProfile.value = response.data.userProfile
       userRole.value = response.data.userRole
+      // 将 tags 转换为数组
+      tags.value = response.data.tags ? response.data.tags.split(',') : []
       updateUserCookie()
       ElNotification({
         title: '成功',
@@ -67,18 +73,20 @@ export const useUserStore = defineStore('user', () => {
     userAccount.value = response.data.userAccount
     userProfile.value = response.data.userProfile
     userRole.value = response.data.userRole
+    tags.value = response.data.tags ? response.data.tags.split(',') : []
     updateUserCookie()
   }
 
+  // 退出登录
   const logout = () => {
     // 清除cookie中的用户信息
     Cookies.remove(USER_COOKIE_KEY)
-    // 清除pinia中的数据
     id.value = ''
     userName.value = ''
     userAccount.value = ''
     userProfile.value = ''
     userRole.value = ''
+    tags.value = []
     ElNotification({
       title: '成功',
       message: '退出成功',
@@ -92,6 +100,7 @@ export const useUserStore = defineStore('user', () => {
     userAccount,
     userProfile,
     userRole,
+    tags,
     login,
     logout,
     getUserInfo,

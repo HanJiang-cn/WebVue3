@@ -6,6 +6,13 @@ const routes = [
     component: () => import('@/layouts/DefaultLayout.vue'),
     // redirect: '/',
   },
+  // 搜索
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/layouts/SearchLayout.vue'),
+    // redirect: '/',
+  },
   // 个人中心
   {
     path: '/user',

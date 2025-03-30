@@ -50,6 +50,9 @@ const matchDetail = ref({
   <el-dialog :model-value="props.visible" title="队伍详细信息" @close="emits('close')" width="600px" class="team-dialog">
     <el-form label-position="left" label-width="100px">
       <!-- 队伍信息展示 -->
+      <el-form-item label="队伍ID：">
+        <el-text tag="b">1</el-text>
+      </el-form-item>
       <el-form-item label="队伍名称：">
         <el-text tag="b">前端冲锋队</el-text>
       </el-form-item>
@@ -58,11 +61,6 @@ const matchDetail = ref({
       </el-form-item>
       <el-form-item label="创建时间：">
         <el-text>2024-03-15</el-text>
-      </el-form-item>
-      <el-form-item label="指导老师：">
-        <div class="member-list">
-          <el-text tag="b">xxx</el-text>
-        </div>
       </el-form-item>
       <el-form-item label="队长：">
         <div class="member-list">

@@ -1,10 +1,11 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import { updateLoginUserApi } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 import { ElNotification } from 'element-plus'
 
+// 表单数据
 const form = ref({
   userAvatar: '',
   userName: '',
@@ -17,18 +18,8 @@ const form = ref({
   // region: [],
   // github: '',
   // website: '',
-  // tags: ['前端开发', 'Vue.js', 'Node.js']
+  tags: []
 })
-const userStore = useUserStore()
-form.value = {
-  userName: userStore.userName,
-  userProfile: userStore.userProfile,
-}
-
-const inputVisible = ref(false)
-const inputValue = ref('')
-const InputRef = ref(null)
-
 const regionOptions = [
   {
     value: 'shandong',
@@ -39,18 +30,20 @@ const regionOptions = [
     ]
   }
 ]
-
-const removeTag = (tag) => {
-  form.value.tags.splice(form.value.tags.indexOf(tag), 1)
+// 初始化表单数据
+const userStore = useUserStore()
+form.value = {
+  userName: userStore.userName,
+  userProfile: userStore.userProfile,
+  tags: userStore.tags,
 }
 
-const showInput = () => {
-  inputVisible.value = true
-  nextTick(() => {
-    InputRef.value.input.focus()
-  })
-}
+const inputVisible = ref(false)
+const inputValue = ref('')
+const InputRef = ref(null)
 
+// 标签相关方法
+// 添加标签
 const addTag = () => {
   if (inputValue.value) {
     form.value.tags.push(inputValue.value)
@@ -58,19 +51,35 @@ const addTag = () => {
   }
   inputVisible.value = false
 }
+// 删除标签
+const removeTag = (tag) => {
+  form.value.tags.splice(form.value.tags.indexOf(tag), 1)
+}
+// 显示输入框
+const showInput = () => {
+  console.log(form.value);
+
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value.input.focus()
+  })
+}
 
 const beforeAvatarUpload = (file) => {
   // 处理头像上传逻辑
 }
 
 const saveProfile = async () => {
-  await updateLoginUserApi(form.value)
+  await updateLoginUserApi({ ...form.value, tags: form.value.tags.join(',') })
   userStore.getUserInfo()
   ElNotification({
     title: '成功',
     message: '个人资料已更新',
     type: 'success'
   })
+  setTimeout(() => {
+    window.location.reload()
+  }, 1000)
 }
 </script>
 

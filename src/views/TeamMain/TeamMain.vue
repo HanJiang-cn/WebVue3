@@ -95,6 +95,9 @@ const handleManage = () => {
 const handleList = () => {
   router.push('/team/list')
 }
+const handleJoin = () => {
+  router.push('/team/detail')
+}
 </script>
 
 <template>
@@ -204,6 +207,7 @@ const handleList = () => {
               </template>
               <div class="action-buttons">
                 <el-button type="primary" icon="Plus" class="action-btn" @click="handleCreate">创建队伍</el-button>
+                <el-button type="info" icon="Search" class="action-btn" @click="handleJoin">加入队伍</el-button>
                 <el-button type="success" icon="Search" class="action-btn" @click="handleMatch">匹配队伍</el-button>
                 <el-button type="warning" icon="Edit" class="action-btn" @click="handleManage">管理队伍</el-button>
                 <el-button type="info" icon="View" class="action-btn" @click="handleList">查看队伍</el-button>

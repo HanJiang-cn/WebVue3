@@ -1,15 +1,21 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
+import { addTeamApi, deleteTeamApi } from '@/api/team'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const formRef = ref(null)
 // 表单数据
 const form = ref({
-  title: '',
+  name: '',
   description: '',
-  teacherName: '',
-  teacherPhone: '',
+  status: '0',
+  password: '',
+  maxNum: 0,
+  expireTime: '',
   members: [
     { name: '', phone: '', role: '' }
   ]
@@ -17,21 +23,27 @@ const form = ref({
 
 // 表单验证规则
 const rules = {
-  title: [
+  name: [
     { required: true, message: '队伍名称不能为空', trigger: 'blur' },
-    { min: 4, max: 20, message: '队伍名称长度为4-20个字符', trigger: 'blur' }
+    { min: 2, max: 20, message: '队伍名称长度为2-20个字符', trigger: 'blur' }
   ],
   description: [
     { required: true, message: '队伍描述不能为空', trigger: 'blur' },
     { min: 10, max: 200, message: '队伍描述长度为10-200个字符', trigger: 'blur' }
   ],
-  teacherName: [
-    { required: true, message: '指导老师姓名不能为空', trigger: 'blur' },
-    { min: 2, max: 10, message: '指导老师姓名长度为2-10个字符', trigger: 'blur' }
+  status: [
+    { required: true, message: '队伍状态不能为空', trigger: 'change' }
   ],
-  teacherPhone: [
-    { required: true, message: '指导老师手机号不能为空', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+  password: [
+    { required: true, message: '密码不能为空', trigger: 'blur' },
+    { min: 6, max: 20, message: '密码长度为6-20个字符', trigger: 'blur' }
+  ],
+  maxNum: [
+    { required: true, message: '最大人数不能为空', trigger: 'blur' },
+    { min: 1, max: 20, message: '最大人数为1-20人', trigger: 'blur' }
+  ],
+  expireTime: [
+    { required: true, message: '过期时间不能为空', trigger: 'blur' }
   ],
   // members: [
 
@@ -55,19 +67,34 @@ const removeMember = (index) => {
 const submitForm = () => {
   formRef.value.validate((valid) => {
     if (valid) {
-      // 提交表单数据
-      console.log('提交数据:', form.value)
+      try {
+        const res = addTeamApi(form.value)
+        console.log(res);
+        // if (res.code === 0) {
+        //   ElNotification({
+        //     title: '成功',
+        //     message: '队伍创建成功',
+        //     type: 'success'
+        //   })
+        //   resetForm()
+        // }
+      } catch (error) {
+        ElMessage.error('创建失败')
+      }
     } else {
       console.log('表单验证失败')
     }
   })
-  console.log('提交数据:', form.value)
 }
 
 const resetForm = () => {
   form.value = {
     name: '',
     description: '',
+    status: '0',
+    password: '',
+    maxNum: 3,
+    expireTime: '',
     teacherName: '',
     teacherPhone: '',
     members: [
@@ -83,21 +110,34 @@ const resetForm = () => {
     <el-form ref="formRef" :model="form" :rules="rules" label-width="auto">
       <div class="form-card">
         <h4 class="section-title">基本信息</h4>
-        <el-form-item label="队伍名称" prop="title">
-          <el-input v-model="form.title" placeholder="请输入队伍名称" />
+        <el-form-item label="队伍名称" prop="name">
+          <el-input v-model="form.name" placeholder="请输入队伍名称" />
         </el-form-item>
         <el-form-item label="队伍描述" prop="description">
           <el-input v-model="form.description" type="textarea" placeholder="请输入队伍描述" />
         </el-form-item>
-      </div>
-      <div class="form-card">
-        <h4 class="section-title">指导老师</h4>
-        <el-form-item label="姓名" prop="teacherName">
-          <el-input v-model="form.teacherName" placeholder="请输入指导老师姓名" />
+        <el-form-item label="队伍状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio value="0">公开</el-radio>
+            <el-radio value="1">私有</el-radio>
+            <el-radio value="2">公开加密</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="手机号" prop="teacherPhone">
-          <el-input v-model="form.teacherPhone" placeholder="请输入指导老师手机号" />
+        <el-form-item label="密码" prop="password" v-if="form.status === '2'">
+          <el-input v-model="form.password" type="password" placeholder="请输入队伍密码" />
         </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="10">
+            <el-form-item label="最大人数" prop="maxNum">
+              <el-input v-model="form.maxNum" type="number" placeholder="请输入最大人数" min="0" max="20" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="13">
+            <el-form-item label="过期时间" prop="expireTime">
+              <el-date-picker v-model="form.expireTime" type="datetime" placeholder="选择过期时间" style="width: 100%;" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </div>
       <div class="form-card">
         <h4 class="section-title">队伍成员</h4>
@@ -130,6 +170,13 @@ const resetForm = () => {
 </template>
 
 <style lang="less" scoped>
+@primary-color: #409EFF;
+@light-blue: #ecf5ff;
+@dark-blue: #1a56a8;
+@border-color: #EBEBEB;
+@success-color: #67c23a;
+@error-color: #f56c6c;
+
 .form-container {
   max-width: 800px;
   margin: 20px auto;
@@ -138,7 +185,7 @@ const resetForm = () => {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
   .form-title {
-    font-size: 18px;
+    font-size: 20px;
     color: #2c3e50;
     margin: 0 0 24px;
     padding-left: 12px;
@@ -146,34 +193,109 @@ const resetForm = () => {
   }
 
   .form-card {
+    margin-bottom: 24px;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(@primary-color, 0.1);
+
+    .section-title {
+      font-size: 1.1rem;
+      color: @dark-blue;
+      margin: 0 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid @border-color;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        width: 60px;
+        height: 2px;
+        background: @primary-color;
+      }
+    }
+
+    :deep(.el-form-item) {
+      margin-bottom: 22px;
+
+      .el-form-item__label {
+        color: #606266;
+        font-weight: 500;
+      }
+
+      .el-input__wrapper {
+        border-radius: 6px;
+        transition: all 0.3s;
+
+        &:hover {
+          box-shadow: 0 0 0 1px @primary-color inset;
+        }
+      }
+    }
+
     .member-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
     }
 
     .member-item {
       display: flex;
+      align-items: center;
       gap: 12px;
+      padding: 12px;
+      background: #fff;
+      border-radius: 6px;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: @primary-color;
+        box-shadow: 0 4px 12px rgba(@primary-color, 0.08);
+      }
+
+      .member-title {
+        min-width: 60px;
+        color: @dark-blue;
+        font-weight: 500;
+      }
 
       .member-input {
         flex: 1;
 
         &:first-child {
-          max-width: 200px;
+          max-width: 180px;
         }
       }
 
-      .member-title {
-        text-align: right;
-        margin-right: 12px;
-        color: #606266;
+      .el-select {
+        width: 120px;
+      }
+
+      .el-button {
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: all 0.3s;
+
+        &:hover {
+          transform: scale(1.05);
+        }
       }
     }
 
     .add-button {
-      margin-top: 12px;
-      width: fit-content;
+      width: 100%;
+      margin-top: 16px;
+      background: linear-gradient(45deg, @primary-color, #66b1ff);
+      border: none;
+      color: white;
+      height: 40px;
+      font-weight: 500;
+
+      &:hover {
+        opacity: 0.9;
+      }
     }
   }
 

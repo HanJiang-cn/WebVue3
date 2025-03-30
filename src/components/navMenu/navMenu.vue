@@ -172,7 +172,7 @@ const handleNav = (name: string) => {
         <!-- 登录情况下 -->
         <el-row :gutter="40" justify="end" align="middle" v-show="userStore.id">
           <el-col :span="3">
-            <el-button size="small" type="info" text>
+            <el-button size="small" type="info" text @click="handleNav('/search')">
               <el-icon :size="18">
                 <Search />
               </el-icon>
