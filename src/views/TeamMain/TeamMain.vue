@@ -433,8 +433,7 @@ const handleJoin = () => {
   }
 
   .joined-teams-card {
-    margin-bottom: 20px;
-    border: 2px solid #67c23a;
+    margin: 20px 0;
     border-radius: 12px;
 
     .team-ranking {

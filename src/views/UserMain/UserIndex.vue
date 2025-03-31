@@ -144,6 +144,15 @@ const editUserInfo = () => {
 const toCompetition = () => {
   window.open(router.resolve({ path: '/competition/detail', }).href, '_blank')
 }
+
+// 编辑关注按钮切换
+function switchButton() {
+  if (router.currentRoute.value.query.id) {
+    return false
+  } else {
+    return true
+  }
+}
 </script>
 
 <template>
@@ -179,7 +188,9 @@ const toCompetition = () => {
             </div>
           </el-row>
           <el-row style="width: 100%;">
-            <el-button type="success" plain style="width: 100%;" @click="editUserInfo">编辑个人资料</el-button>
+            <el-button type="success" plain style="width: 100%;" @click="editUserInfo"
+              v-if="switchButton">编辑个人资料</el-button>
+            <el-button type="success" plain style="width: 100%;" v-if="!switchButton">+ 关注</el-button>
           </el-row>
           <el-row style="width: 100%;">
             <!-- <span>积分</span> -->

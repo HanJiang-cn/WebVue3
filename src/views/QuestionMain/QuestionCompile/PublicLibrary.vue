@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { onMounted, ref,reactive } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 import empty from '@/assets/empty-projects.svg'
 import { getApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
@@ -26,7 +26,7 @@ const fetchQuestion = () => {
 // 获取题目列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo , title: filter.title })
+  const { data: { records, total } } = await getApi({ ...pageInfo, title: filter.title })
   loading.value = false
   questions.value = records
   setTotals(Number(total))
@@ -51,12 +51,12 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 <template>
   <div class="menu">
     <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchQuestion">
-        <template #prefix>
-          <el-icon>
-            <Search />
-          </el-icon>
-        </template>
-      </el-input>
+      <template #prefix>
+        <el-icon>
+          <Search />
+        </el-icon>
+      </template>
+    </el-input>
     <div class="column">
       <span class="heading">方向</span>
       <div class="select">
@@ -281,29 +281,30 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     }
   }
 }
+
 .title-text {
-    position: relative;
-    padding-bottom: 2px;
-    transition: color 0.2s;
-    cursor: pointer;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+  cursor: pointer;
 
-    &:hover {
-      color: #409EFF;
-
-      &::after {
-        width: 100%;
-      }
-    }
+  &:hover {
+    color: #409EFF;
 
     &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: #409EFF;
-      transition: width 0.3s;
+      width: 100%;
     }
   }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #409EFF;
+    transition: width 0.3s;
+  }
+}
 </style>

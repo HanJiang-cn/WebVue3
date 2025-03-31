@@ -3,6 +3,7 @@ import { post, get } from '@/utils/http'
 
 enum Api {
   Add = '/team/add',
+  Join = '/team/join',
   Delete = '/team/delete',
   Quit = '/team/quit',
   MyTeamList = '/team/list/my/create',
@@ -15,6 +16,10 @@ interface QuitData {
 
 function addTeamApi(data: any): Promise<any> {
   return post(Api.Add, data)
+}
+
+function joinTeamApi(data: any): Promise<any> {
+  return post(Api.Join, data)
 }
 
 function deleteTeamApi(data: any): Promise<any> {
@@ -33,4 +38,4 @@ function myJoinTeamListApi(data: any): Promise<any> {
   return get(Api.MyJoinTeamList, data)
 }
 
-export { addTeamApi, deleteTeamApi, quitTeamApi, myTeamListApi, myJoinTeamListApi }
+export { addTeamApi, deleteTeamApi, quitTeamApi, myTeamListApi, myJoinTeamListApi, joinTeamApi }

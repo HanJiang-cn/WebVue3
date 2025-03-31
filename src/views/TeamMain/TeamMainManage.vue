@@ -1,9 +1,32 @@
-<script lang="ts" setup>
+<!-- eslint-disable vue/block-lang -->
+<script setup>
 import { ref } from 'vue'
+import { deleteTeamApi } from '@/api/team'
+import { ElMessageBox, ElNotification } from 'element-plus'
+import { useRouter } from 'vue-router'
 import TeamUp from "@/components/TeamMain/TeamUp.vue"
 import TeamEditor from "@/components/TeamMain/TeamEditor.vue"
 
+const router = useRouter()
 const dialogVisible = ref(false)
+
+// 删除队伍
+const handleDeleteTeam = () => {
+  ElMessageBox.confirm('确认删除队伍？', '删除队伍', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(async () => {
+    const res = await deleteTeamApi({ teamId: router.currentRoute.value.params.teamId })
+    if (res.code === 0) {
+      ElNotification({
+        title: '删除成功',
+        message: '队伍已成功删除',
+        type: 'success'
+      })
+    }
+  })
+}
 
 </script>
 <template>
@@ -12,7 +35,7 @@ const dialogVisible = ref(false)
     <div class="box2">
       <div class="add">
         <el-button type="primary" @click="dialogVisible = true">添加人员</el-button>
-        <el-button type="danger" plain>删除队伍</el-button>
+        <el-button type="danger" plain @click="handleDeleteTeam">删除队伍</el-button>
       </div>
       <div class="people">
         <div class="main">

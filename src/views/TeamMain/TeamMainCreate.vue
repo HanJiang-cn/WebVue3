@@ -39,8 +39,7 @@ const rules = {
     { min: 6, max: 20, message: '密码长度为6-20个字符', trigger: 'blur' }
   ],
   maxNum: [
-    { required: true, message: '最大人数不能为空', trigger: 'blur' },
-    { min: 1, max: 20, message: '最大人数为1-20人', trigger: 'blur' }
+    { required: true, message: '最大人数不能为空', trigger: 'blur' }
   ],
   expireTime: [
     { required: true, message: '过期时间不能为空', trigger: 'blur' }
@@ -129,7 +128,7 @@ const resetForm = () => {
         <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="最大人数" prop="maxNum">
-              <el-input v-model="form.maxNum" type="number" placeholder="请输入最大人数" min="0" max="20" />
+              <el-input-number v-model="form.maxNum" :min="2" :max="20" style="width: 100%;" />
             </el-form-item>
           </el-col>
           <el-col :span="13">

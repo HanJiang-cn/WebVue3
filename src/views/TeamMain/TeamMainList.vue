@@ -1,10 +1,13 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, handleError } from 'vue'
 import { useRouter } from 'vue-router'
 import { myTeamListApi, myJoinTeamListApi } from '@/api/team'
+import { ElMessageBox, ElNotification } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 import TeamList from "@/components/TeamMain/TeamList.vue"
 
+const userStore = useUserStore()
 const router = useRouter()
 const dialogVisible = ref(false)
 const activeName = ref('first')
@@ -27,8 +30,38 @@ onMounted(() => {
   getJoinTeamList()
 })
 
-const jump = () => {
-  router.push({ path: '/team/manage' })
+// 管理队伍
+const handleManageTeam = (teamId) => {
+  router.push({
+    path: '/team/manage',
+    query: {
+      id: teamId
+    }
+  })
+}
+// 退出队伍
+const leaveTeam = (team) => {
+  if (team.createUser.id === userStore.id) {
+    ElNotification({
+      title: '退出失败',
+      message: '创建者不能退出队伍',
+      type: 'error'
+    })
+  } else {
+    ElMessageBox.confirm('确认退出队伍？', '退出队伍', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(async () => {
+      await quitTeamApi({ teamId: team.id })
+      getJoinTeamList()
+      ElNotification({
+        title: '退出成功',
+        message: '已退出队伍',
+        type: 'success'
+      })
+    })
+  }
 }
 </script>
 
@@ -68,7 +101,7 @@ const jump = () => {
 
             <div class="team-actions">
               <el-button type="primary" @click="dialogVisible = true">队伍信息</el-button>
-              <el-button @click="jump">管理队伍</el-button>
+              <el-button @click="handleManageTeam(team.id)">管理队伍</el-button>
             </div>
           </div>
         </div>
@@ -104,7 +137,7 @@ const jump = () => {
 
             <div class="team-info-button">
               <el-button type="primary" @click="dialogVisible = true">队伍信息</el-button>
-              <el-button type="danger" plain @click="leaveTeam(team.id)">退出队伍</el-button>
+              <el-button type="danger" plain @click="leaveTeam(team)">退出队伍</el-button>
             </div>
           </div>
         </div>

@@ -28,10 +28,7 @@ onMounted(() => {
 const { totals, pageInfo, handleCurrentChange, setTotals } = usePagination(loadData)
 
 // 收藏列表
-const collections = ref([
-  { id: 1, title: 'Vue3 响应式原理', time: '2023-05-10' },
-  { id: 5, title: 'Element Plus 使用技巧', time: '2023-05-20' }
-])
+const collections = ref([])
 
 // 取消收藏
 const handleCancelFavour = async (id) => {
@@ -64,6 +61,9 @@ const handleCancelFavour = async (id) => {
   <el-divider />
 
   <div class="collection-list" v-loading="loading">
+    <div v-if="collections.length === 0" class="empty-tip">
+      <el-empty :image-size="200" />
+    </div>
     <el-card v-for="item in collections" :key="item.id" class="collection-item" shadow="hover">
       <div class="item-content">
         <h3>{{ item.title }}</h3>
