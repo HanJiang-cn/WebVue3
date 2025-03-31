@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref,reactive } from 'vue'
 import empty from '@/assets/empty-projects.svg'
 import { getApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
@@ -26,7 +26,7 @@ const fetchQuestion = () => {
 // 获取题目列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo, title: filter.title })
+  const { data: { records, total } } = await getApi({ ...pageInfo , title: filter.title })
   loading.value = false
   questions.value = records
   setTotals(Number(total))
@@ -50,13 +50,17 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
 <template>
   <div class="menu">
-    <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchQuestion">
-      <template #prefix>
-        <el-icon>
-          <Search />
-        </el-icon>
-      </template>
-    </el-input>
+    <div id="right">
+          <div class="right">
+            <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px;height: 30px;" @change="fetchQuestion">
+        <template #prefix>
+          <el-icon>
+            <Search />
+          </el-icon>
+        </template>
+      </el-input>
+          </div>
+        </div>
     <div class="column">
       <span class="heading">方向</span>
       <div class="select">
@@ -146,12 +150,12 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 <style lang="less" scoped>
 #right {
   float: right;
-  width: 500px;
+  width: 300px;
 
   .right {
     display: flex;
     height: 50px;
-    width: 500px;
+    width: 300px;
 
     a {
       display: inline-block;
@@ -163,24 +167,6 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       height: 35px;
     }
 
-    span {
-      display: inline-block;
-      width: 200px;
-      height: 35px;
-
-      input {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        border-radius: 19px;
-        height: 35px;
-        width: 369px;
-        padding-left: 20px;
-        background-color: #f6f7f9;
-        border: none;
-      }
-
-    }
   }
 }
 
@@ -281,30 +267,29 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     }
   }
 }
-
 .title-text {
-  position: relative;
-  padding-bottom: 2px;
-  transition: color 0.2s;
-  cursor: pointer;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.2s;
+    cursor: pointer;
 
-  &:hover {
-    color: #409EFF;
+    &:hover {
+      color: #409EFF;
+
+      &::after {
+        width: 100%;
+      }
+    }
 
     &::after {
-      width: 100%;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #409EFF;
+      transition: width 0.3s;
     }
   }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: #409EFF;
-    transition: width 0.3s;
-  }
-}
 </style>

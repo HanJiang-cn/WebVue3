@@ -16,9 +16,9 @@ const addData = reactive({
     output: ''
   }],
   judgeConfig: {
-    memoryLimit: 1000,
-    stackLimit: 1000,
-    timeLimit: 1000
+    memoryLimit: '',
+    stackLimit: '',
+    timeLimit: ''
   },
   tags: [],
   title: '',
@@ -78,6 +78,17 @@ const rules = {
   answer: [
     { required: true, message: '请填写答案', trigger: 'blur' },
   ],
+  judgeConfig: {
+    memoryLimit: [
+      { required: true, message: '请填写内存限制', trigger: 'blur' }
+    ],
+    stackLimit: [
+      { required: true, message: '请填写栈限制', trigger: 'blur' }
+    ],
+    timeLimit: [
+      { required: true, message: '请填写时间限制', trigger: 'blur' }
+    ]
+  }
 }
 
 const addSample = () => {
@@ -177,7 +188,15 @@ const handelBack = () => {
     <el-form-item>
       <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
     </el-form-item>
-
+    <el-form-item label="内存限制" prop="judgeConfig.memoryLimit">
+      <el-input v-model="addData.judgeConfig.memoryLimit" type="number" />
+    </el-form-item>
+    <el-form-item label="栈限制" prop="judgeConfig.stackLimit">
+      <el-input v-model="addData.judgeConfig.stackLimit" type="number" />
+    </el-form-item>
+    <el-form-item label="时间限制" prop="judgeConfig.timeLimit">
+      <el-input v-model="addData.judgeConfig.timeLimit" type="number" />
+    </el-form-item>
     <el-form-item label="答案" prop="answer">
       <el-input v-model="addData.answer" type="textarea" />
     </el-form-item>

@@ -38,9 +38,8 @@ const handleCreate = () => {
         <h2 style="display: inline-block;">试题库</h2>
         <div id="right">
           <div class="right">
-            <el-button id="create" type="primary" round @click="handleCreate">新增试题</el-button>
-            <el-button id="create" type="primary" round @click="handleCreate">创建试卷</el-button>
-            <el-input placeholder="请输入题号或其他关键词进行搜索" />
+            <el-button class="create" type="primary" round @click="handleCreate">新增试题</el-button>
+            <el-button class="create" type="primary" round @click="handleCreate">创建试卷</el-button>
           </div>
         </div>
       </div>
@@ -59,133 +58,140 @@ const handleCreate = () => {
 
 
 <style lang="less" scoped>
+/* 试题库主界面样式优化 */
+.title {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  margin-bottom: 20px;
+}
 #right {
   float: right;
-  width: 500px;
+  width: 300px;
 
   .right {
     display: flex;
     height: 50px;
-    width: 500px;
+    width: 300px;
 
     a {
       display: inline-block;
     }
 
-    #create {
-      // margin-right: 20px;
+    .create {
+      margin-right: 20px;
       margin-bottom: 30px;
       height: 35px;
     }
 
-    .el-input {
-      border-radius: 19px;
-      height: 35px;
-      width: 100%;
-      padding-left: 20px;
+  }
+}
 
-      :deep(.el-input__wrapper) {
-        padding-left: 20px;
-        border-radius: 20px;
+.menu {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  margin-bottom: 20px;
+
+  .column {
+    margin-bottom: 15px;
+
+    .el-radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .el-radio-button {
+        margin-right: 8px;
+
+        :deep(.el-radio-button__inner) {
+          border-radius: 4px;
+          transition: all 0.3s;
+        }
       }
     }
   }
 }
 
-.el-tabs__item {
-  font-size: 19px !important;
-}
-
-.topic {
-  font-size: 18px;
-  height: 60px;
-  line-height: 60px;
-  border-bottom: 2px solid #EBEBEB;
-  padding-top: 10px;
-  padding-bottom: 2px;
-
-  .all {
-    display: inline-block;
-    width: 230px;
-  }
-
-
-
-}
-
-.column {
-  display: flex;
-  height: 46px;
-  padding-top: 10px;
-
-  .heading {
-    display: inline-block;
-    width: 50px;
-    flex-shrink: 0;
-    color: #9096a3;
-    margin-right: 16px;
-    margin-top: 10px;
-    text-align-last: justify;
-  }
-
-  .select {
-    display: inline-block;
-    overflow: hidden;
-
-  }
-}
-
 .content {
-  display: flex;
-  flex-direction: column;
-  -webkit-box-align: center;
-  padding-top: 20px;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  width: 100%;
-  height: 80%;
-  padding-bottom: 50px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
 
-  .empty-title {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-    color: rgb(93, 111, 143);
-    margin-bottom: 8px;
+  .el-table {
+    margin-bottom: 20px;
+
+    :deep(th) {
+      background: #f8f9fa !important;
+      color: #606266;
+    }
+
+    :deep(.cell) {
+      padding: 12px 0;
+    }
+
+    .time-cell {
+      line-height: 1.6;
+      color: #909399;
+    }
   }
 
-  .no-combo-tips {
-    color: rgb(125, 140, 165);
-    font-size: 12px;
-    line-height: 14px;
-  }
+  .el-pagination {
+    justify-content: center;
+    padding: 20px 0;
 
-  .question {
-    width: 100%;
-    height: 105px;
-    border: #c5c6c8 1px solid;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 15px;
-    transition: all 0.3s ease;
+    :deep(.btn-prev),
+    :deep(.btn-next) {
+      border-radius: 4px;
+    }
+
+    :deep(.number) {
+      border-radius: 4px;
+    }
+
+    :deep(.active) {
+      background: #409EFF;
+      color: #fff;
+    }
+  }
+}
+
+/* 搜索框样式优化 */
+.el-input {
+  :deep(.el-input__wrapper) {
+    border-radius: 20px;
+    padding: 0 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
     &:hover {
-      box-shadow: 5px 5px 10px rgba(189, 187, 187, 0.3);
-
+      box-shadow: 0 2px 8px rgba(64,158,255,0.2);
     }
+  }
+}
 
-    h3 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 10px;
+/* 按钮统一样式优化 */
+.el-button {
+  transition: all 0.3s;
+  border-radius: 20px;
+  padding: 8px 20px;
+
+  &--primary {
+    background: #409EFF;
+    border-color: #409EFF;
+
+    &:hover {
+      background: #66b1ff;
+      border-color: #66b1ff;
     }
+  }
 
-    p {
-      font-size: 14px;
-      line-height: 20px;
-      color: rgb(125, 140, 165);
-      margin-bottom: 10px;
+  &--danger {
+    &:hover {
+      background: #ff7875;
+      border-color: #ff7875;
     }
   }
 }

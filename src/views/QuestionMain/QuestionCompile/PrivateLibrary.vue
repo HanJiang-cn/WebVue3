@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref,reactive } from 'vue'
 import empty from '@/assets/empty-projects.svg'
 import { deleteApi, getApi, getMyApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
@@ -10,16 +10,25 @@ import moment from 'moment'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const questions = ref([])
-const myQuestions = ref([])
 const loading = ref(false)
 const radio1 = ref('全部')
 const radio2 = ref('全部')
 const radio3 = ref('全部')
 const radio4 = ref('全部')
+// 筛选条件
+const filter = reactive({
+  title: '',
+  sort: 'newest'
+})
 
+// 搜索题目
+const fetchQuestion = () => {
+  loadData()
+}
+// 获取题目列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getMyApi({ ...pageInfo })
+  const { data: { records, total } } = await getMyApi({ ...pageInfo , title: filter.title})
   loading.value = false
   questions.value = records
   setTotals(Number(total))
@@ -67,6 +76,17 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
 <template>
   <div class="menu">
+    <div id="right">
+          <div class="right">
+            <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px;height: 30px;" @change="fetchQuestion">
+        <template #prefix>
+          <el-icon>
+            <Search />
+          </el-icon>
+        </template>
+      </el-input>
+          </div>
+        </div>
     <div class="column">
       <span class="heading">方向</span>
       <div class="select">
@@ -167,12 +187,12 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 <style lang="less" scoped>
 #right {
   float: right;
-  width: 500px;
+  width: 300px;
 
   .right {
     display: flex;
     height: 50px;
-    width: 500px;
+    width: 300px;
 
     a {
       display: inline-block;
@@ -184,27 +204,8 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       height: 35px;
     }
 
-    span {
-      display: inline-block;
-      width: 200px;
-      height: 35px;
-
-      input {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        border-radius: 19px;
-        height: 35px;
-        width: 369px;
-        padding-left: 20px;
-        background-color: #f6f7f9;
-        border: none;
-      }
-
-    }
   }
 }
-
 .el-tabs__item {
   font-size: 19px !important;
 }
