@@ -18,7 +18,7 @@ const showChallenge = () => {
   <el-card class="coding-sidebar">
     <!-- 用户信息 -->
     <div class="user-card">
-      <el-avatar :size="50" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
+      <el-avatar :size="50" :src="userStore.userAvatar" />
       <div class="user-meta">
         <h3 class="username">{{ userStore.userName ? userStore.userName : '请登录' }}</h3>
         <el-text class="user-rank">

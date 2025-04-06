@@ -2,6 +2,7 @@
 <script setup>
 import { ref, defineEmits, defineProps, watch } from 'vue'
 import { getUserInfo, updateUserInfo, addUser } from '@/api/admin'
+import { addFileApi } from '@/api/upfile'
 import { ElNotification } from 'element-plus'
 
 const form = ref({
@@ -35,6 +36,7 @@ const props = defineProps({
 const UserInfor = async () => {
   if (props.id === 0) return
   const { data } = await getUserInfo({ id: props.id })
+  form.value.userAvatar = data.userAvatar
   form.value.userName = data.userName
   form.value.userProfile = data.userProfile
   form.value.id = data.id
@@ -91,11 +93,50 @@ const addTag = () => {
   }
   inputVisible.value = false
 }
+
+// 处理头像上传逻辑
+const fileData = ref(null)
 const beforeAvatarUpload = (file) => {
-  // 处理头像上传逻辑
+  const isImage = file.raw.type.startsWith('image/')
+  if (!isImage) {
+    ElNotification({
+      title: '错误',
+      message: '请上传 JPEG 或 PNG 格式的图片',
+      type: 'error'
+    })
+  }
+  fileData.value = file
+  // 显示缩略图
+  const reader = new FileReader()
+  fileData.value = file
+  reader.onload = (e) => {
+    form.value.userAvatar = e.target.result
+  }
+  reader.readAsDataURL(file.raw)
 }
+const handleUpload = async () => {
+  if (fileData.value) {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    // 添加文件到表单数据，使用原始文件对象
+    formData.append('file', fileData.value.raw)
+    const res = await addFileApi(formData)
+    form.value.userAvatar = res.data
+    console.log(form.value)
+
+    ElNotification({
+      title: '成功',
+      message: '头像上传成功',
+      type: 'success'
+    })
+    console.log(res)
+
+  }
+}
+
 const saveProfile = async () => {
   if (props.id === 0) {
+    await handleUpload()
     await addUser(form.value)
     ElNotification({
       title: '成功',
@@ -103,6 +144,7 @@ const saveProfile = async () => {
       type: 'success'
     })
   } else {
+    await handleUpload()
     await updateUserInfo(form.value)
     ElNotification({
       title: '成功',
@@ -127,7 +169,8 @@ const saveProfile = async () => {
         <!-- 左侧栏 -->
         <el-col :xs="24" :sm="8" :md="6">
           <div class="avatar-section">
-            <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload">
+            <el-upload class="avatar-uploader" action="#" :auto-upload="false" :show-file-list="false"
+              accept="image/jpeg,image/png" :on-change="beforeAvatarUpload" :http-request="handleUpload">
               <div class="avatar-wrapper">
                 <el-avatar :size="120" :src="form.userAvatar" />
                 <div class="upload-mask">
@@ -138,7 +181,9 @@ const saveProfile = async () => {
               </div>
             </el-upload>
             <div class="stats">
-              <span>个人头像</span>
+              <el-statistic title="积分" :value="3650" />
+              <el-progress :show-text="false" :percentage="75" :stroke-width="8" status="primary"
+                class="progress-bar" />
             </div>
           </div>
         </el-col>

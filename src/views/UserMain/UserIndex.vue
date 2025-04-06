@@ -157,8 +157,7 @@ function switchButton() {
 
 <template>
   <el-row style="width: 100%;">
-    <el-avatar shape="square" :size="70"
-      src="https://assets.leetcode.cn/aliyun-lc-upload/users/39WPa6NPut/avatar_1740320643.png?x-oss-process=image%2Fformat%2Cwebp" />
+    <el-avatar shape="square" :size="70" :src="userStore.userAvatar" />
     <div class="user-avatar">
       <p>{{ userStore.userName }}</p>
       <p>{{ userStore.userGithub ? userStore.userGithub : '' }}</p>

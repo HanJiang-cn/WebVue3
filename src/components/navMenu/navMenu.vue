@@ -188,12 +188,12 @@ const handleNav = (name: string) => {
           <el-col :span="3">
             <el-popover trigger="click" placement="bottom" :width="240" :offset="10">
               <template #reference>
-                <el-avatar :size="25" class="cursor-pointer" />
+                <el-avatar :size="25" class="cursor-pointer" :src="userStore.userAvatar" />
               </template>
               <div class="user-menu">
                 <!-- 用户信息 -->
                 <div class="user-info">
-                  <el-avatar :size="40" />
+                  <el-avatar :size="40" :src="userStore.userAvatar" />
                   <div class="info">
                     <h4 class="nickname">{{ userStore.userName }}</h4>
                     <p class="email">{{ userStore.userName }}</p>

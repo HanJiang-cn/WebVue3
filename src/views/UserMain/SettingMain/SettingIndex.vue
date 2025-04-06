@@ -2,12 +2,13 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { updateLoginUserApi } from '@/api/user'
+import { addFileApi } from '@/api/upfile'
 import { useUserStore } from '@/stores/user'
 import { ElNotification } from 'element-plus'
 
 // 表单数据
 const form = ref({
-  userAvatar: '',
+  userAvatar: null,
   userName: '',
   // realname: '',
   // email: 'user@example.com',
@@ -33,6 +34,7 @@ const regionOptions = [
 // 初始化表单数据
 const userStore = useUserStore()
 form.value = {
+  userAvatar: userStore.userAvatar,
   userName: userStore.userName,
   userProfile: userStore.userProfile,
   tags: userStore.tags,
@@ -65,11 +67,47 @@ const showInput = () => {
   })
 }
 
+// 处理头像上传逻辑
+const fileData = ref(null)
 const beforeAvatarUpload = (file) => {
-  // 处理头像上传逻辑
+  const isImage = file.raw.type.startsWith('image/')
+  if (!isImage) {
+    ElNotification({
+      title: '错误',
+      message: '请上传 JPEG 或 PNG 格式的图片',
+      type: 'error'
+    })
+  }
+  fileData.value = file
+  // 显示缩略图
+  const reader = new FileReader()
+  fileData.value = file
+  reader.onload = (e) => {
+    form.value.userAvatar = e.target.result
+  }
+  reader.readAsDataURL(file.raw)
+}
+const handleUpload = async () => {
+  if (fileData.value) {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    // 添加文件到表单数据，使用原始文件对象
+    formData.append('file', fileData.value.raw)
+    const res = await addFileApi(formData)
+    form.value.userAvatar = res.data
+    console.log(form.value)
+
+    ElNotification({
+      title: '成功',
+      message: '头像上传成功',
+      type: 'success'
+    })
+  }
 }
 
+// 保存个人资料
 const saveProfile = async () => {
+  await handleUpload()
   await updateLoginUserApi({ ...form.value, tags: form.value.tags.join(',') })
   userStore.getUserInfo()
   ElNotification({
@@ -78,7 +116,7 @@ const saveProfile = async () => {
     type: 'success'
   })
   setTimeout(() => {
-    window.location.reload()
+    // window.location.reload()
   }, 1000)
 }
 </script>
@@ -94,7 +132,8 @@ const saveProfile = async () => {
       <!-- 左侧栏 -->
       <el-col :xs="24" :sm="8" :md="6">
         <div class="avatar-section">
-          <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload">
+          <el-upload class="avatar-uploader" action="#" :auto-upload="false" :show-file-list="false"
+            accept="image/jpeg,image/png" :on-change="beforeAvatarUpload" :http-request="handleUpload">
             <div class="avatar-wrapper">
               <el-avatar :size="120" :src="form.userAvatar" />
               <div class="upload-mask">

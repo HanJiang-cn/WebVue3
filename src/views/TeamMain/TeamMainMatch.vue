@@ -1,10 +1,12 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive } from 'vue'
+import { useUserStore } from '@/stores/user'
 import TeamMatch from '@/components/TeamMain/TeamMatch.vue'
 // 匹配动画对话框
 import MatchAnimationDialog from '@/components/TeamMain/MatchAnimationDialog.vue'
 
+const userStore = useUserStore()
 const dialogFormVisible = ref(false)
 // 用户信息
 const userProfile = ref({
@@ -193,7 +195,7 @@ const handleClose = () => {
               <p>截止时间: {{ currentMatch.deadline }}</p>
               <el-tag :type="statusType[currentMatch.status]" class="status-tag" effect="dark">{{
                 currentMatch.status
-                }}</el-tag>
+              }}</el-tag>
             </div>
             <el-button type="primary" class="secondary-btn" @click="handleVisable">查看详情</el-button>
           </el-card>
@@ -211,7 +213,7 @@ const handleClose = () => {
             </div>
           </template>
           <div class="user-details">
-            <el-avatar :src="userProfile.avatar" :size="60" class="avatar"></el-avatar>
+            <el-avatar :src="userStore.userAvatar" :size="60" class="avatar"></el-avatar>
             <div class="info">
               <h3>{{ userProfile.nickname }}</h3>
               <p>竞赛等级：{{ userProfile.level }}</p>

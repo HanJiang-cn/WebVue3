@@ -51,7 +51,7 @@
   .right {
     margin-right: 20px;
 
-    s .bottom {
+    .bottom {
       border-bottom: 1px solid #0000001a;
       padding: 10px 0;
 

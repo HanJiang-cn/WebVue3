@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
     : {
         id: '',
         userName: '',
-        userAccount: '',
+        userAvatar: null,
         userProfile: '',
         userRole: '',
         tags: [],
@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
 
   const id = ref(initialUser.id)
   const userName = ref(initialUser.userName)
-  const userAccount = ref(initialUser.userAccount)
+  const userAvatar = ref(initialUser.userAvatar)
   const userProfile = ref(initialUser.userProfile)
   const userRole = ref(initialUser.userRole)
   const tags = ref(initialUser.tags)
@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
     const userData = {
       id: id.value,
       userName: userName.value,
-      userAccount: userAccount.value,
+      userAvatar: userAvatar.value,
       userProfile: userProfile.value,
       userRole: userRole.value,
       tags: tags.value,
@@ -49,11 +49,12 @@ export const useUserStore = defineStore('user', () => {
       const response = await loginApi(data)
       id.value = response.data.id
       userName.value = response.data.userName
-      userAccount.value = response.data.userAccount
+      userAvatar.value = response.data.userAvatar
       userProfile.value = response.data.userProfile
       userRole.value = response.data.userRole
       // 将 tags 转换为数组
       tags.value = response.data.tags ? response.data.tags.split(',') : []
+
       updateUserCookie()
       ElNotification({
         title: '成功',
@@ -70,7 +71,7 @@ export const useUserStore = defineStore('user', () => {
     const response = await getLoginUserInfoApi()
     id.value = response.data.id
     userName.value = response.data.userName
-    userAccount.value = response.data.userAccount
+    userAvatar.value = response.data.userAvatar
     userProfile.value = response.data.userProfile
     userRole.value = response.data.userRole
     tags.value = response.data.tags ? response.data.tags.split(',') : []
@@ -83,7 +84,7 @@ export const useUserStore = defineStore('user', () => {
     Cookies.remove(USER_COOKIE_KEY)
     id.value = ''
     userName.value = ''
-    userAccount.value = ''
+    userAvatar.value = null
     userProfile.value = ''
     userRole.value = ''
     tags.value = []
@@ -97,7 +98,7 @@ export const useUserStore = defineStore('user', () => {
   return {
     id,
     userName,
-    userAccount,
+    userAvatar,
     userProfile,
     userRole,
     tags,
