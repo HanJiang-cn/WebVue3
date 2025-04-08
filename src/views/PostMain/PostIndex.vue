@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getPostApi, thumbPostApi, favourPostApi } from '@/api/post'
 import moment from 'moment'
+import PreviewOnly from '@/components/PreviewOnly.vue'
 import LinkCard from '@/components/PostMain/LinkCard.vue'
 import CommentComponent from '@/components/CommentComponent.vue'
 
@@ -147,7 +148,9 @@ const handleFavorite = async () => {
 
       <img v-if="post.cover" :src="post.cover" class="post-cover">
 
-      <div class="content" v-html="postData.content"></div>
+      <PreviewOnly :content="postData.content" />
+      <!-- <div class="content" v-html="postData.content">
+    </div> -->
       <LinkCard url="https://vitepress.yiov.top/" title="Vitepress中文搭建教程" description="https://vitepress.yiov.top/"
         logo="https://vitepress.yiov.top/logo.png" />
 

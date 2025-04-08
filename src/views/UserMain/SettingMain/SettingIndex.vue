@@ -70,6 +70,7 @@ const showInput = () => {
 // 处理头像上传逻辑
 const fileData = ref(null)
 const beforeAvatarUpload = (file) => {
+  // 检测字符串是否以指定的前缀开始
   const isImage = file.raw.type.startsWith('image/')
   if (!isImage) {
     ElNotification({
@@ -80,11 +81,15 @@ const beforeAvatarUpload = (file) => {
   }
   fileData.value = file
   // 显示缩略图
+  // 本地文件内容读取
   const reader = new FileReader()
   fileData.value = file
+  // 设置文件加载完成回调（base64格式转换）
   reader.onload = (e) => {
+    // 将图片Base64数据赋值给表单头像字段
     form.value.userAvatar = e.target.result
   }
+  // 启动文件读取（将文件转换为Data URL格式）
   reader.readAsDataURL(file.raw)
 }
 const handleUpload = async () => {

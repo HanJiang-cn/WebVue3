@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue'
 import CommentComponent from '@/components/CommentComponent.vue'
 import { getDetailApi } from '@/api/question'
 import { useRouter } from 'vue-router'
+import PreviewOnly from '@/components/PreviewOnly.vue'
 
 const router = useRouter()
 const tableData = [
@@ -89,8 +90,9 @@ onMounted(() => {
         <h3>
           题目描述
         </h3>
-        <div v-html="questionData.content">
-        </div>
+        <PreviewOnly :content="questionData.content" />
+        <!-- <div v-html="questionData.content">
+        </div> -->
         <!-- <p>
           给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
         </p>
@@ -270,12 +272,12 @@ onMounted(() => {
         border-left: 4px solid #409EFF;
       }
 
-      p,
-      li {
-        line-height: 1.8;
-        color: #606266;
-        margin-bottom: 12px;
-      }
+      // p,
+      // li {
+      //   line-height: 1.8;
+      //   color: #606266;
+      //   margin-bottom: 12px;
+      // }
     }
 
     // 示例

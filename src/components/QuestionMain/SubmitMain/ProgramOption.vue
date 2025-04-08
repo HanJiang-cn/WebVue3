@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/block-lang -->
-<script  setup>
+<script setup>
 import { onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addApi } from '@/api/question'
-import TinymceEdit from '@/components/TinymceEdit.vue'
+import MdEditor from '@/components/MdEditor.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -174,7 +174,7 @@ const handelBack = () => {
       <el-input v-model="addData.title" type="textarea" />
     </el-form-item>
     <el-form-item label="内容" prop="content">
-      <TinymceEdit v-model="addData.content" @modelValue="uploadContent" style="width: 100%;" />
+      <MdEditor v-model="addData.content" @modelValue="uploadContent" style="width: 100%;" />
     </el-form-item>
     <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
       <el-form-item :label="`样本输入 ${index + 1}`" :prop="`judgeCase.${index}.input`" :rules="rules.input">

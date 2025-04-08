@@ -5,7 +5,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { getPostApi, editPostApi } from '@/api/post'
-import TinymceEdit from '@/components/TinymceEdit.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 const router = useRouter()
 const postId = ref(router.currentRoute.value.query.id)
@@ -163,7 +163,7 @@ const submitForm = async () => {
     </el-form-item>
 
     <el-form-item prop="content" class="form-section">
-      <TinymceEdit :constEdit="form.content" @modelValue="uploadContent" class="rich-editor"
+      <MdEditor :constEdit="form.content" @modelValue="uploadContent" class="rich-editor"
         placeholder="请输入正文内容（至少20字）" />
     </el-form-item>
 
