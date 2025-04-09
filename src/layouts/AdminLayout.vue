@@ -49,18 +49,18 @@ const activeMenu = ref(currentRoute.path)
                   <el-menu-item index="/admin/solution/">题解列表</el-menu-item>
                   <el-menu-item index="/admin/solution/review">题解审核</el-menu-item>
                 </el-sub-menu>
+                <el-sub-menu index="2">
+                  <template #title>
+                    <el-icon>
+                      <Edit />
+                    </el-icon>
+                    <span>竞赛管理</span>
+                  </template>
+                  <el-menu-item index="/admin/competition">竞赛查看</el-menu-item>
+                  <el-menu-item index="2">竞赛审核</el-menu-item>
+                </el-sub-menu>
               </el-menu>
-                    <el-sub-menu index="1">
-                      <template #title>
-                        <el-icon>
-                          <Edit />
-                        </el-icon>
-                        <span>竞赛管理</span>
-                      </template>
-                      <el-menu-item index="/admin/competition">竞赛查看</el-menu-item>
-                      <el-menu-item index="2">竞赛审核</el-menu-item>
-                    </el-sub-menu>
-                  </el-menu>
+
             </div>
           </el-col>
 
