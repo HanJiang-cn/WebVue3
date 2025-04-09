@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { post, get } from '@/utils/http'
+import { post, get, put,del } from '@/utils/http'
 
 enum Api {
   UserList = '/user/list/page',
@@ -8,6 +8,11 @@ enum Api {
   Update = '/user/update',
   AddUser = '/user/add',
   PostList = '/post/list/page',
+  AddCompetition = '/competition/addCompetition',
+  GetCompetition = '/competition/getCompetition',
+  GetUserCompetitionList = '/competition/user/getCompetition',
+  UpdateCompetition = '/competition/modifyCompetition',
+  DeleteCompetition = '/competition/delCompetition',
 }
 
 interface UpdateData {
@@ -46,5 +51,19 @@ function addUser(data: AddData): Promise<any> {
 function getPostList(data: any): Promise<any> {
   return post(Api.PostList, data)
 }
-
-export { getUserList, deleteUser, getPostList, getUserInfo, updateUserInfo, addUser }
+function addCompetition(data: any): Promise<any> {
+  return post(Api.AddCompetition, data)
+}
+function getCompetition(data: any): Promise<any> {
+  return get(Api.GetCompetition, data)
+}
+function getUserCompetitionList(data: any): Promise<any> {
+  return post(Api.GetUserCompetitionList, data)
+}
+function updateCompetition(data: any): Promise<any> {
+  return put(Api.UpdateCompetition, data)
+}
+function deleteCompetition(data: any): Promise<any> {
+  return del(Api.DeleteCompetition, data)
+}
+export { getUserList, deleteUser, getPostList, getUserInfo, updateUserInfo, addUser, addCompetition, getCompetition, updateCompetition, deleteCompetition, getUserCompetitionList }

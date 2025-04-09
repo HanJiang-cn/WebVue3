@@ -2,7 +2,6 @@
 import navMenu from '@/components/navMenu/navMenu.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
 // 获取当前路由
 const router = useRouter()
 const currentRoute = router.currentRoute.value
@@ -40,12 +39,6 @@ const activeMenu = ref(currentRoute.path)
                   </el-icon>
                   <span>帖子管理</span>
                 </el-menu-item>
-                <el-menu-item index="/admin/problem">
-                  <el-icon>
-                    <Setting />
-                  </el-icon>
-                  <span>系统设置</span>
-                </el-menu-item>
                 <el-sub-menu index="1">
                   <template #title>
                     <el-icon>
@@ -57,6 +50,17 @@ const activeMenu = ref(currentRoute.path)
                   <el-menu-item index="/admin/solution/review">题解审核</el-menu-item>
                 </el-sub-menu>
               </el-menu>
+                    <el-sub-menu index="1">
+                      <template #title>
+                        <el-icon>
+                          <Edit />
+                        </el-icon>
+                        <span>竞赛管理</span>
+                      </template>
+                      <el-menu-item index="/admin/competition">竞赛查看</el-menu-item>
+                      <el-menu-item index="2">竞赛审核</el-menu-item>
+                    </el-sub-menu>
+                  </el-menu>
             </div>
           </el-col>
 
@@ -139,5 +143,9 @@ const activeMenu = ref(currentRoute.path)
     }
   }
 
+}
+
+.el-menu {
+  border: none;
 }
 </style>
