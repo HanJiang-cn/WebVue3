@@ -297,12 +297,13 @@ const routes = [
         },
       },
       {
-        path: 'problem',
-        name: 'AdminProblem',
-        component: () => import('@/views/AdminMain/AdminProblem.vue'),
+        path: 'competition',
+        name: 'AdminCompetition',
+        component: () => import('@/views/AdminMain/AdminCompetition.vue'),
         meta: {
           needAuth: 'admin',
         },
+
       },
       {
         path: 'users',
@@ -333,6 +334,11 @@ const routes = [
         ],
       },
     ],
+  },
+  {
+    path: '/competition/create', // 相对路径
+    name: 'AdminCompetitionCreate',
+    component: () => import('@/components/AdminMain/CompetitionCreate.vue'),
   },
 ]
 
