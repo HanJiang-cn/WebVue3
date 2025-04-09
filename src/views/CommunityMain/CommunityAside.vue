@@ -41,10 +41,10 @@ const handleMyPost = () => {
     </el-input>
   </div>
   <div class="switch" @click="handleSwitch">
-    <span>{{ switchIndex % 2 === 0 ? '前往讨论板块' : '前往题目板块' }}</span>
+    <span>{{ switchIndex % 2 === 0 ? '前往讨论板块' : '前往题解板块' }}</span>
   </div>
   <div class="post" @click="handlePost">
-    <span>{{ switchIndex % 2 === 0 ? '发表题目' : '发表帖子' }}</span>
+    <span>{{ switchIndex % 2 === 0 ? '发表题解' : '发表帖子' }}</span>
   </div>
   <div class="my-post" @click="handleMyPost">
     <span>我的帖子</span>

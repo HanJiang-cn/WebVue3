@@ -46,6 +46,16 @@ const activeMenu = ref(currentRoute.path)
                   </el-icon>
                   <span>系统设置</span>
                 </el-menu-item>
+                <el-sub-menu index="1">
+                  <template #title>
+                    <el-icon>
+                      <Comment />
+                    </el-icon>
+                    <span>题解管理</span>
+                  </template>
+                  <el-menu-item index="/admin/solution/">题解列表</el-menu-item>
+                  <el-menu-item index="/admin/solution/review">题解审核</el-menu-item>
+                </el-sub-menu>
               </el-menu>
             </div>
           </el-col>

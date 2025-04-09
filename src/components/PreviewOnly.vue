@@ -19,5 +19,5 @@ const props = defineProps({
 
 <template>
   <MdPreview :editorId="id" :modelValue="props.content" />
-  <MdCatalog :editorId="id" :scrollElement="scrollElement" />
+  <!-- <MdCatalog :editorId="id" :scrollElement="scrollElement" /> -->
 </template>

@@ -313,6 +313,25 @@ const routes = [
           needAuth: 'admin',
         },
       },
+      {
+        path: 'solution',
+        name: 'AdminSolution',
+        meta: {
+          needAuth: 'admin',
+        },
+        children: [
+          {
+            path: '',
+            name: 'SolutionIndex',
+            component: () => import('@/views/AdminMain/AdminSolution/SolutionIndex.vue'),
+          },
+          {
+            path: 'review',
+            name: 'SolutionReview',
+            component: () => import('@/views/AdminMain/AdminSolution/SolutionReview.vue'),
+          },
+        ],
+      },
     ],
   },
 ]

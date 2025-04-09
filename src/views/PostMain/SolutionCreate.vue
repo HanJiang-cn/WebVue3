@@ -3,18 +3,20 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { addPostApi } from '@/api/post'
+import { addSolutionApi } from '@/api/solution'
+import { useRouter } from 'vue-router'
 import MdEditor from '@/components/MdEditor.vue'
 import Cookies from 'js-cookie'
 
+const router = useRouter()
 // 表单引用
 const formRef = ref(null)
 const form = reactive({
   title: '',
-  content: '',
-  category: '',
-  tags: [],
-  cover: null
+  context: '',
+  // category: '',
+  // tags: [],
+  // cover: null
 })
 const categories = ref([
   { value: 'tech', label: '技术分享' },
@@ -31,7 +33,7 @@ const rules = reactive({
     { required: true, message: '标题不能为空', trigger: 'blur' },
     { min: 5, max: 50, message: '长度在5到50个字符', trigger: 'blur' }
   ],
-  content: [
+  context: [
     { required: true, message: '内容不能为空', trigger: 'blur' },
     { min: 20, message: '内容至少20个字符', trigger: 'blur' }
   ],
@@ -92,7 +94,7 @@ onMounted(() => {
 })
 // 处理富文本内容上传
 function uploadContent(data) {
-  form.content = data
+  form.context = data
 }
 
 // 提交表单
@@ -101,23 +103,29 @@ const submitForm = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const res = await addPostApi({
+        const res = await addSolutionApi({
           ...form,
-          tags: [...form.tags, form.category] // 将分类加入标签
+          questionId: router.currentRoute.value.query.id,
+          // tags: [...form.tags, form.category] // 将分类加入标签
         })
         console.log(res)
         if (res.code === 0) {
           ElNotification({
             title: '成功',
-            message: '发布成功！',
+            message: '发布成功，正在审核',
             type: 'success',
           })
-          localStorage.removeItem(DRAFT_KEY) // 清除草稿
+          Cookies.remove(DRAFT_KEY) // 清除草稿
           formRef.value.resetFields()
           // window.open(router.resolve({
           //   path: '/post/detail',
           // }).href, '_self')
-          router.push('/post/detail')
+          router.push({
+            path: '/problems/solution',
+            query: {
+              id: router.currentRoute.value.query.id
+            }
+          })
         }
         submitting.value = false
         return
@@ -154,13 +162,13 @@ const submitForm = async () => {
       <el-input v-model="form.title" placeholder="请输入标题（5-50字）" maxlength="50" show-word-limit clearable size="large" />
     </el-form-item>
 
-    <el-form-item prop="content" class="form-section">
-      <MdEditor :constEdit="form.content" @modelValue="uploadContent" class="rich-editor"
+    <el-form-item prop="context" class="form-section">
+      <MdEditor :constEdit="form.context" @modelValue="uploadContent" class="rich-editor"
         placeholder="请输入正文内容（至少20字）" />
     </el-form-item>
 
     <!-- 分类和标签 -->
-    <el-row :gutter="24" class="form-section">
+    <!-- <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
         <el-form-item prop="category" label="分类">
           <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
@@ -177,7 +185,7 @@ const submitForm = async () => {
           </el-select>
         </el-form-item>
       </el-col>
-    </el-row>
+    </el-row> -->
 
     <!-- 提交栏 -->
     <div class="submit-bar">
