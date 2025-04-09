@@ -5,7 +5,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { editApi, getDetailApi } from '@/api/question'
-import TinymceEdit from '@/components/TinymceEdit.vue'
+import MdEditor from '@/components/MdEditor.vue'
 
 const router = useRouter()
 const questionId = ref(router.currentRoute.value.query.id)
@@ -100,21 +100,21 @@ onMounted(() => {
         <el-input v-model="form.title" placeholder="请输入题目名称" />
       </el-form-item>
       <el-form-item label="内容" prop="content">
-      <TinymceEdit :constEdit="form.content" @modelValue="uploadContent" style="width: 100%;" />
-    </el-form-item>
-        <div v-for="(judgeCase, index) in form.judgeCase" :key="index" class="sample-io">
-          <el-form-item :label="`输入用例 ${index + 1}`">
-            <el-input v-model="judgeCase.input"  type="textarea" />
-          </el-form-item>
-          <el-form-item :label="`输出用例 ${index + 1}`">
-            <el-input v-model="judgeCase.output" type="textarea" />
-          </el-form-item>
-          <el-button type="danger" @click="removeSample(index)">删除</el-button>
-        </div>
-        <el-button @click="addSample">添加测试用例</el-button>
-        <el-form-item label="正确答案">
-          <el-input v-model="form.answer" type="textarea" :rows="3" />
+        <MdEditor :constEdit="form.content" @modelValue="uploadContent" style="width: 100%;" />
+      </el-form-item>
+      <div v-for="(judgeCase, index) in form.judgeCase" :key="index" class="sample-io">
+        <el-form-item :label="`输入用例 ${index + 1}`">
+          <el-input v-model="judgeCase.input" type="textarea" />
         </el-form-item>
+        <el-form-item :label="`输出用例 ${index + 1}`">
+          <el-input v-model="judgeCase.output" type="textarea" />
+        </el-form-item>
+        <el-button type="danger" @click="removeSample(index)">删除</el-button>
+      </div>
+      <el-button @click="addSample">添加测试用例</el-button>
+      <el-form-item label="正确答案">
+        <el-input v-model="form.answer" type="textarea" :rows="3" />
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交修改</el-button>
@@ -124,7 +124,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 .question-edit-container {
   min-width: 1000px;
   margin: 20px auto;
@@ -132,7 +131,7 @@ onMounted(() => {
   padding-right: 40px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 .option-item {
@@ -140,12 +139,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
 }
+
 .title {
-    color: #000;
-    font-size: 22px;
-    font-weight: 700;
-    margin-top: 12px;
-    margin-left: 50px;
-    margin-bottom: 20px;
-  }
+  color: #000;
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 12px;
+  margin-left: 50px;
+  margin-bottom: 20px;
+}
 </style>

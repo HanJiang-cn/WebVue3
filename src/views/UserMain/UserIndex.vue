@@ -2,7 +2,7 @@
 <script setup>
 import lg02 from '@/assets/lg02.png'
 import HeatMap from '@/components/UserMain/HeatMap.vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useChart } from '@/hooks/useChart'
 // import { usePagination } from '@/hooks/usePagination'
 import { useUserStore } from '@/stores/user'
@@ -153,6 +153,18 @@ function switchButton() {
     return true
   }
 }
+// 一言
+async function fetchHitokoto() {
+  const response = await fetch('https://international.v1.hitokoto.cn/')
+  const { hitokoto: hitokotoText, from_who } = await response.json()
+  const hitokoto = document.querySelector('#hitokoto_text')
+  const hitokotoauthor = document.querySelector('#hitokoto_author')
+  hitokoto.innerText = hitokotoText
+  hitokotoauthor.innerText = '—— ' + from_who
+}
+onMounted(() => {
+  fetchHitokoto()
+})
 </script>
 
 <template>
@@ -358,8 +370,10 @@ function switchButton() {
           <el-card style="height: 180px; margin-left: 10px;">
             <div class="hitokoto">
               <div class="left">
-                <p>心不动，则不痛；爱不离，则不弃。</p>
-                <p>——作者</p>
+                <p id="hitokoto_text"></p>
+                <p id="hitokoto_author"></p>
+                <!-- <p>心不动，则不痛；爱不离，则不弃。</p>
+                <p>——作者</p> -->
               </div>
               <div class="right">
                 <img :src="lg02">
@@ -661,19 +675,21 @@ function switchButton() {
   padding: 0 10px;
 
   .left {
+    width: 100%;
+
     p {
       line-height: 25px;
+    }
 
-      &:first-child {
-        color: #262626;
-        font-size: 16px;
-      }
+    #hitokoto_text {
+      color: #262626;
+      font-size: 16px;
+    }
 
-      &:nth-child(2) {
-        margin-right: 10px;
-        text-align: right;
-        font-size: 16px;
-      }
+    #hitokoto_author {
+      margin-right: 10px;
+      text-align: right;
+      font-size: 16px;
     }
   }
 

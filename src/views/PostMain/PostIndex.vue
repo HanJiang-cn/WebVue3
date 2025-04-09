@@ -117,7 +117,7 @@ const handleFavorite = async () => {
     <!-- 作者信息 -->
     <div class="author-section">
       <div class="author-info">
-        <el-avatar :size="60" :src="post.author.avatar" />
+        <el-avatar :size="60" :src="postUser.userAvatar" />
         <div class="author-details">
           <h3>{{ postUser.userName }}</h3>
           <p class="bio">{{ postUser.userProfile }}</p>

@@ -4,7 +4,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
 import { addPostApi } from '@/api/post'
-import TinymceEdit from '@/components/TinymceEdit.vue'
+import MdEditor from '@/components/MdEditor.vue'
 import Cookies from 'js-cookie'
 
 // 表单引用
@@ -155,7 +155,7 @@ const submitForm = async () => {
     </el-form-item>
 
     <el-form-item prop="content" class="form-section">
-      <TinymceEdit :constEdit="form.content" @modelValue="uploadContent" class="rich-editor"
+      <MdEditor :constEdit="form.content" @modelValue="uploadContent" class="rich-editor"
         placeholder="请输入正文内容（至少20字）" />
     </el-form-item>
 
