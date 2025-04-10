@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { post, get, put,del } from '@/utils/http'
+import { post, get, put, del } from '@/utils/http'
 
 enum Api {
   UserList = '/user/list/page',
   DeleteUser = '/user/delete',
-  UserInfo = '/user/get/vo',
+  UserInfo = '/user/get',
   Update = '/user/update',
   AddUser = '/user/add',
   PostList = '/post/list/page',
@@ -66,4 +66,16 @@ function updateCompetition(data: any): Promise<any> {
 function deleteCompetition(data: any): Promise<any> {
   return del(Api.DeleteCompetition, data)
 }
-export { getUserList, deleteUser, getPostList, getUserInfo, updateUserInfo, addUser, addCompetition, getCompetition, updateCompetition, deleteCompetition, getUserCompetitionList }
+export {
+  getUserList,
+  deleteUser,
+  getPostList,
+  getUserInfo,
+  updateUserInfo,
+  addUser,
+  addCompetition,
+  getCompetition,
+  updateCompetition,
+  deleteCompetition,
+  getUserCompetitionList,
+}

@@ -196,7 +196,7 @@ const handleNav = (name: string) => {
                   <el-avatar :size="40" :src="userStore.userAvatar" />
                   <div class="info">
                     <h4 class="nickname">{{ userStore.userName }}</h4>
-                    <p class="email">{{ userStore.userName }}</p>
+                    <p class="email">{{ userStore.email }}</p>
                   </div>
                 </div>
 

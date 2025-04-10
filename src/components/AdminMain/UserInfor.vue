@@ -4,23 +4,26 @@ import { ref, defineEmits, defineProps, watch } from 'vue'
 import { getUserInfo, updateUserInfo, addUser } from '@/api/admin'
 import { addFileApi } from '@/api/upfile'
 import { ElNotification } from 'element-plus'
+import { useUserStore } from '@/stores/user'
 
+const userStore = useUserStore()
 const form = ref({
   id: '',
-  userAvatar: '',
+  userAvatar: null,
   userName: '',
-  // realname: '',
-  // email: 'user@example.com',
+  area: [],
+  email: 'user@example.com',
   // phone: '',
   userProfile: '全栈开发者 | 开源爱好者 | 技术创作者',
-  // gender: '',
-  // birthday: '',
-  // region: [],
-  // github: '',
-  // website: '',
-  // tags: ['前端开发', 'Vue.js', 'Node.js']
+  gender: '',
+  birth: '',
+  signature: '',
+  social_accounts_Github: '',
+  social_accounts_web: '',
+  tags: [],
   userRole: '',
   userAccount: '',
+  score: '',
 })
 
 // 从父组件接收的属性
@@ -36,11 +39,22 @@ const props = defineProps({
 const UserInfor = async () => {
   if (props.id === 0) return
   const { data } = await getUserInfo({ id: props.id })
+  console.log(data);
+
   form.value.userAvatar = data.userAvatar
   form.value.userName = data.userName
   form.value.userProfile = data.userProfile
   form.value.id = data.id
   form.value.userRole = data.userRole
+  form.value.area = data.area ? data.area.split(',') : []
+  form.value.email = data.email
+  form.value.gender = data.gender
+  form.value.birth = data.birth
+  form.value.signature = data.signature
+  form.value.social_accounts_Github = data.social_accounts_Github
+  form.value.social_accounts_web = data.social_accounts_web
+  form.value.tags = data.tags ? data.tags.split(',') : []
+  form.value.score = data.score
 }
 watch(() => props.userInforVisible, (newValue) => {
   if (newValue) {
@@ -51,6 +65,16 @@ watch(() => props.userInforVisible, (newValue) => {
       userAvatar: '',
       userName: '',
       userProfile: '',
+      area: [],
+      email: '',
+      gender: '',
+      birth: '',
+      signature: '',
+      social_accounts_Github: '',
+      social_accounts_web: '',
+      tags: [],
+      userRole: '',
+      score: 0,
     }
   }
 })
@@ -137,7 +161,8 @@ const handleUpload = async () => {
 const saveProfile = async () => {
   if (props.id === 0) {
     await handleUpload()
-    await addUser(form.value)
+    await addUser({ ...form.value, tags: form.value.tags?.join(','), area: form.value.area?.join(',') })
+
     ElNotification({
       title: '成功',
       message: '用户已添加',
@@ -145,7 +170,9 @@ const saveProfile = async () => {
     })
   } else {
     await handleUpload()
-    await updateUserInfo(form.value)
+    await updateUserInfo({ ...form.value, tags: form.value.tags?.join(','), area: form.value.area?.join(',') })
+    userStore.getUserInfo()
+
     ElNotification({
       title: '成功',
       message: '个人资料已更新',
@@ -181,9 +208,7 @@ const saveProfile = async () => {
               </div>
             </el-upload>
             <div class="stats">
-              <el-statistic title="积分" :value="3650" />
-              <el-progress :show-text="false" :percentage="75" :stroke-width="8" status="primary"
-                class="progress-bar" />
+              <el-statistic title="积分" :value="form.score ? form.score : 0" />
             </div>
           </div>
         </el-col>
@@ -200,7 +225,7 @@ const saveProfile = async () => {
 
               <el-col :span="12">
                 <el-form-item label="个人签名">
-                  <el-input v-model="form.realname" placeholder="请输入个人签名" />
+                  <el-input v-model="form.signature" placeholder="请输入个人签名" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -236,20 +261,20 @@ const saveProfile = async () => {
 
               <el-col :span="8">
                 <el-form-item label="出生日期">
-                  <el-date-picker v-model="form.birthday" type="date" placeholder="选择日期" />
+                  <el-date-picker v-model="form.birth" type="date" placeholder="选择日期" />
                 </el-form-item>
               </el-col>
 
               <el-col :span="8">
                 <el-form-item label="所在地区">
-                  <el-cascader v-model="form.region" :options="regionOptions" />
+                  <el-cascader v-model="form.area" :options="regionOptions" />
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-form-item label="社交账号">
               <div class="social-links">
-                <el-input v-model="form.github" placeholder="GitHub 用户名" class="social-input">
+                <el-input v-model="form.social_accounts_Github" placeholder="GitHub 用户名" class="social-input">
                   <template #prefix>
                     <el-icon>
                       <GithubFilled />
@@ -257,7 +282,7 @@ const saveProfile = async () => {
                   </template>
                 </el-input>
 
-                <el-input v-model="form.website" placeholder="个人网站" class="social-input">
+                <el-input v-model="form.social_accounts_web" placeholder="个人网站" class="social-input">
                   <template #prefix>
                     <el-icon>
                       <Link />
@@ -297,7 +322,10 @@ const saveProfile = async () => {
                 </el-form-item>
               </el-col>
 
-              <el-col :span="8">
+              <el-col :span="8" v-show="props.id !== 0">
+                <el-form-item label="用户积分">
+                  <el-input v-model="form.score" placeholder="请输入用户积分" />
+                </el-form-item>
               </el-col>
             </el-row>
           </el-form>

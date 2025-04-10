@@ -87,7 +87,8 @@ const menuItemsAdmin = ref([
   { name: 'settings', label: '账号设置', icon: 'Setting' },
   { name: 'admin', label: '管理员菜单', icon: 'Setting' },
   { name: 'messages', label: '我的消息', icon: 'Message' },
-  { name: 'favorites', label: '我的收藏', icon: 'Star' }
+  { name: 'favorites', label: '我的收藏', icon: 'Star' },
+  { name: 'problems', label: '题目中心', icon: 'FileTextOutlined' },
 ])
 const menuItems = ref([
   { name: 'profile', label: '个人中心', icon: 'User' },
@@ -107,6 +108,8 @@ const handleMenuClick = (item) => {
     handleNav('/accounts/notifications')
   } else if (item.name === 'favorites') {
     handleNav('/accounts/collection')
+  } else if (item.name === 'problems') {
+    handleNav('/question/compile')
   }
 }
 const handleLogout = () => {
@@ -207,10 +210,10 @@ onMounted(() => {
                 <div class="user-menu">
                   <!-- 用户信息 -->
                   <div class="user-info">
-                    <el-avatar :size="35" :src="userStore.userAvatar" />
+                    <el-avatar :size="40" :src="userStore.userAvatar" />
                     <div class="info">
                       <h4 class="nickname">{{ userStore.userName }}</h4>
-                      <p class="email">{{ userStore.userName }}</p>
+                      <p class="email">{{ userStore.email }}</p>
                     </div>
                   </div>
 

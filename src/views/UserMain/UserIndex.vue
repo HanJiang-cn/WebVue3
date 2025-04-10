@@ -160,7 +160,7 @@ async function fetchHitokoto() {
   const hitokoto = document.querySelector('#hitokoto_text')
   const hitokotoauthor = document.querySelector('#hitokoto_author')
   hitokoto.innerText = hitokotoText
-  hitokotoauthor.innerText = '—— ' + from_who
+  hitokotoauthor.innerText = '—— ' + (from_who ? from_who : '佚名')
 }
 onMounted(() => {
   fetchHitokoto()
@@ -172,8 +172,8 @@ onMounted(() => {
     <el-avatar shape="square" :size="70" :src="userStore.userAvatar" />
     <div class="user-avatar">
       <p>{{ userStore.userName }}</p>
-      <p>{{ userStore.userGithub ? userStore.userGithub : '' }}</p>
-      <p>个人签名：{{ userStore.userProfile }}</p>
+      <p>{{ userStore.social_accounts_Github ? userStore.social_accounts_Github : '' }}</p>
+      <p>个人签名：{{ userStore.signature ? userStore.signature : '还没有...' }}</p>
     </div>
   </el-row>
   <el-row style="width: 100%; margin-top: 40px;" :gutter="20">
@@ -207,14 +207,14 @@ onMounted(() => {
             <!-- <span>积分</span> -->
             <div class="user-progress">
               <span>积分:</span>
-              <el-progress :stroke-width="7" :percentage="70" :format="format" />
+              <el-progress :stroke-width="7" :percentage="userStore.score" :format="format" />
             </div>
           </el-row>
           <el-row style="width: 100%; margin-top: 20px;">
             <div class="user-info">
               <div class="title">
                 <span>个人简介</span>
-                <p>鸽鸽鸽鸽鸽鸽鸽鸽鸽鸽鸽鸽</p>
+                <p>{{ userStore.userProfile ? userStore.userProfile : '还没有...' }}</p>
               </div>
               <div class="info">
                 <!-- ip -->
@@ -234,14 +234,14 @@ onMounted(() => {
                   <span>山东</span>
                 </p>
                 <!-- 性别 -->
-                <p>
+                <p v-show="userStore.gender !== ''">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em"
                     fill="currentColor" class="w-full h-full text-label-2 dark:text-dark-label-2">
                     <path fill-rule="evenodd"
                       d="M16.008 12.124A1.017 1.017 0 0116 12V7.586l-1.121 1.121a1 1 0 11-1.415-1.414l2.829-2.829a1 1 0 011.414 0l2.828 2.829a1 1 0 11-1.414 1.414L18 7.586V12c0 .042-.003.083-.008.124A4.002 4.002 0 0117 20a4 4 0 01-.992-7.876zm-8.016-.248c.005.04.008.082.008.124v1h2a1 1 0 110 2H8v4a1 1 0 11-2 0v-4H4a1 1 0 110-2h2v-1c0-.042.003-.083.008-.124A4.002 4.002 0 017 4a4 4 0 01.992 7.876zM7 10a2 2 0 100-4 2 2 0 000 4zm10 4a2 2 0 100 4 2 2 0 000-4z"
                       clip-rule="evenodd"></path>
                   </svg>
-                  <span>男</span>
+                  <span>{{ userStore.gender === 'male' ? '男' : userStore.gender === 'woman' ? '女' : '保密' }}</span>
                 </p>
                 <!-- 生日 -->
                 <p>
@@ -249,14 +249,14 @@ onMounted(() => {
                   <span>1998.1.1</span>
                 </p>
                 <!-- 个人网站 -->
-                <p>
+                <p v-show="userStore.social_accounts_web !== ''">
                   <GlobalOutlined />
-                  <span>2119.online</span>
+                  <el-text>{{ userStore.social_accounts_web }}</el-text>
                 </p>
                 <!-- GitHub -->
-                <p>
+                <p v-show="userStore.social_accounts_Github !== ''">
                   <GithubOutlined />
-                  <span>hanjiang-cn</span>
+                  <el-text>{{ userStore.social_accounts_Github }}</el-text>
                 </p>
               </div>
             </div>
@@ -324,19 +324,13 @@ onMounted(() => {
                 <span>自我标签</span>
               </div>
               <div class="tag">
-                <el-tag>标签1</el-tag>
-                <el-tag>标签22</el-tag>
-                <el-tag>新纪元延期十年</el-tag>
-                <el-tag>标签41</el-tag>
-                <el-tag>标</el-tag>
-                <el-tag>标签61</el-tag>
-                <el-tag>你被骗了！</el-tag>
+                <el-tag v-for="(item, index) in userStore.tags" :key="index">{{ item }}</el-tag>
               </div>
             </div>
           </el-row>
         </el-row>
         <!-- 语言 -->
-        <el-row style="width: 100%; margin-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
+        <!-- <el-row style="width: 100%; margin-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
           <el-row style="width: 100%; margin-bottom: 20px; margin-top: 5px;">
             <div class="user-tag">
               <div class="title">
@@ -350,7 +344,7 @@ onMounted(() => {
               </div>
             </div>
           </el-row>
-        </el-row>
+        </el-row> -->
       </el-card>
     </el-col>
     <!-- 右栏 -->
@@ -588,7 +582,16 @@ onMounted(() => {
   }
 
   .info {
+    width: 100%;
+
+    .el-text {
+      width: 75%;
+      white-space: pre-wrap;
+    }
+
     p {
+      display: flex;
+      align-items: center;
       margin-bottom: 10px;
       color: #262626bf;
       font-size: 14px;
@@ -602,6 +605,7 @@ onMounted(() => {
         color: #000;
       }
     }
+
   }
 }
 
