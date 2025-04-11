@@ -22,10 +22,7 @@ const handleClick = () => {
 
 <template>
   <el-col :span="8">
-    <el-button
-      class="plan-card"
-      @click="handleClick"
-    >
+    <el-button class="plan-card" @click="handleClick">
       <img :src="cover" />
       <div class="text">
         <p class="title">{{ planData.user_plan }}</p>

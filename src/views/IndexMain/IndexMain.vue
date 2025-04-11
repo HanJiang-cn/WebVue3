@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import MainCard from '@/components/IndexMain/MainCard.vue'
 import tp from '@/assets/tp.webp'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const plans = ref([])
 const loadData = async () => {
@@ -50,11 +51,9 @@ const radio1 = ref('1')
           <el-link type="primary">查看全部计划</el-link>
         </div>
         <el-row :gutter="20">
-          <MainCard
-          v-for="item in plans"
-          :key="item.id"
-          :plan-data="item"
-          @browse="handleBrowse" />
+          <MainCard v-for="item in plans" :key="item.id" :plan-data="item" @browse="handleBrowse" />
+          <MainCard v-for="item in plans" :key="item.id" :plan-data="item" @browse="handleBrowse" />
+          <MainCard v-for="item in plans" :key="item.id" :plan-data="item" @browse="handleBrowse" />
         </el-row>
       </div>
     </el-row>
@@ -176,7 +175,6 @@ const radio1 = ref('1')
 
 // 学习计划
 .learning-plan {
-width: 621px;
   .section-header {
     display: flex;
     justify-content: space-between;
@@ -190,7 +188,6 @@ width: 621px;
       font-size: 1.4em;
     }
   }
-
 }
 
 .el-link:hover {
