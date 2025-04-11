@@ -564,6 +564,7 @@ onMounted(() => {
 }
 
 .user-info {
+  width: 100%;
   margin-bottom: 20px;
 
   .title {
@@ -575,6 +576,7 @@ onMounted(() => {
     }
 
     p {
+      // width: 85%;
       margin: 16px 0;
       color: #262626bf;
       font-size: 14px;
@@ -582,10 +584,8 @@ onMounted(() => {
   }
 
   .info {
-    width: 100%;
-
     .el-text {
-      width: 75%;
+      width: 90%;
       white-space: pre-wrap;
     }
 

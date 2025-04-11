@@ -109,7 +109,7 @@ const handleChangeBg = (val: number) => {
   max-width: 1200px;
   margin: 0 auto;
   margin-top: 20px;
-  width: 65%;
+  width: 75%;
   height: 100%;
   display: flex;
 

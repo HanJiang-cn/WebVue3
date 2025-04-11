@@ -1,11 +1,11 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommunityPost from '@/components/CommunityMain/CommunityPost.vue'
+import { ref, onMounted, defineProps } from 'vue'
 import { useRouter } from 'vue-router'
+import { getRecommendPostListApi } from '@/api/community'
+
 const router = useRouter()
-
-import { ref, defineProps } from 'vue'
-
 const discussionName = ref('1')
 const questionName = ref('1')
 
@@ -15,20 +15,44 @@ const props = defineProps({
 
 // 路由跳转到 post 页面
 const handlePost = (id) => {
-  router.push({
-    path: '/post',
-    query: {
-      id: id
-    }
-  })
+  window.open(
+    router.resolve({
+      path: '/post',
+      query: {
+        id: id
+      }
+    }).href, '_self')
+}
+
+// 获取推荐帖子列表
+const recommendPostList = ref([])
+const getRecommendPostList = async () => {
+  const res = await getRecommendPostListApi()
+  recommendPostList.value = res.data
+  PostList.value = res.data.slice(0, 9)
+}
+onMounted(() => {
+  getRecommendPostList()
+})
+
+// 无限滚动加载
+const PostList = ref([])
+const infiniteHandler = () => {
+  // 将recommendPostList数组中的数据一点一点加载到页面上
+  // 排除已加载的数据
+  const newPostList = recommendPostList.value.filter(item => !PostList.value.includes(item))
+  // 每次加载10条数据
+  // const newData = newPostList.slice(0, 10)
+  PostList.value = [...PostList.value, ...newPostList]
 }
 </script>
 
 <template>
   <div class="discussion" v-show="props.visable">
-    <el-tabs v-model="discussionName" type="card">
-      <el-tab-pane label="推荐" name="1">
-        <CommunityPost v-for="item in 10" :key="item" @click="handlePost(1)"></CommunityPost>
+    <el-tabs v-model="discussionName" type="card" style="width: 100%;">
+      <el-tab-pane v-infinite-scroll="infiniteHandler" label="推荐" name="1">
+        <CommunityPost v-for="item in PostList" :key="item.id" @click="handlePost(item.id)" :item="item">
+        </CommunityPost>
       </el-tab-pane>
       <el-tab-pane label="资讯" name="2">Config</el-tab-pane>
       <el-tab-pane label="热榜" name="3">Role</el-tab-pane>

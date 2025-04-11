@@ -120,7 +120,7 @@ const handleFavorite = async () => {
         <el-avatar :size="60" :src="postUser.userAvatar" />
         <div class="author-details">
           <h3>{{ postUser.userName }}</h3>
-          <p class="bio">{{ postUser.userProfile }}</p>
+          <el-text truncated class="bio">{{ postUser.userProfile }}</el-text>
           <div class="meta">
             <span>粉丝 {{ post.author.followers }}</span>
             <span>·</span>
@@ -233,17 +233,21 @@ const handleFavorite = async () => {
     border-bottom: 1px solid #eee;
 
     .author-info {
+      width: 80%;
       display: flex;
       align-items: center;
       gap: 16px;
 
       .author-details {
+        width: 80%;
+
         h3 {
           margin: 0;
           font-size: 1.2em;
         }
 
         .bio {
+          width: 50%;
           margin: 4px 0;
           color: #666;
           font-size: 0.9em;

@@ -1,5 +1,11 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
+import { ref, defineProps } from 'vue'
+
+const props = defineProps(['item'])
+const postData = ref({})
+postData.value = props.item
+console.log(postData.value)
 
 </script>
 
@@ -14,8 +20,7 @@
       <div class="center">
         <p>LeetCode</p>
         <p>七周算法特训</p>
-        <el-text truncated line-clamp="2">七周掌握高频算法考点，学-练-测全方位夯实，剑指大厂 Offer！剑指大厂 Offer！剑指大厂 Offer！剑指大厂
-          Offer！剑指大厂 Offer！剑指大厂 Offer！剑指大厂 Offer！</el-text>
+        <el-text truncated line-clamp="2">{{ props.item?.content }}</el-text>
       </div>
       <div class="left">
         <img :src="tp" alt="" />

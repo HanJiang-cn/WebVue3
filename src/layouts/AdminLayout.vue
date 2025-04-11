@@ -42,6 +42,16 @@ const activeMenu = ref(currentRoute.path)
                 <el-sub-menu index="1">
                   <template #title>
                     <el-icon>
+                      <PlaySquareOutlined />
+                    </el-icon>
+                    <span>banner管理</span>
+                  </template>
+                  <el-menu-item index="/admin/solution/">主页</el-menu-item>
+                  <el-menu-item index="/admin/solution/review">社区</el-menu-item>
+                </el-sub-menu>
+                <el-sub-menu index="2">
+                  <template #title>
+                    <el-icon>
                       <Comment />
                     </el-icon>
                     <span>题解管理</span>
@@ -49,7 +59,7 @@ const activeMenu = ref(currentRoute.path)
                   <el-menu-item index="/admin/solution/">题解列表</el-menu-item>
                   <el-menu-item index="/admin/solution/review">题解审核</el-menu-item>
                 </el-sub-menu>
-                <el-sub-menu index="2">
+                <el-sub-menu index="3">
                   <template #title>
                     <el-icon>
                       <Edit />

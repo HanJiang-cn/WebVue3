@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getRecommendUserListApi } from '@/api/community'
 
 const emits = defineEmits(['switch'])
 const input3 = ref('')
@@ -30,6 +31,16 @@ const handleMyPost = () => {
       path: '/post/detail',
     }).href, '_self')
 }
+
+// 获取推荐用户列表
+const recommendUserList = ref([])
+const getRecommendUserList = async () => {
+  const res = await getRecommendUserListApi()
+  recommendUserList.value = res.data
+}
+onMounted(() => {
+  getRecommendUserList()
+})
 </script>
 
 <template>
@@ -55,14 +66,14 @@ const handleMyPost = () => {
         <span>推荐作者</span>
       </div>
       <div class="content">
-        <div class="writer-item" v-for="item in 5" :key="item">
-          <el-avatar :size="40" class="avatar" />
+        <div class="writer-item" v-for="item in recommendUserList" :key="item">
+          <el-avatar :size="40" class="avatar" :src="item.userAvatar" />
           <div class="info">
             <div class="name">
-              <span>Han_Jiang-cn</span>
+              <span>{{ item.userName }}</span>
             </div>
             <div class="desc">
-              <el-text size="small" truncated>一个小小的一个小小的一个小小的一个小小的一个小小的一个小小的一个小小的</el-text>
+              <el-text size="small" truncated>{{ item.userProfile }}</el-text>
             </div>
           </div>
         </div>
