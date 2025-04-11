@@ -1,17 +1,26 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-// import { ref } from 'vue'
+import {onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { dailyQuestionApi } from '@/api/question'
 
 const router = useRouter()
 const userStore = useUserStore()
+const dailyQuestion = ref({})
+const getDailyQuestion = async () => {
+  const res = await dailyQuestionApi()
+  dailyQuestion.value = res.data
+}
 
 const showChallenge = () => {
   router.push({
     path: '/question'
   })
 }
+onMounted(() => {
+  getDailyQuestion()
+})
 </script>
 
 <template>
@@ -32,11 +41,12 @@ const showChallenge = () => {
 
     <!-- 每日一题 -->
     <div class="daily-challenge">
-      <el-button type="danger" :icon="Fire" round class="challenge-btn" @click="showChallenge">
+      <el-button
+       type="danger" :icon="Fire" round class="challenge-btn" @click="showChallenge">
         今日挑战题
         <el-tag size="small" effect="dark" class="ml-2">Hard</el-tag>
       </el-button>
-      <p class="problem-title">两数之和 IV - 输入二叉搜索树</p>
+      <p class="problem-title">{{ dailyQuestion.title || '加载中...' }}</p>
       <div class="problem-stats">
         <el-text type="info">通过率 62%</el-text>
         <el-text type="info">提交次数 34.5万</el-text>

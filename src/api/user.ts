@@ -6,6 +6,7 @@ enum Api {
   Register = '/user/register',
   GetUserInfo = '/user/get/login',
   Update = '/user/update/my',
+  PlanList = '/user/Index/getPlan',
 }
 
 interface LoginData {
@@ -41,5 +42,8 @@ function updateLoginUserApi(data: UpdateData): Promise<any> {
 function getLoginUserInfoApi() {
   return get(Api.GetUserInfo)
 }
+function getPlanListApi() {
+  return get(Api.PlanList)
+}
 
-export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi }
+export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi }
