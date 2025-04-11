@@ -26,8 +26,11 @@ onMounted(() => {
   }
 })
 
-const handleCreate = () => {
+const handleCreate1 = () => {
   router.push('/question/submit')
+}
+const handleCreate2 = () => {
+  router.push('/question/paper')
 }
 </script>
 
@@ -38,8 +41,8 @@ const handleCreate = () => {
         <h2 style="display: inline-block;">试题库</h2>
         <div id="right">
           <div class="right">
-            <el-button class="create" type="primary" round @click="handleCreate">新增试题</el-button>
-            <el-button class="create" type="primary" round @click="handleCreate">创建试卷</el-button>
+            <el-button class="create" type="primary" round @click="handleCreate1">新增试题</el-button>
+            <el-button class="create" type="primary" round @click="handleCreate2">创建试卷</el-button>
           </div>
         </div>
       </div>

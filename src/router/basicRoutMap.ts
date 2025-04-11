@@ -171,6 +171,11 @@ const routes = [
         name: 'QuestionDetail',
         component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
       },
+      {
+        path:'paper',
+        name: 'QuestionPaper',
+        component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
+      }
     ],
   },
   // 组队

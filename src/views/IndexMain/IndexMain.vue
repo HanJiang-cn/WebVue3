@@ -1,8 +1,25 @@
 <script lang="ts" setup>
+import { getPlanListApi } from '@/api/user'
+import { onMounted, ref } from 'vue'
 import MainCard from '@/components/IndexMain/MainCard.vue'
 import tp from '@/assets/tp.webp'
-import { ref } from 'vue'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const plans = ref([])
+const loadData = async () => {
+  const { data } = await getPlanListApi()
+  plans.value = data
+}
+// 处理子组件事件
+const handleBrowse = (id: string) => {
+  router.push({
+    path: '/problems/question',
+    query: { id }
+  })
+}
+onMounted(() => {
+  loadData()
+})
 const loading = ref(true)
 setTimeout(() => {
   loading.value = false
@@ -33,7 +50,11 @@ const radio1 = ref('1')
           <el-link type="primary">查看全部计划</el-link>
         </div>
         <el-row :gutter="20">
-          <MainCard v-for="item in 3" :key="item" />
+          <MainCard
+          v-for="item in plans"
+          :key="item.id"
+          :plan-data="item"
+          @browse="handleBrowse" />
         </el-row>
       </div>
     </el-row>
@@ -155,6 +176,7 @@ const radio1 = ref('1')
 
 // 学习计划
 .learning-plan {
+width: 621px;
   .section-header {
     display: flex;
     justify-content: space-between;
@@ -168,6 +190,7 @@ const radio1 = ref('1')
       font-size: 1.4em;
     }
   }
+
 }
 
 .el-link:hover {

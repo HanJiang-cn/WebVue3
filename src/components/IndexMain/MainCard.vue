@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import cover from '@/assets/cover.png'
+import { defineProps, defineEmits } from 'vue'
+interface Plan {
+  id: string
+  user_plan: string
+  plan_desc: string
+}
+// 定义props
+const props = defineProps<{
+  planData: Plan
+}>()
+// 定义事件
+const emit = defineEmits(['browse'])
+
+// 点击处理
+const handleClick = () => {
+  emit('browse', props.planData.id)
+}
+
 </script>
 
 <template>
-  <el-button>
-    <img :src="cover" />
-    <div class="text">
-      <p>
-        面试经典 150 题
-      </p>
-      <p>
-        最经典 150 题，掌握面试所有知识点
-      </p>
-    </div>
-  </el-button>
+  <el-col :span="8">
+    <el-button
+      class="plan-card"
+      @click="handleClick"
+    >
+      <img :src="cover" />
+      <div class="text">
+        <p class="title">{{ planData.user_plan }}</p>
+        <p class="desc">{{ planData.plan_desc }}</p>
+      </div>
+    </el-button>
+  </el-col>
 </template>
 
 <style lang="less" scoped>
