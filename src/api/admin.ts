@@ -13,6 +13,8 @@ enum Api {
   GetUserCompetitionList = '/competition/user/getCompetition',
   UpdateCompetition = '/competition/modifyCompetition',
   DeleteCompetition = '/competition/delCompetition',
+  BannerCommunity = '/admin/getBanner',
+  SolutionReviewList = '/solution/getReviews',
 }
 
 interface UpdateData {
@@ -66,6 +68,14 @@ function updateCompetition(data: any): Promise<any> {
 function deleteCompetition(data: any): Promise<any> {
   return del(Api.DeleteCompetition, data)
 }
+
+function bannerCommunity(data: any): Promise<any> {
+  return get(Api.BannerCommunity, data)
+}
+
+function getSolutionReviewList(data: any): Promise<any> {
+  return get(Api.SolutionReviewList, data)
+}
 export {
   getUserList,
   deleteUser,
@@ -78,4 +88,6 @@ export {
   updateCompetition,
   deleteCompetition,
   getUserCompetitionList,
+  bannerCommunity,
+  getSolutionReviewList,
 }

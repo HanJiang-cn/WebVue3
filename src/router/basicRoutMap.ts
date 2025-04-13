@@ -172,10 +172,10 @@ const routes = [
         component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
       },
       {
-        path:'paper',
+        path: 'paper',
         name: 'QuestionPaper',
         component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
-      }
+      },
     ],
   },
   // 组队
@@ -308,7 +308,6 @@ const routes = [
         meta: {
           needAuth: 'admin',
         },
-
       },
       {
         path: 'users',
@@ -319,6 +318,7 @@ const routes = [
           needAuth: 'admin',
         },
       },
+      // 题解管理
       {
         path: 'solution',
         name: 'AdminSolution',
@@ -335,6 +335,26 @@ const routes = [
             path: 'review',
             name: 'SolutionReview',
             component: () => import('@/views/AdminMain/AdminSolution/SolutionReview.vue'),
+          },
+        ],
+      },
+      // banner 管理
+      {
+        path: 'banner',
+        name: 'AdminBanner',
+        meta: {
+          needAuth: 'admin',
+        },
+        children: [
+          {
+            path: 'index',
+            name: 'BannerIndex',
+            component: () => import('@/views/AdminMain/AdminBanner/BannerIndex.vue'),
+          },
+          {
+            path: 'community',
+            name: 'BannerCommunity',
+            component: () => import('@/views/AdminMain/AdminBanner/BannerCommunity.vue'),
           },
         ],
       },

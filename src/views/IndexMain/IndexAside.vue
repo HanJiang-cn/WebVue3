@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import {onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { dailyQuestionApi } from '@/api/question'
@@ -15,7 +15,8 @@ const getDailyQuestion = async () => {
 
 const showChallenge = () => {
   router.push({
-    path: '/question'
+    path: '/problems/question',
+    query: { id: dailyQuestion.value.id }
   })
 }
 onMounted(() => {
@@ -41,8 +42,7 @@ onMounted(() => {
 
     <!-- 每日一题 -->
     <div class="daily-challenge">
-      <el-button
-       type="danger" :icon="Fire" round class="challenge-btn" @click="showChallenge">
+      <el-button type="danger" :icon="Fire" round class="challenge-btn" @click="showChallenge">
         今日挑战题
         <el-tag size="small" effect="dark" class="ml-2">Hard</el-tag>
       </el-button>
