@@ -14,6 +14,11 @@ enum Api {
   UpdateCompetition = '/competition/modifyCompetition',
   DeleteCompetition = '/competition/delCompetition',
   BannerCommunity = '/admin/getBanner',
+  BannerAdd = '/admin/addBanner',
+  BannerEdit = '/admin/updateBanner',
+  BannerDelete = '/admin/delBanner',
+  SolutionList = '/solution/get',
+  SolutionReview = '/solution/review',
   SolutionReviewList = '/solution/getReviews',
 }
 
@@ -53,28 +58,49 @@ function addUser(data: AddData): Promise<any> {
 function getPostList(data: any): Promise<any> {
   return post(Api.PostList, data)
 }
+
 function addCompetition(data: any): Promise<any> {
   return post(Api.AddCompetition, data)
 }
+
 function getCompetition(data: any): Promise<any> {
   return get(Api.GetCompetition, data)
 }
+
 function getUserCompetitionList(data: any): Promise<any> {
   return post(Api.GetUserCompetitionList, data)
 }
-function updateCompetition(data: any): Promise<any> {
-  return put(Api.UpdateCompetition, data)
-}
+
 function deleteCompetition(data: any): Promise<any> {
   return del(Api.DeleteCompetition, data)
 }
 
 function bannerCommunity(data: any): Promise<any> {
-  return get(Api.BannerCommunity, data)
+  return post(Api.BannerCommunity, data)
+}
+
+function addBanner(data: any): Promise<any> {
+  return post(Api.BannerAdd, data)
+}
+
+function editBanner(data: any): Promise<any> {
+  return post(Api.BannerEdit, data)
+}
+
+function deleteBanner(data: any): Promise<any> {
+  return del(Api.BannerDelete, data)
+}
+
+function solutionList(data: any): Promise<any> {
+  return post(Api.SolutionList, data)
+}
+
+function solutionReview(data: any): Promise<any> {
+  return put(Api.SolutionReview, data)
 }
 
 function getSolutionReviewList(data: any): Promise<any> {
-  return get(Api.SolutionReviewList, data)
+  return post(Api.SolutionReviewList, data)
 }
 export {
   getUserList,
@@ -85,9 +111,13 @@ export {
   addUser,
   addCompetition,
   getCompetition,
-  updateCompetition,
+  editBanner,
   deleteCompetition,
   getUserCompetitionList,
   bannerCommunity,
+  addBanner,
+  deleteBanner,
+  solutionList,
+  solutionReview,
   getSolutionReviewList,
 }
