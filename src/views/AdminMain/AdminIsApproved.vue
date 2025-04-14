@@ -2,10 +2,12 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { deleteCompetition,getCompetition } from '@/api/competition'
+import {getCompetitionAdminListApi,isApprovedCompetition } from '@/api/competition'
 import { usePagination } from '@/hooks/usePagination'
 import { useRouter } from 'vue-router'
 import { ElNotification, ElMessageBox } from 'element-plus'
+
+
 const router = useRouter()
 const loading = ref(false)
 
@@ -26,7 +28,7 @@ const handleReset = () => {
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getCompetition({ ...pageInfo, name: searchParams.value.name})
+  const { data: { records, total } } = await getCompetitionAdminListApi({ ...pageInfo, name: searchParams.value.name})
   loading.value = false
   dataList.value = records
   setTotals(Number(total))
@@ -41,44 +43,63 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
-// 新增
+// 编辑
 const handleEdit = () =>{
   window.open(router.resolve({
   path: '/competition/create',
   }).href, '_blank')
 }
-// 更新
-// 修改编辑方法
-const handleUpdate = (competitionId) => {
-  router.push({
-    path: '/competition/update',
-    query: { id: competitionId }
-  })
-}
 
-
-// 删除逻辑
-const handleDelete = async (competitionId) => {
+// // 删除逻辑
+// const handleDelete = async (competitionId) => {
+//   try {
+//     await ElMessageBox.confirm('确定要删除该竞赛吗？', '提示', {  // 修改提示文案为"竞赛"
+//       confirmButtonText: '确定',
+//       cancelButtonText: '取消',
+//       type: 'warning'
+//     })
+//     // 使用 competitionId 作为参数名调用接口
+//     await deleteCompetition({ competitionId })
+//     ElNotification({
+//       title: '成功',
+//       message: '删除成功',
+//       type: 'success'
+//     })
+//     loadData()
+//   } catch (error) {
+//     // 增加错误处理（可选）
+//     if (error !== 'cancel') { // 排除取消操作的情况
+//       ElNotification({
+//         title: '错误',
+//         message: '删除失败',
+//         type: 'error'
+//       })
+//     }
+//   }
+// }
+// 审核逻辑
+const handleApproved = async (competitionId) => {
   try {
-    await ElMessageBox.confirm('确定要删除该竞赛吗？', '提示', {  // 修改提示文案为"竞赛"
+    await ElMessageBox.confirm('确定要审核该竞赛吗？', '提示', {  // 修改提示文案为"竞赛"
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
     // 使用 competitionId 作为参数名调用接口
-    await deleteCompetition({ competitionId })
+    await isApprovedCompetition({ competitionId })
     ElNotification({
       title: '成功',
-      message: '删除成功',
-      type: 'success'
+      message: '审核成功',
+      type:'success'
     })
     loadData()
-  } catch (error) {
+  }
+  catch (error) {
     // 增加错误处理（可选）
-    if (error !== 'cancel') { // 排除取消操作的情况
+    if (error!== 'cancel') { // 排除取消操作的情况
       ElNotification({
         title: '错误',
-        message: '删除失败',
+        message: '审核失败',
         type: 'error'
       })
     }
@@ -98,9 +119,6 @@ const handleDelete = async (competitionId) => {
       <el-col :span="5">
         <el-button type="primary" @click="loadData">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button class="fr" type="primary" @click="handleEdit">新增竞赛</el-button>
       </el-col>
     </el-row>
   </el-card>
@@ -126,8 +144,7 @@ const handleDelete = async (competitionId) => {
       </el-table-column> -->
       <el-table-column label="操作" width="140">
         <template #default="{ row }">
-          <el-button type="primary" size="small" @click="handleUpdate(row.id)">更新</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
+          <el-button type="primary" size="small" @click="handleApproved(row.id)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>

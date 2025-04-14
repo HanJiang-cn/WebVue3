@@ -172,10 +172,10 @@ const routes = [
         component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
       },
       {
-        path: 'paper',
+        path:'paper',
         name: 'QuestionPaper',
         component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
-      },
+      }
     ],
   },
   // 组队
@@ -310,6 +310,14 @@ const routes = [
         },
       },
       {
+        path: 'isapproved',
+        name: 'AdminIsApproved',
+        component: () => import('@/views/AdminMain/AdminIsApproved.vue'),
+        meta: {
+          needAuth: 'admin',
+        },
+      },
+      {
         path: 'users',
         name: 'AdminUser',
         component: () => import('@/views/AdminMain/AdminUser.vue'),
@@ -365,6 +373,11 @@ const routes = [
     name: 'AdminCompetitionCreate',
     component: () => import('@/components/AdminMain/CompetitionCreate.vue'),
   },
+  {
+    path:'/competition/update',
+    name: 'CompetitionUpdate',
+    component: () => import('@/views/CompetitionMain/CompetitionUpdate.vue'),
+  }
 ]
 
 export default routes
