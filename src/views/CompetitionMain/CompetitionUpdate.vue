@@ -3,7 +3,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import {addCompetition} from '@/api/competition'
+import { updateCompetition } from '@/api/competition'
 import MdEditor from '@/components/MdEditor.vue'
 import router from '@/router'
 import Cookies from 'js-cookie'
@@ -196,7 +196,7 @@ const submitForm = async () => {
   <el-form ref="formRef" :model="form" :rules="rules" class="post-container">
     <!-- 头部 -->
     <div class="post-header">
-      <h1 class="post-title">发布竞赛</h1>
+      <h1 class="post-title">更新竞赛</h1>
       <p class="post-subtitle">填写竞赛详细信息并发布</p>
     </div>
 

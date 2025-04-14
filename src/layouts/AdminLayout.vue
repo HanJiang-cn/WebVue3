@@ -67,7 +67,7 @@ const activeMenu = ref(currentRoute.path)
                     <span>竞赛管理</span>
                   </template>
                   <el-menu-item index="/admin/competition">竞赛查看</el-menu-item>
-                  <el-menu-item index="2">竞赛审核</el-menu-item>
+                  <el-menu-item index="/admin/isapproved">竞赛审核</el-menu-item>
                 </el-sub-menu>
               </el-menu>
 
