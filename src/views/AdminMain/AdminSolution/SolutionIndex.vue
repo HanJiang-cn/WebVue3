@@ -2,15 +2,15 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getUserList, deleteUser } from '@/api/admin'
+import { solutionList } from '@/api/admin'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification, ElMessageBox } from 'element-plus'
-import UserInfor from '@/components/AdminMain/UserInfor.vue'
 import moment from 'moment'
+import PreviewOnly from '@/components/PreviewOnly.vue'
 
 const loading = ref(false)
-const userInforVisible = ref(false)
-const userId = ref('')
+const previewVisible = ref(false)
+const previewContent = ref('')
 
 // 查询条件
 const searchParams = ref({
@@ -27,11 +27,11 @@ const handleReset = () => {
   }
   loadData()
 }
-// 获取用户列表
+// 获取列表
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total }, } = await getUserList({ ...pageInfo, userName: searchParams.value.name, id: searchParams.value.id, userRole: searchParams.value.userRole })
+  const { data: { records, total }, } = await solutionList({ ...pageInfo })
   loading.value = false
   dataList.value = records
   setTotals(Number(total))
@@ -44,30 +44,6 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
-// 编辑用户
-const handleEdit = (id) => {
-  userInforVisible.value = true
-  userId.value = id
-}
-// 删除用户
-const handleDelete = (id) => {
-  ElMessageBox.confirm('确认删除该用户吗?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }).then(async () => {
-    const res = await deleteUser({ id: id })
-    if (res.code === 0) {
-      ElNotification({
-        title: '成功',
-        message: '用户删除成功',
-        type: 'success',
-      })
-    }
-    loadData()
-  })
-}
-
 </script>
 
 <template>
@@ -79,40 +55,45 @@ const handleDelete = (id) => {
       <el-col :span="6">
         <el-input placeholder="请输入用户ID" v-model="searchParams.id"></el-input>
       </el-col>
-      <el-col :span="4">
-        <el-select v-model="searchParams.userRole" placeholder="请选择用户角色">
-          <el-option label="管理员" value="admin" />
-          <el-option label="普通用户" value="user" />
-        </el-select>
-      </el-col>
-      <el-col :span="5">
+      <el-col :span="6">
         <el-button type="primary" @click="loadData">查询</el-button>
         <el-button @click="handleReset">重置</el-button>
       </el-col>
-      <el-col :span="3">
-        <el-button class="fr" type="primary" @click="handleEdit(0)">新增用户</el-button>
+      <el-col :span="6">
+        <el-button class="fr" type="primary" @click="handleAdd">新增题解</el-button>
       </el-col>
     </el-row>
   </el-card>
   <el-card class="mt">
+    <el-alert title="单击帖子标题即可查看题解内容" type="info" show-icon />
     <el-table :data="dataList" v-loading="loading">
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="id" label="用户ID" width="180" />
-      <el-table-column prop="userAccount" label="用户名称" />
-      <el-table-column prop="userName" label="用户昵称" />
-      <el-table-column prop="userRole" label="用户角色">
+      <el-table-column prop="id" label="ID" width="230">
         <template #default="{ row }">
-          <el-tag :type="row.userRole === 'admin' ? 'success' : 'info'">
-            {{ row.userRole === 'user' ? '普通用户' : '管理员' }}
-          </el-tag>
+          <p>题解ID: {{ row.id }}</p>
+          <p>题目ID: {{ row.questionId }}</p>
         </template>
       </el-table-column>
-      <el-table-column label="注册时间" width="180">
+      <el-table-column prop="title" label="题解标题">
         <template #default="{ row }">
-          {{ moment(row.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+          <span class="title-text" @click="previewVisible = true; previewContent = row.context">{{ row.title }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="userAccount" label="发表用户">
+
+      </el-table-column>
+      <el-table-column prop="status" label="题解状态">
+        <template #default="{ row }">
+          <el-tag :type="row.status === 0 ? 'warning' : 'success'">{{ row.status === 0 ? '待审核' : '已审核' }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="时间" width="180">
+        <template #default="{ row }">
+          <p>创建时间: {{ moment(row.createTime).format('YYYY-MM-DD') }}</p>
+          <p>更新时间: {{ moment(row.updateTime).format('YYYY-MM-DD') }}</p>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="150">
         <template #default="{ row }">
           <el-button type="primary" size="small" @click="handleEdit(row.id)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
@@ -125,5 +106,37 @@ const handleDelete = (id) => {
         @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
   </el-card>
-  <UserInfor :userInforVisible="userInforVisible" :id="userId" @close="userInforVisible = false" @loadData="loadData" />
+
+  <!-- 题解内容 -->
+  <el-dialog v-model="previewVisible" title="题解内容" width="800" @close="previewVisible = false">
+    <PreviewOnly :content="previewContent" />
+  </el-dialog>
 </template>
+
+<style lang="less" scoped>
+.title-text {
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    color: #409EFF;
+
+    &::after {
+      width: 100%;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #409EFF;
+    transition: width 0.3s;
+  }
+}
+</style>

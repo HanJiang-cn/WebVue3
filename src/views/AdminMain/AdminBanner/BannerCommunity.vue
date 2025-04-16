@@ -2,7 +2,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { bannerCommunity, deleteBanner, editBanner, addBanner } from '@/api/admin'
+import { bannerCommunity, deleteBanner, editBanner, addBanner, bannerPreview } from '@/api/admin'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import moment from 'moment'
@@ -60,6 +60,28 @@ const handleSubmit = async () => {
 }
 
 // 编辑 Banner
+const editBannerVisible = ref(false)
+const editForm = ref({
+  id: '',
+  banner: '',
+})
+const handleEdit = (id, banner) => {
+  editForm.value.id = id
+  editForm.value.banner = banner
+  editBannerVisible.value = true
+}
+const handleEditSubmit = async () => {
+  const res = await editBanner(editForm.value)
+  if (res.code === 0) {
+    ElNotification({
+      title: '成功',
+      message: 'Banner 编辑成功',
+      type: 'success',
+    })
+    editBannerVisible.value = false
+    loadData()
+  }
+}
 
 // 删除 Banner
 const handleDelete = (id) => {
@@ -80,6 +102,24 @@ const handleDelete = (id) => {
   })
 }
 
+// 推荐 Banner
+const handlePreview = (id) => {
+  ElMessageBox.confirm('确认推荐该 Banner 吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    const res = await bannerPreview({ bannerId: id })
+    if (res.code === 0) {
+      ElNotification({
+        title: '成功',
+        message: 'Banner 推荐成功',
+        type: 'success',
+      })
+      loadData()
+    }
+  })
+}
 </script>
 
 <template>
@@ -116,7 +156,7 @@ const handleDelete = (id) => {
       <el-table-column label="操作">
         <template #default="{ row }">
           <el-button type="warning" size="small" @click="handlePreview(row.id)">推荐</el-button>
-          <el-button type="primary" size="small" @click="handleEdit(row.id)">编辑</el-button>
+          <el-button type="primary" size="small" @click="handleEdit(row.id, row.banner)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -129,12 +169,26 @@ const handleDelete = (id) => {
   </el-card>
   <!-- 添加Banner -->
   <el-dialog v-model="addBannerVisible" title="添加Banner" width="800" @close="addBannerVisible = false">
-    <el-from :model="form" :rules="rules" ref="form" label-width="100px">
+    <el-alert title="请输入 http:// 或 https:// 格式" type="info" show-icon style="margin-bottom: 20px;" />
+    <el-from :model="form" :rules="rules" ref="formRef" label-width="100px">
       <el-form-item label="Banner Url" prop="banner">
         <el-input v-model="form.banner" placeholder="请输入 Banner Url"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSubmit">提交</el-button>
+      </el-form-item>
+    </el-from>
+  </el-dialog>
+
+  <!-- 编辑Banner -->
+  <el-dialog v-model="editBannerVisible" title="编辑Banner" width="800" @close="editBannerVisible = false">
+    <el-alert title="请输入 http:// 或 https:// 格式" type="info" show-icon style="margin-bottom: 20px;" />
+    <el-from :model="editForm" :rules="rules" ref="edit" label-width="100px">
+      <el-form-item label="Banner Url" prop="banner">
+        <el-input v-model="editForm.banner" placeholder="请输入 Banner Url"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="handleEditSubmit">提交</el-button>
       </el-form-item>
     </el-from>
   </el-dialog>

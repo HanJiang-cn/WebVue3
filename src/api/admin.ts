@@ -17,6 +17,7 @@ enum Api {
   BannerAdd = '/admin/addBanner',
   BannerEdit = '/admin/updateBanner',
   BannerDelete = '/admin/delBanner',
+  BannerPreview = '/recommend/banner',
   SolutionList = '/solution/get',
   SolutionReview = '/solution/review',
   SolutionReviewList = '/solution/getReviews',
@@ -91,6 +92,10 @@ function deleteBanner(data: any): Promise<any> {
   return del(Api.BannerDelete, data)
 }
 
+function bannerPreview(data: any): Promise<any> {
+  return get(Api.BannerPreview, data)
+}
+
 function solutionList(data: any): Promise<any> {
   return post(Api.SolutionList, data)
 }
@@ -117,6 +122,7 @@ export {
   bannerCommunity,
   addBanner,
   deleteBanner,
+  bannerPreview,
   solutionList,
   solutionReview,
   getSolutionReviewList,

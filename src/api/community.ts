@@ -2,8 +2,13 @@
 import { get } from '@/utils/http'
 
 enum Api {
+  BannerList = '/recommend/banner',
   UserList = '/recommend/writer',
   PostList = '/recommend/post',
+}
+
+function getRecommendBannerListApi(): Promise<any> {
+  return get(Api.BannerList)
 }
 
 function getRecommendUserListApi(): Promise<any> {
@@ -14,4 +19,4 @@ function getRecommendPostListApi(): Promise<any> {
   return get(Api.PostList)
 }
 
-export { getRecommendUserListApi, getRecommendPostListApi }
+export { getRecommendBannerListApi, getRecommendUserListApi, getRecommendPostListApi }

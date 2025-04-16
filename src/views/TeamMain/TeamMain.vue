@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getRecommendBannerListApi } from '@/api/community'
 
 const router = useRouter()
 
@@ -97,6 +98,18 @@ const handleList = () => {
 const handleJoin = () => {
   router.push('/team/join')
 }
+
+// banner
+const bannerList = ref([])
+const getBannerList = async () => {
+  const res = await getRecommendBannerListApi()
+  if (res.code === 0) {
+    bannerList.value = res.data
+  }
+}
+onMounted(() => {
+  getBannerList()
+})
 </script>
 
 <template>
@@ -106,8 +119,8 @@ const handleJoin = () => {
       <div class="main">
         <!-- 轮播图 -->
         <el-carousel height="200px" class="main-carousel">
-          <el-carousel-item v-for="item in 3" :key="item">
-            <img :src="`https://picsum.photos/1200/300?random=${item}`" class="carousel-image" />
+          <el-carousel-item v-for="item in bannerList" :key="item">
+            <img :src="item" class="carousel-image" />
           </el-carousel-item>
         </el-carousel>
 

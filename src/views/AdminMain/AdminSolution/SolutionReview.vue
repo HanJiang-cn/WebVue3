@@ -12,22 +12,7 @@ const loading = ref(false)
 const previewVisible = ref(false)
 const previewContent = ref('')
 
-// 查询条件
-const searchParams = ref({
-  name: '',
-  id: '',
-  userRole: '',
-})
-// 重置查询条件
-const handleReset = () => {
-  searchParams.value = {
-    name: '',
-    id: '',
-    userRole: '',
-  }
-  loadData()
-}
-// 获取用户列表
+// 获取列表
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
@@ -88,7 +73,7 @@ const handlePass = (id, questionId) => {
         </template>
       </el-table-column>
       <el-table-column prop="userRole" label="帖子状态">
-        <el-tag type="success">待审核</el-tag>
+        <el-tag type="warning">待审核</el-tag>
       </el-table-column>
       <el-table-column prop="userRole" label="发布用户" />
       <el-table-column label="上传时间" width="150">

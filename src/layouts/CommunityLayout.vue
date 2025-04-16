@@ -3,20 +3,31 @@ import navMenu from '@/components/navMenu/navMenu.vue'
 import CommunityMain from '@/views/CommunityMain/CommunityMain.vue'
 import CommunityAside from '@/views/CommunityMain/CommunityAside.vue'
 
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getRecommendBannerListApi } from '@/api/community'
+
 const visable = ref(true)
+const bannerList = ref([])
 
-
+const getBannerList = async () => {
+  const res = await getRecommendBannerListApi()
+  if (res.code === 0) {
+    bannerList.value = res.data
+  }
+}
+onMounted(() => {
+  getBannerList()
+})
 const handleChangeBg = (val: number) => {
   // 背景图片切换
   const bannerBg = document.querySelector('.banner-bg') as HTMLElement
-  bannerBg.style.backgroundImage = `url(/src/assets/${val}.jpg)`
+  bannerBg.style.backgroundImage = `url(${bannerList.value[val]})`
   // 获取所有轮播项元素
   const carouselItem = document.querySelectorAll('.carousel-item') as NodeListOf<HTMLElement>
   // 遍历轮播项设置背景图
   carouselItem.forEach((item) => {
     // 动态设置背景图片路径，使用传入的val参数拼接图片名
-    item.style.backgroundImage = `url(/src/assets/${val}.jpg)`
+    item.style.backgroundImage = `url(${bannerList.value[val]})`
   })
 }
 </script>
@@ -31,7 +42,7 @@ const handleChangeBg = (val: number) => {
       </div>
       <div class="banner">
         <el-carousel height="280px" motion-blur @change="handleChangeBg">
-          <el-carousel-item v-for="item in 4" :key="item">
+          <el-carousel-item v-for="item in 3" :key="item">
             <p class="carousel-item">
             </p>
           </el-carousel-item>
