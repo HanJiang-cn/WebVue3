@@ -20,7 +20,7 @@ const form = reactive({
   tags: [],
   title: '',
 })
-//修改后的获取题目详情方法
+//获取题目详情方法
 const fetchQuestionDetail = async () => {
   try {
     const { code, data } = await getDetailApi({ id: questionId.value })

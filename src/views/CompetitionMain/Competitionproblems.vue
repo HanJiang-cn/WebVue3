@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/no-parsing-error -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import logo from '@/assets/logo.webp'
@@ -6,6 +5,7 @@ import { ref } from 'vue'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
 import { useRouter } from 'vue-router'
+import { getCompetitionQuestionApi } from '@/api/question'
 
 const router = useRouter()
 const visible = ref(false)
@@ -17,6 +17,16 @@ const test = ref('')
 const activeName = ref('1')
 const activeName1 = ref('1')
 const activeName2 = ref('1')
+const competitionQuestion= ref([])
+const loadData = async () => {
+  try {
+    const { data: { records, total } } = await getCompetitionQuestionApi()
+    competitionQuestion.value = records
+    console.log(competitionQuestion.value)
+  } catch (error) {
+    console.error('题目加载失败', error)
+  }
+}
 const tableData = [
   {
     date: '2023-06-01',

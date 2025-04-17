@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { post,del } from '@/utils/http'
+import { post,del,get } from '@/utils/http'
 enum Api {
   AddCompetition = '/competition/addCompetition',
   getCompetitionAdminList = '/competition/admin/getPreviewList',
@@ -8,6 +8,7 @@ enum Api {
   GetCompetition = '/competition/getCompetition',
   DeleteCompetition = '/competition/delCompetition',
   IsApprovedCompetition = '/competition/adminReview',
+  searchCompetition = '/competition/search',
 }
 function addCompetition(data: any): Promise<any> {
   return post(Api.AddCompetition, data)
@@ -27,8 +28,11 @@ function getCompetition(data: any): Promise<any> {
 function deleteCompetition(data: any): Promise<any> {
   return del(Api.DeleteCompetition, data)
 }
-function isApprovedCompetition(data: any): Promise<any> {
-  return post(Api.IsApprovedCompetition, data)
+function isApprovedCompetition(competitionId:number, isApproved:boolean ): Promise<any> {
+  return post(`/competition/adminReview?competitionId=${competitionId}&isApproved=${isApproved}`)
+}
+function searchCompetition(data: any): Promise<any> {
+  return get(Api.searchCompetition, data)
 }
 export {
   addCompetition,
@@ -38,4 +42,5 @@ export {
   getCompetition,
   deleteCompetition,
   isApprovedCompetition,
+  searchCompetition
 }
