@@ -10,7 +10,7 @@ const router = useRouter()
 const questions = ref([])
 const selectedQuestions = ref(new Set()) // 改用Set提高查找效率
 const loading = ref(false)
-const paperTitle = ref('')
+const competitionId = ref('')
 
 // 筛选条件
 const filter = reactive({
@@ -41,15 +41,10 @@ const loadData = async () => {
 
 // 题目选择操作
 const toggleQuestion = (question) => {
-  selectedQuestions.value.has(question.id)
-    ? selectedQuestions.value.delete(question.id)
-    : selectedQuestions.value.add(question.id)
+  selectedQuestions.value.has(question.id)? selectedQuestions.value.delete(question.id): selectedQuestions.value.add(question.id)
 }
 
 const submitPaper = async () => {
-  if (!paperTitle.value.trim()) {
-    return ElMessage.warning('请输入试卷标题')
-  }
   if (selectedQuestions.value.size === 0) {
     return ElMessage.warning('请至少选择一道题目')
   }
@@ -60,17 +55,15 @@ const submitPaper = async () => {
   try {
     const params = {
       competitionId: competitionId.value,
-      title: paperTitle.value,
       questions: Array.from(selectedQuestions.value) // 转换为数组
     }
 
     await AddCompetitionPaper(params)
+    console.log(params)
 
     ElMessage.success('试卷创建成功')
     // 可选：跳转到比赛页面
-    router.push({
-      path: `/competition/detail/${competitionId.value}`
-    })
+
   } catch (error) {
     ElMessage.error(`试卷创建失败: ${error.message}`)
   }
@@ -157,7 +150,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     <!-- 已选试题区域 -->
     <div class="selected-questions">
       <h2 style="margin-bottom: 15px;">已选题目（{{ selectedQuestions.size }}）</h2>
-      <el-input v-model="paperTitle" placeholder="请输入试卷标题" clearable />
+      <el-input v-model="competitionId" placeholder="请输入竞赛id" clearable />
 
       <div class="selected-list">
         <div v-for="(id, index) in selectedQuestions" :key="id" class="selected-item">

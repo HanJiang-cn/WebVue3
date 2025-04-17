@@ -26,13 +26,16 @@ const handleReset = () => {
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getCompetition({ ...pageInfo, name: searchParams.value.name})
-  loading.value = false
+  const { data: { records, total } } = await getCompetition({ ...pageInfo, name: searchParams.value.name, id: searchParams.value.id})
+
   dataList.value = records
   setTotals(Number(total))
   dataList.value = records.map((records) => ({
     ...records,
+    type: String(records.type ?? '0'), // 确保 type 是字符串，并设置默认值
+
   }))
+  loading.value = false
 }
 
 
@@ -112,8 +115,8 @@ const handleDelete = async (competitionId) => {
       <el-table-column prop="organizer" label="主办方" />
       <el-table-column prop="type" label="竞赛类型">
         <template #default="{ row }">
-          <el-tag :type="row ? '0' : '1'">
-            {{ row ? '团队赛' : '个人赛' }}
+          <el-tag :type="row.type === '0' ? 'false' : 'success'">
+            {{ row.type === '0' ? '个人赛' : '团队赛' }}
           </el-tag>
         </template>
       </el-table-column>
