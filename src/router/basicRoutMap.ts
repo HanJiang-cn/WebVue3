@@ -172,10 +172,10 @@ const routes = [
         component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
       },
       {
-        path:'paper',
+        path: 'paper',
         name: 'QuestionPaper',
         component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
-      }
+      },
     ],
   },
   // 组队
@@ -281,6 +281,16 @@ const routes = [
         path: 'answer',
         name: 'CompetitionProblems',
         component: () => import('@/views/CompetitionMain/CompetitionProblems.vue'),
+      },
+      {
+        path: 'update',
+        name: 'CompetitionRank',
+        component: () => import('@/views/CompetitionMain/CompetitionUpdate.vue'),
+      },
+      {
+        path: 'create',
+        name: 'AdminCompetitionCreate',
+        component: () => import('@/components/AdminMain/CompetitionCreate.vue'),
       },
     ],
   },

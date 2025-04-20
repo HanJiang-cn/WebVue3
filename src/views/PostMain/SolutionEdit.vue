@@ -3,10 +3,9 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { addSolutionApi } from '@/api/solution'
+import { solutionUpdate, solutionList } from '@/api/admin'
 import { useRouter } from 'vue-router'
 import MdEditor from '@/components/MdEditor.vue'
-import Cookies from 'js-cookie'
 
 const router = useRouter()
 // 表单引用
@@ -15,16 +14,29 @@ const form = reactive({
   title: '',
   context: '',
   // category: '',
+  id: router.currentRoute.value.query.id,
+  questionId: '',
   // tags: [],
   // cover: null
 })
+const getSoultionData = async () => {
+  const res = await solutionList({ id: router.currentRoute.value.query.id })
+  res.data.records.forEach(item => {
+    form.title = item.title
+    form.context = item.context
+    // form.category = item.category
+    form.questionId = item.questionId
+  })
+
+}
+onMounted(() => {
+  getSoultionData()
+})
+
 const categories = ref([
-  { value: 'tech', label: '技术分享' },
-  { value: 'algorithm', label: '算法题解' },
-  { value: 'life', label: '生活感悟' },
-  { value: 'qa', label: '问题求助' }
+  { value: 'java', label: 'Java' },
+  { value: 'Html', label: 'Html' },
 ])
-const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
 const submitting = ref(false)
 
 // 验证规则
@@ -42,56 +54,6 @@ const rules = reactive({
   ]
 })
 
-// 草稿相关操作
-const DRAFT_KEY = 'solution_draft'
-const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
-// const
-
-// 保存草稿
-const saveDraft = () => {
-  Cookies.set(DRAFT_KEY, JSON.stringify(form), COOKIE_OPTIONS)
-  ElNotification({
-    title: '提示',
-    message: '草稿已保存',
-    type: 'success',
-    duration: 2000
-  })
-}
-// 清除草稿
-const clearDraft = () => {
-  Cookies.remove(DRAFT_KEY)
-  formRef.value.resetFields()
-  ElMessage({
-    message: '草稿已清除',
-    type: 'success',
-  })
-  // 刷新页面
-  window.location.reload()
-}
-// 加载草稿
-function loadDraft() {
-  const draft = Cookies.get(DRAFT_KEY)
-  if (draft) {
-    try {
-      const parsed = JSON.parse(draft)
-      // Object.assign 是为了确保 tags 和 category 被正确地加载
-      // 即使它们在草稿中被存储为数组或字符串，也能正确地转换为数组。
-      Object.assign(form, parsed)
-      ElNotification({
-        title: '草稿加载成功',
-        message: '检测到未发布的草稿，已自动加载',
-        type: 'info',
-        duration: 3000
-      })
-    } catch (e) {
-      console.error('草稿解析失败:', e)
-    }
-  }
-}
-
-onMounted(() => {
-  loadDraft()
-})
 // 处理富文本内容上传
 function uploadContent(data) {
   form.context = data
@@ -103,10 +65,8 @@ const submitForm = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const res = await addSolutionApi({
+        const res = await solutionUpdate({
           ...form,
-          questionId: router.currentRoute.value.query.id,
-          // tags: [...form.tags, form.category] // 将分类加入标签
         })
         console.log(res)
         if (res.code === 0) {
@@ -115,17 +75,20 @@ const submitForm = async () => {
             message: '发布成功，正在审核',
             type: 'success',
           })
-          Cookies.remove(DRAFT_KEY) // 清除草稿
           formRef.value.resetFields()
-          // window.open(router.resolve({
-          //   path: '/post/detail',
-          // }).href, '_self')
-          router.push({
-            path: '/problems/solution',
-            query: {
-              id: router.currentRoute.value.query.id
-            }
-          })
+          router.go(-1)
+          if (router.currentRoute.value.query.id !== undefined) {
+            router.push({
+              path: '/problems/solution',
+              query: {
+                id: router.currentRoute.value.query.id
+              }
+            })
+          } else {
+            router.push({
+              path: '/community'
+            })
+          }
         }
         submitting.value = false
         return
@@ -148,7 +111,13 @@ const submitForm = async () => {
   <el-form ref="formRef" :model="form" :rules="rules" class="post-container">
     <!-- 头部 -->
     <div class="post-header">
-      <h1 class="post-title">编辑内容</h1>
+      <h1 class="post-title">发布新内容</h1>
+      <div class="post-tips">
+        <el-icon>
+          <InfoFilled />
+        </el-icon>
+        <span>优质内容更容易获得推荐哦～</span>
+      </div>
     </div>
 
     <!-- 主表单区 -->
@@ -162,7 +131,7 @@ const submitForm = async () => {
     </el-form-item>
 
     <!-- 分类和标签 -->
-    <!-- <el-row :gutter="24" class="form-section">
+    <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
         <el-form-item prop="category" label="分类">
           <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
@@ -172,25 +141,26 @@ const submitForm = async () => {
       </el-col>
 
       <el-col :xs="24" :sm="12">
+        <!-- 题目ID -->
+        <el-form-item label="题目ID">
+          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" />
+        </el-form-item>
+      </el-col>
+
+      <!-- <el-col :xs="24" :sm="12">
         <el-form-item label="标签">
           <el-select v-model="form.tags" multiple filterable allow-create :max="5" placeholder="添加标签（最多5个）"
             class="full-width">
             <el-option v-for="tag in suggestedTags" :key="tag" :label="tag" :value="tag" />
           </el-select>
         </el-form-item>
-      </el-col>
-    </el-row> -->
+      </el-col> -->
+    </el-row>
 
     <!-- 提交栏 -->
     <div class="submit-bar">
       <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
         立即发布
-      </el-button>
-      <el-button size="large" @click="clearDraft">
-        重置页面
-      </el-button>
-      <el-button size="large" @click="saveDraft">
-        保存草稿
       </el-button>
     </div>
   </el-form>
@@ -214,6 +184,18 @@ const submitForm = async () => {
       font-size: 24px;
       color: var(--el-text-color-primary);
       margin-bottom: 8px;
+    }
+
+    .post-tips {
+      display: flex;
+      align-items: center;
+      color: var(--el-text-color-secondary);
+      font-size: 14px;
+
+      .el-icon {
+        margin-right: 8px;
+        color: var(--el-color-info);
+      }
     }
   }
 

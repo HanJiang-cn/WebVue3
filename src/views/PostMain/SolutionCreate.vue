@@ -14,17 +14,17 @@ const formRef = ref(null)
 const form = reactive({
   title: '',
   context: '',
-  // category: '',
+  category: '',
+  questionId: '',
   // tags: [],
   // cover: null
 })
+// 题目ID
+form.questionId = router.currentRoute.value.query.id || ''
 const categories = ref([
-  { value: 'tech', label: '技术分享' },
-  { value: 'algorithm', label: '算法题解' },
-  { value: 'life', label: '生活感悟' },
-  { value: 'qa', label: '问题求助' }
+  { value: 'java', label: 'Java' },
+  { value: 'Html', label: 'Html' },
 ])
-const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
 const submitting = ref(false)
 
 // 验证规则
@@ -45,7 +45,6 @@ const rules = reactive({
 // 草稿相关操作
 const DRAFT_KEY = 'solution_draft'
 const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
-// const
 
 // 保存草稿
 const saveDraft = () => {
@@ -105,8 +104,6 @@ const submitForm = async () => {
       try {
         const res = await addSolutionApi({
           ...form,
-          questionId: router.currentRoute.value.query.id,
-          // tags: [...form.tags, form.category] // 将分类加入标签
         })
         console.log(res)
         if (res.code === 0) {
@@ -120,12 +117,18 @@ const submitForm = async () => {
           // window.open(router.resolve({
           //   path: '/post/detail',
           // }).href, '_self')
-          router.push({
-            path: '/problems/solution',
-            query: {
-              id: router.currentRoute.value.query.id
-            }
-          })
+          if (router.currentRoute.value.query.id !== undefined) {
+            router.push({
+              path: '/problems/solution',
+              query: {
+                id: router.currentRoute.value.query.id
+              }
+            })
+          } else {
+            router.push({
+              path: '/community'
+            })
+          }
         }
         submitting.value = false
         return
@@ -168,7 +171,7 @@ const submitForm = async () => {
     </el-form-item>
 
     <!-- 分类和标签 -->
-    <!-- <el-row :gutter="24" class="form-section">
+    <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
         <el-form-item prop="category" label="分类">
           <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
@@ -178,14 +181,21 @@ const submitForm = async () => {
       </el-col>
 
       <el-col :xs="24" :sm="12">
+        <!-- 题目ID -->
+        <el-form-item label="题目ID">
+          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" />
+        </el-form-item>
+      </el-col>
+
+      <!-- <el-col :xs="24" :sm="12">
         <el-form-item label="标签">
           <el-select v-model="form.tags" multiple filterable allow-create :max="5" placeholder="添加标签（最多5个）"
             class="full-width">
             <el-option v-for="tag in suggestedTags" :key="tag" :label="tag" :value="tag" />
           </el-select>
         </el-form-item>
-      </el-col>
-    </el-row> -->
+      </el-col> -->
+    </el-row>
 
     <!-- 提交栏 -->
     <div class="submit-bar">

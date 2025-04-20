@@ -2,7 +2,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getSolutionReviewList, solutionReview } from '@/api/admin'
+import { getSolutionReviewList, solutionReview, getUserInfo } from '@/api/admin'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import PreviewOnly from '@/components/PreviewOnly.vue'
@@ -29,6 +29,12 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
+// 获取发布人信息
+const getIdUserInfo = async (userId) => {
+  const { data } = await getUserInfo(userId)
+  return data
+}
+
 // 通过
 const handlePass = (id, questionId) => {
   ElMessageBox.confirm('确认通过该题解吗?', '提示', {
@@ -36,7 +42,7 @@ const handlePass = (id, questionId) => {
     cancelButtonText: '取消',
     type: 'warning',
   }).then(async () => {
-    const res = await solutionReview({ id })
+    const res = await solutionReview(id, true)
     if (res.code === 0) {
       ElNotification({
         title: '成功',
@@ -75,7 +81,16 @@ const handlePass = (id, questionId) => {
       <el-table-column prop="userRole" label="帖子状态">
         <el-tag type="warning">待审核</el-tag>
       </el-table-column>
-      <el-table-column prop="userRole" label="发布用户" />
+      <el-table-column prop="userRole" label="发布用户">
+        <template #default="{ row }">
+          <template v-if="row.userId">
+            <el-tag type="success" @click="getIdUserInfo(row.userId)">{{ row.userId }}</el-tag>
+          </template>
+          <template v-else>
+            <el-tag type="info">系统</el-tag>
+          </template>
+        </template>
+      </el-table-column>
       <el-table-column label="上传时间" width="150">
         <template #default="{ row }">
           {{ moment(row.updatedTime).format('YYYY-MM-DD') }}

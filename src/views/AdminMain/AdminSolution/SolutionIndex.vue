@@ -2,28 +2,28 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { solutionList } from '@/api/admin'
+import { solutionList, solutionDelete } from '@/api/admin'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
 import moment from 'moment'
 import PreviewOnly from '@/components/PreviewOnly.vue'
 
+const router = useRouter()
 const loading = ref(false)
 const previewVisible = ref(false)
 const previewContent = ref('')
 
 // 查询条件
 const searchParams = ref({
-  name: '',
+  title: '',
   id: '',
-  userRole: '',
 })
 // 重置查询条件
 const handleReset = () => {
   searchParams.value = {
-    name: '',
+    title: '',
     id: '',
-    userRole: '',
   }
   loadData()
 }
@@ -31,7 +31,7 @@ const handleReset = () => {
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total }, } = await solutionList({ ...pageInfo })
+  const { data: { records, total }, } = await solutionList({ ...pageInfo, ...searchParams.value })
   loading.value = false
   dataList.value = records
   setTotals(Number(total))
@@ -44,16 +44,50 @@ onMounted(() => {
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
+// 新增
+
+// 编辑
+const handleEdit = (id) => {
+  router.push({ path: '/post/solutionedit', query: { id: id } })
+}
+
+// 删除
+const handleDelete = (id) => {
+  ElMessageBox.confirm('确认删除该题解吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    try {
+      const res = await solutionDelete({ id: id })
+      if (res.code === 0) {
+        ElNotification({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+        })
+      }
+    } catch (error) {
+      ElNotification({
+        title: '错误',
+        message: '删除失败',
+        type: 'error',
+      })
+    } finally {
+      loadData()
+    }
+  })
+}
 </script>
 
 <template>
   <el-card>
     <el-row :gutter="24">
       <el-col :span="6">
-        <el-input placeholder="请输入用户昵称" v-model="searchParams.name"></el-input>
+        <el-input placeholder="请输入题解ID" v-model="searchParams.id"></el-input>
       </el-col>
       <el-col :span="6">
-        <el-input placeholder="请输入用户ID" v-model="searchParams.id"></el-input>
+        <el-input placeholder="请输入题解标题" v-model="searchParams.title"></el-input>
       </el-col>
       <el-col :span="6">
         <el-button type="primary" @click="loadData">查询</el-button>
@@ -71,7 +105,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <el-table-column prop="id" label="ID" width="230">
         <template #default="{ row }">
           <p>题解ID: {{ row.id }}</p>
-          <p>题目ID: {{ row.questionId }}</p>
+          <p>题目ID: {{ row.questionId ? row.questionId : '未绑定' }}</p>
         </template>
       </el-table-column>
       <el-table-column prop="title" label="题解标题">
@@ -80,7 +114,14 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         </template>
       </el-table-column>
       <el-table-column prop="userAccount" label="发表用户">
-
+        <template #default="{ row }">
+          <template v-if="row.userId">
+            <el-tag type="success" @click="getIdUserInfo(row.userId)">{{ row.userId }}</el-tag>
+          </template>
+          <template v-else>
+            <el-tag type="info">系统</el-tag>
+          </template>
+        </template>
       </el-table-column>
       <el-table-column prop="status" label="题解状态">
         <template #default="{ row }">
@@ -114,6 +155,12 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 </template>
 
 <style lang="less" scoped>
+.edit-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
 .title-text {
   position: relative;
   padding-bottom: 2px;
