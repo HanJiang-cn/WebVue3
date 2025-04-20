@@ -3,10 +3,11 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { updateCompetition } from '@/api/competition'
+import { updateCompetitionApi,searchCompetition} from '@/api/competition'
 import MdEditor from '@/components/MdEditor.vue'
 import router from '@/router'
 import Cookies from 'js-cookie'
+const id = ref(router.currentRoute.value.query.id)
 
 // 表单引用
 const formRef = ref(null)
@@ -21,7 +22,7 @@ const form = reactive({
   status: '',
   startTime: "",
   endTime: "",
-  isStart:0,
+  isStart: 0,
 })
 const type = ref([
   { value: '1', label: '团队赛' },
@@ -61,11 +62,63 @@ const rules = reactive({
     { required: true, message: '请选择结束时间', trigger: 'change' }
   ]
 })
+// 获取竞赛
+const getDetail = async () => {
+  try {
+    const res = await searchCompetition({ competitionId: id.value })
+    if (res.code === 0 && Array.isArray(res.data)) { // 确认返回的是数组
+      if (res.data.length === 0) { // 处理空数组情况
+        ElMessage.error('未找到对应竞赛')
+        return router.push('/admin/competition')
+      }
+
+      const competition = res.data[0] // 获取数组第一个元素
+      console.log('原始接口数据:', competition) // 调试输出
+
+      // 使用响应式赋值
+      form.name = competition.name || ''
+      form.info = competition.info || ''
+      form.coverUrl = competition.coverUrl || ''
+      form.organizer = competition.organizer || ''
+      form.pushName = competition.pushName || ''
+      // form.type = String(competition.type || '') // 确保转为字符串
+      form.type = String(competition.type || '0') // 确保转为字符串
+      console.log('form.type:', form.type) // 调试输出
+      form.tel = competition.tel || ''
+      form.status = String(competition.status || '')
+      form.isStart = competition.isStart || 0
+
+      // 处理时间格式（假设时间戳在competition.startTime）
+      form.startTime = competition.startTime
+        ? formatDateTime(competition.startTime)
+        : ''
+      form.endTime = competition.endTime
+        ? formatDateTime(competition.endTime)
+        : ''
+
+      console.log('处理后的表单数据:', JSON.parse(JSON.stringify(form))) // 调试输出
+    }
+  } catch (error) {
+    console.error('获取详情失败:', error)
+    ElMessage.error('数据加载失败：' + error.message)
+  }
+}
+
+// 时间格式化方法
+const formatDateTime = (timestamp) => {
+  try {
+    const date = new Date(Number(timestamp)) // 确保是数字类型
+    const pad = n => n.toString().padStart(2, '0')
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+  } catch {
+    return '' // 处理异常时间格式
+  }
+}
 
 // 草稿相关操作
 const DRAFT_KEY = 'post_draft'
 const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
-// const
+
 
 // 保存草稿
 const saveDraft = () => {
@@ -109,7 +162,10 @@ function loadDraft() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  // 先获取接口数据
+  if (id.value) await getDetail()
+  // 再加载草稿（不会覆盖已有数据）
   loadDraft()
 })
 // 处理富文本内容上传

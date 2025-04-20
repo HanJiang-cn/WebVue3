@@ -10,8 +10,9 @@ enum Api {
   ceshi = '/question/question_submit/list/page',
   submitQuestion = '/question/question_submit/do',
   getMyDetial='/question/get',
-  AddCompetitionPaper='/competition/addcComQues',
-  dailyQuestion='/user/Index/getQuestion'
+  AddCompetitionPaper='/competition/addComQues',
+  dailyQuestion='/user/Index/getQuestion',
+  getCompetitionQuestion='/competition/user/getComQues'
 }
 interface addData {
   answer: string
@@ -99,4 +100,7 @@ function AddCompetitionPaper(data:any){
 function dailyQuestionApi(data:any){
   return get(Api.dailyQuestion,data)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMyDetialApi,AddCompetitionPaper,dailyQuestionApi }
+function getCompetitionQuestionApi(data:any){
+  return get(Api.getCompetitionQuestion,data)
+}
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMyDetialApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi}

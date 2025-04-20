@@ -172,10 +172,10 @@ const routes = [
         component: () => import('@/views/QuestionMain/QuestionDetailceshi.vue'),
       },
       {
-        path: 'paper',
+        path:'paper',
         name: 'QuestionPaper',
         component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
-      },
+      }
     ],
   },
   // 组队
@@ -379,10 +379,10 @@ const routes = [
     component: () => import('@/components/AdminMain/CompetitionCreate.vue'),
   },
   {
-    path: '/competition/update',
+    path:'/competition/update',
     name: 'CompetitionUpdate',
     component: () => import('@/views/CompetitionMain/CompetitionUpdate.vue'),
-  },
+  }
 ]
 
 export default routes

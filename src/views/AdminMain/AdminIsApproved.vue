@@ -4,13 +4,13 @@
 import { ref, onMounted } from 'vue'
 import {getCompetitionAdminListApi,isApprovedCompetition } from '@/api/competition'
 import { usePagination } from '@/hooks/usePagination'
-import { useRouter } from 'vue-router'
 import { ElNotification, ElMessageBox } from 'element-plus'
+import PreviewOnly from '@/components/PreviewOnly.vue'
+import moment from 'moment'
 
-
-const router = useRouter()
 const loading = ref(false)
-
+const previewVisible = ref(false)
+const previewContent = ref('')
 // 查询条件
 const searchParams = ref({
   name: '',
@@ -24,11 +24,11 @@ const handleReset = () => {
   }
   loadData()
 }
-// 获取竞赛列表
+// 获取用户列表
 const dataList = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getCompetitionAdminListApi({ ...pageInfo, name: searchParams.value.name})
+  const { data: { records, total }, } = await getCompetitionAdminListApi({ ...pageInfo })
   loading.value = false
   dataList.value = records
   setTotals(Number(total))
@@ -36,115 +36,85 @@ const loadData = async () => {
     ...records,
   }))
 }
-
-
 onMounted(() => {
   loadData()
 })
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
-// 编辑
-const handleEdit = () =>{
-  window.open(router.resolve({
-  path: '/competition/create',
-  }).href, '_blank')
-}
-
-// // 删除逻辑
-// const handleDelete = async (competitionId) => {
-//   try {
-//     await ElMessageBox.confirm('确定要删除该竞赛吗？', '提示', {  // 修改提示文案为"竞赛"
-//       confirmButtonText: '确定',
-//       cancelButtonText: '取消',
-//       type: 'warning'
-//     })
-//     // 使用 competitionId 作为参数名调用接口
-//     await deleteCompetition({ competitionId })
-//     ElNotification({
-//       title: '成功',
-//       message: '删除成功',
-//       type: 'success'
-//     })
-//     loadData()
-//   } catch (error) {
-//     // 增加错误处理（可选）
-//     if (error !== 'cancel') { // 排除取消操作的情况
-//       ElNotification({
-//         title: '错误',
-//         message: '删除失败',
-//         type: 'error'
-//       })
-//     }
-//   }
-// }
-// 审核逻辑
-const handleApproved = async (competitionId) => {
-  try {
-    await ElMessageBox.confirm('确定要审核该竞赛吗？', '提示', {  // 修改提示文案为"竞赛"
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-    // 使用 competitionId 作为参数名调用接口
-    await isApprovedCompetition({ competitionId })
-    ElNotification({
-      title: '成功',
-      message: '审核成功',
-      type:'success'
-    })
-    loadData()
-  }
-  catch (error) {
-    // 增加错误处理（可选）
-    if (error!== 'cancel') { // 排除取消操作的情况
+// 通过
+const handlePass = (competitionId) => {
+  ElMessageBox.confirm('确认通过该题解吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    const res = await isApprovedCompetition(competitionId, true )
+    if (res.code === 0) {
       ElNotification({
-        title: '错误',
-        message: '审核失败',
-        type: 'error'
+        title: '成功',
+        message: '题解审核通过',
+        type: 'success',
+      })
+      loadData()
+    } else {
+      ElNotification({
+        title: '失败',
+        message: res.msg,
+        type: 'error',
       })
     }
-  }
+  })
 }
+const handleNoPass = (competitionId) => {
+  ElMessageBox.confirm('确认不通过该题解吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  .then(async () => {
+    const res = await isApprovedCompetition(competitionId,false )
+  })
+  .catch(() => {
+    ElNotification({
+      title: '取消',
+      message: '取消了不通过操作',
+      type:'error'
+    })
+
+  })
+
+}
+
 </script>
 
 <template>
-  <el-card>
-    <el-row :gutter="24">
-      <el-col :span="6">
-        <el-input placeholder="请输入竞赛昵称" v-model="searchParams.name"></el-input>
-      </el-col>
-      <el-col :span="6">
-        <el-input placeholder="请输入竞赛ID" v-model="searchParams.id"></el-input>
-      </el-col>
-      <el-col :span="5">
-        <el-button type="primary" @click="loadData">查询</el-button>
-        <el-button @click="handleReset">重置</el-button>
-      </el-col>
-    </el-row>
-  </el-card>
+  <el-alert title="单击帖子标题即可查看题解内容" type="info" show-icon />
   <el-card class="mt">
     <el-table :data="dataList" v-loading="loading">
       <el-table-column type="index" label="序号" width="60" />
-      <el-table-column prop="id" label="竞赛ID" width="180" />
-      <el-table-column prop="name" label="竞赛名称" />
-      <el-table-column prop="organizer" label="主办方" />
-      <el-table-column prop="type" label="竞赛类型">
+      <el-table-column prop="id" label="ID" width="230">
         <template #default="{ row }">
-          <el-tag :type="row ? '0' : '1'">
-            {{ row ? '团队赛' : '个人赛' }}
-          </el-tag>
+          <p>题解ID: {{ row.id }}</p>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="时间" width="190">
+      <el-table-column prop="name" label="帖子标题">
         <template #default="{ row }">
-          <span style="font-size: 12px;">发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
-          <br />
-          <span style="font-size: 12px;">更新：{{ moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+          <span class="title-text" @click="previewVisible = true; previewContent = row.context">{{ row.name}}</span>
         </template>
-      </el-table-column> -->
-      <el-table-column label="操作" width="140">
+      </el-table-column>
+      <el-table-column prop="userRole" label="帖子状态">
+        <el-tag type="success">待审核</el-tag>
+      </el-table-column>
+      <el-table-column prop="organizer" label="发布用户" />
+      <el-table-column label="上传时间" width="150">
         <template #default="{ row }">
-          <el-button type="primary" size="small" @click="handleApproved(row.id)">审核</el-button>
+          {{ moment(row.updatedTime).format('YYYY-MM-DD') }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="150">
+        <template #default="{ row }">
+          <el-button type="primary" size="small" @click="handlePass(row.id, row.questionId)">通过</el-button>
+          <el-button type="danger" size="small" @click="handleNoPass(row.id, row.questionId)">不通过</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,6 +124,38 @@ const handleApproved = async (competitionId) => {
         @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
   </el-card>
+
+  <!-- 题解内容 -->
+  <el-dialog v-model="previewVisible" title="题解内容" width="800" @close="previewVisible = false">
+    <PreviewOnly :content="previewContent" />
+  </el-dialog>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.title-text {
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    color: #409EFF;
+
+    &::after {
+      width: 100%;
+    }
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #409EFF;
+    transition: width 0.3s;
+  }
+}
+</style>
+
