@@ -253,6 +253,11 @@ const routes = [
         name: 'SolutionEdit',
         component: () => import('@/views/PostMain/SolutionEdit.vue'),
       },
+      {
+        path: 'solutiondetail',
+        name: 'SolutionDetail',
+        component: () => import('@/views/PostMain/SolutionDetail.vue'),
+      },
     ],
   },
   // 课程中心
@@ -383,16 +388,6 @@ const routes = [
       },
     ],
   },
-  {
-    path: '/competition/create', // 相对路径
-    name: 'AdminCompetitionCreate',
-    component: () => import('@/components/AdminMain/CompetitionCreate.vue'),
-  },
-  {
-    path:'/competition/update',
-    name: 'CompetitionUpdate',
-    component: () => import('@/views/CompetitionMain/CompetitionUpdate.vue'),
-  }
 ]
 
 export default routes

@@ -2,6 +2,8 @@
 import { post, get } from '@/utils/http'
 enum Api {
   add = '/solution/user/publish',
+  getSolutionInfo = '/solution/user/get',
+  getSolutionList = '/solution/user/getList',
 }
 
 // interface submitQuestionData {
@@ -14,4 +16,12 @@ function addSolutionApi(data: any) {
   return post(Api.add, data)
 }
 
-export { addSolutionApi }
+function getSolutionInfoApi(data: any) {
+  return get(Api.getSolutionInfo, data)
+}
+
+function getSolutionListApi(data: any) {
+  return post(Api.getSolutionList, data)
+}
+
+export { addSolutionApi, getSolutionInfoApi, getSolutionListApi }

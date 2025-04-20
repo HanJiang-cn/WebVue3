@@ -2,9 +2,10 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElNotification, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { getPostListApi, deletePostApi } from '@/api/post'
+import { solutionDelete } from '@/api/admin'
+import { getSolutionListApi } from '@/api/solution'
 import { usePagination } from '@/hooks/usePagination'
 import moment from 'moment'
 
@@ -25,7 +26,7 @@ const fetchPosts = () => {
 // 获取帖子列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getPostListApi({ ...pageInfo, title: filter.title })
+  const { data: { records, total } } = await getSolutionListApi({ ...pageInfo, title: filter.title })
   loading.value = false
   postList.value = records
   setTotals(Number(total))
@@ -46,26 +47,38 @@ const handleBrowse = (id) => {
 // 编辑帖子
 const handleEdit = (id) => {
   window.open(router.resolve({
-    path: '/post/edit',
+    path: '/post/solutionedit',
     query: {
       id: id
     }
   }).href, '_self')
 }
 // 删除帖子
-const handleDelete = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定要删除该帖子吗？', '提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-    await deletePostApi({ id: id })
-    ElMessage.success('删除成功')
-    fetchPosts()
-  } catch (error) {
-    // 取消删除不处理
-  }
+const handleDelete = (id) => {
+  ElMessageBox.confirm('确认删除该题解吗?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  }).then(async () => {
+    try {
+      const res = await solutionDelete({ id: id })
+      if (res.code === 0) {
+        ElNotification({
+          title: '成功',
+          message: '删除成功',
+          type: 'success',
+        })
+      }
+    } catch (error) {
+      ElNotification({
+        title: '错误',
+        message: '删除失败',
+        type: 'error',
+      })
+    } finally {
+      loadData()
+    }
+  })
 }
 
 onMounted(() => {
@@ -78,17 +91,17 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
   <div class="my-posts-container">
     <!-- 标题 -->
     <div class="page-title">
-      <h1>我的帖子</h1>
-      <el-button type="primary" @click="$router.push('/post/create')">
+      <h1>我的题解</h1>
+      <el-button type="primary" @click="$router.push('/post/solutioncreate')">
         <el-icon>
           <Plus />
         </el-icon>
-        发布新帖
+        发布新题解
       </el-button>
     </div>
     <!-- 筛选工具栏 -->
     <div class="filter-bar">
-      <el-input v-model="filter.title" placeholder="搜索帖子标题..." clearable style="width: 300px" @change="fetchPosts">
+      <el-input v-model="filter.title" placeholder="搜索题解标题..." clearable style="width: 300px" @change="fetchPosts">
         <template #prefix>
           <el-icon>
             <Search />
@@ -120,7 +133,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         <template #default="{ row }">
           <div class="time-cell">
             <div>发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm') }}</div>
-            <div v-if="row.updateTime">更新：{{ moment(row.updateTime).format('YYYY-MM-DD HH:mm') }}</div>
+            <div v-if="row.updatedTime">更新：{{ moment(row.updatedTime).format('YYYY-MM-DD HH:mm') }}</div>
           </div>
         </template>
       </el-table-column>
@@ -273,7 +286,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
   .pagination {
     display: flex;
-    justify-content: flex-end;
+    justify-content: end;
     margin-top: 24px;
     padding: 16px;
     background: white;

@@ -45,6 +45,9 @@ onMounted(() => {
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
 // 新增
+const handleAdd = () => {
+  router.push({ path: '/post/solutioncreate' })
+}
 
 // 编辑
 const handleEdit = (id) => {

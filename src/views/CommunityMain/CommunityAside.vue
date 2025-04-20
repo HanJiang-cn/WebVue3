@@ -26,10 +26,15 @@ const handlePost = () => {
   }
 }
 const handleMyPost = () => {
-  window.open(
-    router.resolve({
+  if (switchIndex.value % 2 === 0) {
+    window.open(router.resolve({
+      path: '/post/solutiondetail',
+    }).href, '_blank')
+  } else {
+    window.open(router.resolve({
       path: '/post/detail',
-    }).href, '_self')
+    }).href, '_blank')
+  }
 }
 
 // 获取推荐用户列表
@@ -58,7 +63,7 @@ onMounted(() => {
     <span>{{ switchIndex % 2 === 0 ? '发表题解' : '发表帖子' }}</span>
   </div>
   <div class="my-post" @click="handleMyPost">
-    <span>我的帖子</span>
+    <span>{{ switchIndex % 2 === 0 ? '我的题解' : '我的帖子' }}</span>
   </div>
   <el-card>
     <div class="writer">

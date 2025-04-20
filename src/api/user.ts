@@ -5,6 +5,7 @@ enum Api {
   Login = '/user/login',
   Register = '/user/register',
   GetUserInfo = '/user/get/login',
+  GetInfo = '/user/get/vo',
   Update = '/user/update/my',
   PlanList = '/user/Index/getPlan',
 }

@@ -462,7 +462,21 @@ onMounted(() => {
                   <span>题解</span>
                 </span>
               </template>
-              <el-empty :image-size="200" />
+              <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="date" label="日期" />
+                <el-table-column prop="title" label="题目名称" />
+                <el-table-column prop="difficulty" label="题解名称" />
+                <el-table-column prop="status" label="状态">
+                  <template #default="scope">
+                    <el-tag :type="scope.row.status === '已完成' ? 'success' : 'info'">
+                      {{ scope.row.status }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination class="fr mt" v-model:current-page="pageInfo.page" v-model:page-size="pageInfo.pageSize"
+                :size="size" :disabled="disabled" layout="total, prev, pager, next, jumper" :total="1000"
+                @size-change="handleSizeChange" @current-change="handleCurrentChange" />
             </el-tab-pane>
             <!-- 讨论 -->
             <el-tab-pane name="4">

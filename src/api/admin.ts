@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { post, get, put, del } from '@/utils/http'
+import { post, get, del } from '@/utils/http'
 
 enum Api {
   UserList = '/user/list/page',
@@ -19,6 +19,8 @@ enum Api {
   BannerDelete = '/admin/delBanner',
   BannerPreview = '/recommend/banner',
   SolutionList = '/solution/get',
+  SolutionDelete = '/solution/delete',
+  SolutionUpdate = '/solution/update',
   SolutionReview = '/solution/review',
   SolutionReviewList = '/solution/getReviews',
 }
@@ -100,8 +102,16 @@ function solutionList(data: any): Promise<any> {
   return post(Api.SolutionList, data)
 }
 
-function solutionReview(data: any): Promise<any> {
-  return put(Api.SolutionReview, data)
+function solutionDelete(data: any): Promise<any> {
+  return del(Api.SolutionDelete, data)
+}
+
+function solutionUpdate(data: any): Promise<any> {
+  return post(Api.SolutionUpdate, data)
+}
+
+function solutionReview(id: number, isApproved: boolean): Promise<any> {
+  return post(`/solution/review?id=${id}&isApproved=${isApproved}`)
 }
 
 function getSolutionReviewList(data: any): Promise<any> {
@@ -124,6 +134,8 @@ export {
   deleteBanner,
   bannerPreview,
   solutionList,
+  solutionDelete,
+  solutionUpdate,
   solutionReview,
   getSolutionReviewList,
 }

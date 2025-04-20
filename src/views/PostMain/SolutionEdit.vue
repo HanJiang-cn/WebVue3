@@ -3,7 +3,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { solutionUpdate, solutionList } from '@/api/admin'
+import { solutionUpdate } from '@/api/admin'
+import { getSolutionInfoApi } from '@/api/solution'
 import { useRouter } from 'vue-router'
 import MdEditor from '@/components/MdEditor.vue'
 
@@ -20,14 +21,13 @@ const form = reactive({
   // cover: null
 })
 const getSoultionData = async () => {
-  const res = await solutionList({ id: router.currentRoute.value.query.id })
-  res.data.records.forEach(item => {
-    form.title = item.title
-    form.context = item.context
+  const res = await getSolutionInfoApi({ id: router.currentRoute.value.query.id })
+  if (res.code === 0) {
+    form.title = res.data.title
+    form.context = res.data.context
     // form.category = item.category
-    form.questionId = item.questionId
-  })
-
+    form.questionId = res.data.questionId
+  }
 }
 onMounted(() => {
   getSoultionData()
@@ -68,11 +68,10 @@ const submitForm = async () => {
         const res = await solutionUpdate({
           ...form,
         })
-        console.log(res)
         if (res.code === 0) {
           ElNotification({
             title: '成功',
-            message: '发布成功，正在审核',
+            message: '编辑成功',
             type: 'success',
           })
           formRef.value.resetFields()
@@ -143,7 +142,7 @@ const submitForm = async () => {
       <el-col :xs="24" :sm="12">
         <!-- 题目ID -->
         <el-form-item label="题目ID">
-          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" />
+          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" disabled />
         </el-form-item>
       </el-col>
 
@@ -184,18 +183,6 @@ const submitForm = async () => {
       font-size: 24px;
       color: var(--el-text-color-primary);
       margin-bottom: 8px;
-    }
-
-    .post-tips {
-      display: flex;
-      align-items: center;
-      color: var(--el-text-color-secondary);
-      font-size: 14px;
-
-      .el-icon {
-        margin-right: 8px;
-        color: var(--el-color-info);
-      }
     }
   }
 

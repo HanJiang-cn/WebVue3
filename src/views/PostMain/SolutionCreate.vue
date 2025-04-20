@@ -14,14 +14,17 @@ const formRef = ref(null)
 const form = reactive({
   title: '',
   context: '',
-  category: '',
+  solutionClass: '',
   questionId: '',
   // tags: [],
   // cover: null
 })
 // 题目ID
 form.questionId = router.currentRoute.value.query.id || ''
-const categories = ref([
+// 判断是否编辑ID
+const isEdit = router.currentRoute.value.query.id !== undefined
+
+const solutionClass = ref([
   { value: 'java', label: 'Java' },
   { value: 'Html', label: 'Html' },
 ])
@@ -37,7 +40,7 @@ const rules = reactive({
     { required: true, message: '内容不能为空', trigger: 'blur' },
     { min: 20, message: '内容至少20个字符', trigger: 'blur' }
   ],
-  category: [
+  solutionClass: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
 })
@@ -125,9 +128,7 @@ const submitForm = async () => {
               }
             })
           } else {
-            router.push({
-              path: '/community'
-            })
+            router.go(-1)
           }
         }
         submitting.value = false
@@ -173,9 +174,9 @@ const submitForm = async () => {
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
-        <el-form-item prop="category" label="分类">
-          <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
-            <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
+        <el-form-item prop="solutionClass" label="分类">
+          <el-select v-model="form.solutionClass" placeholder="请选择分类" clearable class="full-width">
+            <el-option v-for="item in solutionClass" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
       </el-col>
@@ -183,7 +184,7 @@ const submitForm = async () => {
       <el-col :xs="24" :sm="12">
         <!-- 题目ID -->
         <el-form-item label="题目ID">
-          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" />
+          <el-input v-model="form.questionId" placeholder="请输入题目ID" clearable size="large" :disabled="isEdit" />
         </el-form-item>
       </el-col>
 
