@@ -1,255 +1,255 @@
-<script lang="ts" setup>
+<!-- eslint-disable vue/block-lang -->
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { searchCompetition } from '@/api/competition'
+import { ElMessage } from 'element-plus'
+import router from '@/router'
+import moment from 'moment'
+
+// 状态映射
+const statusMap = {
+  1: { text: '正在报名', class: 'status-ongoing' },
+  2: { text: '进行中', class: 'status-processing' },
+  3: { text: '已结束', class: 'status-ended' }
+}
+
+const id = ref(router.currentRoute.value.query.id)
+const competition = ref({})
+const defaultCover = 'https://publicqn.saikr.com/2025/02/10/contest67a976966e69e5.59569765739159202339.png'
+
+// 计算竞赛状态
+const competitionStatus = computed(() => {
+  const now = moment()
+  if (now.isBefore(competition.value.startTime)) return 1
+  if (now.isBetween(competition.value.startTime, competition.value.endTime)) return 2
+  return 3
+})
+
+// 剩余天数计算
+const remainingDays = computed(() => {
+  const now = moment()
+  const target = competitionStatus.value === 1
+    ? competition.value.startTime
+    : competition.value.endTime
+  return Math.max(0, moment(target).diff(now, 'days'))
+})
+
+// 获取竞赛详情
+const getCompetition = async () => {
+  try {
+    const { data } = await searchCompetition({ competitionId: id.value })
+    console.log(data)
+      competition.value = data.data[0]
+      console.log(competition.value)
+
+  } catch (error) {
+    ElMessage.error('获取竞赛信息失败')
+  }
+}
+
+onMounted(getCompetition)
 </script>
+
 <template>
-  <div>
-    <div class="background">
+  <div class="detail-container">
+    <!-- 封面图 -->
+    <div class="cover-wrapper">
       <img
-        src="https://publicqn.saikr.com/2025/02/10/contest67a976966e69e5.595697651739159202339.png?imageView2/2/w/2160"
-        alt="" style="width: 1080px;">
+        :src="competition.coverUrl || defaultCover"
+        :alt="competition.name"
+        class="competition-cover"
+      >
     </div>
-    <div class="nav">
-      <div class="tab">竞赛信息</div>
-      <a href="#">立即报名</a>
-      <div class="sign">
-        <div class="detial">
-          <div class="item">
-            报名时间 &nbsp;距离报名截止还有5天
+
+    <!-- 主体内容 -->
+    <main class="main-content">
+      <!-- 左侧内容 -->
+      <section class="content-main">
+        <div class="competition-header">
+          <h1 class="title">{{ competition.name }}</h1>
+          <span :class="['status-tag', statusMap[competitionStatus].class]">
+            {{ statusMap[competitionStatus].text }}
+          </span>
+        </div>
+
+        <div class="time-info">
+          <p>
+            <span>报名时间：</span>
+            {{ moment(competition.startTime).format('YYYY-MM-DD HH:mm') }} 至
+            {{ moment(competition.endTime).format('YYYY-MM-DD HH:mm') }}
+          </p>
+          <p v-if="competitionStatus !== 3" class="countdown">
+            距离{{ competitionStatus === 1 ? '报名截止' : '比赛结束' }}还有
+            <span class="highlight">{{ remainingDays }}</span> 天
+          </p>
+        </div>
+
+        <div class="info-section">
+          <h2 class="section-title">竞赛信息</h2>
+          <pre class="competition-info">{{ competition.info }}</pre>
+        </div>
+
+        <div class="info-section">
+          <h2 class="section-title">主办方信息</h2>
+          <p class="organizer-info">{{ competition.organizer }}</p>
+        </div>
+      </section>
+
+      <!-- 右侧侧边栏 -->
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">竞赛概览</h3>
+          <div class="meta-info">
+            <div class="meta-item">
+              <span class="label">竞赛类型：</span>
+              <span class="value">{{ competition.type === 1 ? '个人赛' : '团队赛' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">浏览次数：</span>
+              <span class="value">{{ (competition.views / 10000).toFixed(1) }}万</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">发布机构：</span>
+              <span class="value">{{ competition.pushName || '大赛组委会' }}</span>
+            </div>
           </div>
-          <div>
-            2024年12月12日-2025年03月23日
-          </div>
+          <el-button type="primary" class="signup-btn">立即报名</el-button>
         </div>
-      </div>
-    </div>
-    <div class="main">
-      <div class="left">
-        <h3>联系主办方</h3>
-        <el-button type="primary" plain style="margin: 10px 0;"> 竞赛咨询南老师QQ：3762777462</el-button>
-        <h3>发布者</h3>
-        <div>
-          <a href="#">
-            <img src="https://publicqn.saikr.com/FiXMKhamo0HqKTeb6tUe4PvuWNO3?imageView2/1/w/96" alt="">
-            大赛组委会
-          </a>
-        </div>
-        <h3>浏览量<span>2.0万</span></h3>
-        <h3>类型 <span>个人赛</span> </h3>
-        <h3>主办方</h3>
-        <div class="content">
-          中国西部研究与发展促进会教育工作委员会
-        </div>
-        <h3>
-          重点参赛院校
-        </h3>
-        <div class="content">
-          厦门东海职业技术学院
-          <div><el-button type="primary" plain style="margin: 10px 0; padding:0 80px;">组织宣传申请入口</el-button></div>
-        </div>
-        <h3>
-          报名时间&nbsp;距离报名截止还有5天
-        </h3>
-        <div class="content">
-          2024.12.12 00:00 至 2025.03.23 21:00
-        </div>
-        <h3>评奖</h3>
-        <div class="content">特等奖|第一场</div>
-        <h3>竞赛类别</h3>
-        <div class="content">外语</div>
-        <h3>关注竞赛<span>关注后，有更新时会通知您</span></h3>
-        <h3>分享</h3>
-      </div>
-      <div class="right">
-        <h1>【倒计时5天】第二届全国大学生外交英语阅读大赛</h1>
-        <div class="title">
-          <h3>竞赛信息</h3>
-        </div>
-        <h3 style="text-align: center;"><a href="/competition/answer"
-            style="color:#409EFF; font-size: 22px;">【3.23正式考场｜点击此处可进入考场】</a>
-        </h3>
-        <div class="topic">
-          <strong>参赛须知</strong>
-        </div>
-        <div class="one">
-          <p>一、第二场大赛日程</p>
-          <p>二、考察形式</p>
-        </div>
-        <div class="topic">
-          <strong>参赛须知</strong>
-        </div>
-        <div class="one">
-          <p>一、第二场大赛日程</p>
-          <p>二、考察形式</p>
-          <p style="border-bottom: 1px solid #e5e5e5;"></p>
-        </div>
-        <div class="one">
-          <p></p>
-          <p>一、第二场大赛日程</p>
-          <p>二、考察形式</p>
-        </div>
-        <div class="topic">
-          <strong>大学生分类赛事交流QQ群（可根据兴趣添加）</strong>
-        </div>
-        <div class="one">
-          <p>一、第二场大赛日程</p>
-          <p>二、考察形式</p>
-        </div>
-        <div class="title">
-          <h3>通知公告(10)</h3>
-        </div>
-      </div>
-    </div>
+      </aside>
+    </main>
   </div>
 </template>
+
 <style lang="less" scoped>
-a {
-  text-decoration: none;
-}
-
-.background {
-  position: relative;
-  text-align: center;
-  overflow: hidden;
-  width: 100%;
-  min-width: 1080px;
-}
-
-.nav {
+.detail-container {
+  max-width: 1200px;
   margin: 0 auto;
-  width: 1080px;
-  height: 74px;
-  border-bottom: 1px solid #e5e5e5;
-  color: #666;
+  padding: 20px;
+}
 
-  .tab {
-    display: inline-block;
-    height: 71px;
-    line-height: 75px;
-    font-size: 18px;
-    text-align: center;
-    border-bottom: 3px solid #409EFF;
-    padding: 0 30px;
-    position: relative;
-    font-weight: 600;
-  }
+.cover-wrapper {
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
 
-  .sign {
-    padding-top: 12px;
-    float: right;
-
-    .detial {
-      padding: 6px 20px 0 0;
-
-      .item {
-        font-weight: 600;
-        margin-bottom: 5px;
-      }
-    }
-  }
-
-  a {
-    float: right;
-    line-height: 48px;
-    height: 48px;
-    padding: 0;
-    width: 158px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    position: relative;
-    background: #409EFF;
-    color: #fff;
-    margin-top: 15px;
-    border-radius: 4px;
-    text-decoration: none;
+  .competition-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
-.main {
-  width: 1080px;
-  margin: 0 auto 110px;
-  position: relative;
-  padding: 30px 0 0;
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 30px;
+}
 
-  .left {
-    float: left;
-    width: 290px;
-    border-right: 1px solid #e5e5e5;
+.competition-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
 
-    h3 {
-      color: #666;
-      line-height: 16px;
-      font-weight: 600;
-      padding-left: 6px;
-      border-left: 4px solid #409EFF;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      font-size: 14px;
-      margin: 10px 0;
+  .title {
+    font-size: 28px;
+    color: #333;
+    margin: 0;
+  }
+
+  .status-tag {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+
+    &.status-ongoing { background: #e8f4ff; color: #1890ff; }
+    &.status-processing { background: #fff7e6; color: #faad14; }
+    &.status-ended { background: #fff0f0; color: #ff4d4f; }
+  }
+}
+
+.time-info {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+
+  p {
+    margin: 8px 0;
+    color: #666;
+  }
+
+  .countdown {
+    font-size: 16px;
+
+    .highlight {
+      color: #22bfa7;
+      font-weight: bold;
+      font-size: 20px;
     }
+  }
+}
 
-    .content {
-      font-size: 13px;
-      color: #aaa;
-    }
+.info-section {
+  margin-bottom: 32px;
 
-    img {
-      width: 48px;
-      height: 48px;
-    }
+  .section-title {
+    font-size: 20px;
+    color: #333;
+    border-left: 4px solid #1890ff;
+    padding-left: 12px;
+    margin: 16px 0;
+  }
 
-    a {
-      text-decoration: none;
-      color: #444;
-      font-weight: 600;
-    }
+  .competition-info {
+    white-space: pre-wrap;
+    line-height: 1.8;
+    color: #444;
+  }
 
-    span {
-      color: #878787;
-      font-size: 14px;
-      padding-left: 14px;
-      font-weight: 400;
+  .organizer-info {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+  }
+}
+
+.sidebar {
+  .sidebar-card {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+
+    .sidebar-title {
+      font-size: 18px;
+      color: #333;
+      margin-top: 0;
     }
   }
 
-  .right {
-    float: left;
+  .meta-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 
-    .title {
-      padding: 30px 0;
-      padding-left: 20px;
-
-      h3 {
-        font-size: 22px;
-        font-weight: 600;
-        line-height: 26px;
-        padding-left: 10px;
-        border-left: 4px solid #409EFF;
-        color: #666;
-      }
+    .label {
+      color: #999;
     }
 
-    .topic {
-      margin-top: 10px;
-      padding: 2px 0;
-      padding-left: 20px;
-      margin-left: 20px;
-      border-width: 0;
-      background: #e8e8e8;
-      line-height: 40px;
+    .value {
+      color: #666;
+      font-weight: 500;
     }
+  }
 
-    .one {
-      margin-top: 10px;
-      margin-left: 20px;
-
-      p {
-        padding: 10px 0;
-        font-size: 16px;
-        font-weight: 600;
-        color: #000000;
-      }
-    }
+  .signup-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
   }
 }
 </style>

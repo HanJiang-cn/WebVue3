@@ -12,7 +12,7 @@ import Cookies from 'js-cookie'
 const formRef = ref(null)
 const form = reactive({
   name: '',
-  info: '',
+  info: '### **一、第一场大赛日程**\n\n### **二、考察形式**\n\n### **三、通知**',
   coverUrl: '',
   organizer: '',
   pushName: '',

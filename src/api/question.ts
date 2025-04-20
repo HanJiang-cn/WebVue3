@@ -9,7 +9,7 @@ enum Api {
   getDetail = '/question/get/vo',
   ceshi = '/question/question_submit/list/page',
   submitQuestion = '/question/question_submit/do',
-  getMyDetial='/question/get',
+  getMydetail='/question/get',
   AddCompetitionPaper='/competition/addComQues',
   dailyQuestion='/user/Index/getQuestion',
   getCompetitionQuestion='/competition/user/getComQues'
@@ -57,7 +57,7 @@ interface getMyData {
 interface getDetailData {
   id: number
 }
-interface getMyDetial{
+interface getMydetail{
   id:number
 }
 interface submitQuestionData {
@@ -84,8 +84,8 @@ function getMyApi(data: getMyData) {
 function getDetailApi(data: getDetailData) {
   return get(Api.getDetail, data)
 }
-function getMyDetialApi(data: getMyDetial) {
-  return get(Api.getMyDetial, data)
+function getMydetailApi(data: getMydetail) {
+  return get(Api.getMydetail, data)
 }
 function submitQuestionApi(data: submitQuestionData) {
   return post(Api.submitQuestion, data)
@@ -103,4 +103,4 @@ function dailyQuestionApi(data:any){
 function getCompetitionQuestionApi(data:any){
   return get(Api.getCompetitionQuestion,data)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMyDetialApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi}
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi}

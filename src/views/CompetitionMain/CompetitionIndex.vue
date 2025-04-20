@@ -4,6 +4,8 @@ import { ref, onMounted } from 'vue'
 import { getCompetitionUserListApi } from '@/api/competition'
 import { usePagination } from '@/hooks/usePagination'
 import moment from 'moment'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const loading = ref(false)
 const afootMap = {
@@ -16,14 +18,7 @@ const searchParams = ref({
   afoot: 0,
   type: null,
 })
-// 重置查询条件
-const handleReset = () => {
-  searchParams.value = {
-    afoot: 0,
-    type: null,
-  }
-  loadData()
-}
+
 // 竞赛列表相关
 const dataList = ref([])
 
@@ -77,7 +72,13 @@ const loadData = async () => {
     loading.value = false
   }
 }
-
+const handleDetail = (id) => {
+  console.log(id)
+  router.push({
+    path: '/competition/detail',
+    query: { id: id }
+  })
+}
 // 筛选条件变化时重新加载数据
 const handleFilterChange = () => {
   pageInfo.current = 1
@@ -108,25 +109,23 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
             :key="item.id"
             class="competition-item"
           >
-            <router-link
-              :to="`/competition/detail?id=${item.id}`"
+            <div @click="handleDetail(item.id)"
+
               class="cover-link"
             >
               <img :src="item.cover" alt="竞赛封面">
-            </router-link>
+            </div>
             <div class="competition-info">
-              <router-link
-
-                :to="`/competition/detail?id=${item.id}`"
+              <div @click="handleDetail(item.id)"
                 class="title-link"
               >
                 <span class="hot-tag" v-if="item.hot">TOP 1</span>
                 {{ item.name }}
-              </router-link>
+              </div>
 
               <div class="meta-info">
                 <p><span>主办方：</span>{{ item.organizer }}</p>
-                <p><span>级别：</span>{{ item.type }}</p>
+                <p><span>级别：</span>{{ item.type===1?'团队赛':'个人赛' }}</p>
                 <p><span>报名时间：</span>{{ moment(item.startTime).format('YYYY-MM-DD HH:mm') }}</p>
                 <p><span>比赛时间：</span>{{ moment(item.endTime).format('YYYY-MM-DD HH:mm') }}</p>
               </div>
@@ -285,6 +284,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
       &:hover {
         color: #22bfa7;
+        cursor: pointer;
       }
 
       .hot-tag {
