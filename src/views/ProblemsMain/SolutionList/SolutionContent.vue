@@ -1,13 +1,42 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import CommentComponent from '@/components/CommentComponent.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { thumbPostApi, favourPostApi } from '@/api/post'
+// import { thumbPostApi, favourPostApi } from '@/api/post'
+import { getSolutionInfoApi } from '@/api/solution'
+import { getIdInfoApi } from '@/api/user'
+import { useRouter } from 'vue-router'
+import moment from 'moment'
+import PreviewOnly from '@/components/PreviewOnly.vue'
 
 const handleBack = () => {
   window.history.back()
 }
+
+// 获取题解信息
+const router = useRouter()
+const postData = ref({})
+const postUser = ref({})
+const createTime = ref('')
+
+const getPostInfor = async () => {
+  try {
+    const { data } = await getSolutionInfoApi({ id: router.currentRoute.value.query.solutionId })
+    postData.value = data
+    const res = await getIdInfoApi({ id: data.userId })
+    postUser.value = res.data
+    createTime.value = moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
+    likeCount.value = data.thumbNum
+    favoriteCount.value = data.favourNum
+    // console.log(postUser.value)
+  } catch (error) {
+    console.error('获取帖子详情失败:', error)
+  }
+}
+onMounted(() => {
+  getPostInfor()
+})
 
 // 互动相关逻辑
 const isLiked = ref(false)
@@ -65,20 +94,20 @@ const handleFavorite = async () => {
   <el-row class="solution-card">
     <el-col :span="24" class="top">
       <div class="title">
-        一个题解的答案
+        {{ postData.title }}
       </div>
       <div class="avatar-container">
         <div class="author-info">
-          <el-avatar :size="40" class="avatar" />
+          <el-avatar :src="postUser.userAvatar" :size="40" class="avatar" />
           <div class="meta">
             <div class="name">
-              <span>用户名</span>
+              <span>{{ postUser.userName }}</span>
             </div>
             <div class="time">
               <el-icon>
                 <Clock />
               </el-icon>
-              <span>2023-06-20 14:30</span>
+              <span>{{ createTime }}</span>
             </div>
             <div class="ip">
               <span>来自于 山东</span>
@@ -90,6 +119,7 @@ const handleFavorite = async () => {
     <el-col :span="24" class="content">
       <div class="solution-content">
         题解内容
+        <PreviewOnly :content="postData.context" />
       </div>
       <div class="post-actions">
         <el-button @click="handleLike" :class="{ 'liked': isLiked }">

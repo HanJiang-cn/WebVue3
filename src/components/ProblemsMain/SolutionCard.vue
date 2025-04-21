@@ -1,22 +1,39 @@
 <!-- eslint-disable vue/block-lang -->
-<script setup></script>
+<script setup>
+import { ref, defineProps } from 'vue'
+import { getIdInfoApi } from '@/api/user'
+import moment from 'moment'
+
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true,
+  }
+})
+
+// 作者信息
+const userData = ref({})
+const getUserInfo = async () => {
+  const { data } = await getIdInfoApi({ id: props.item.userId })
+  userData.value = data
+}
+getUserInfo()
+</script>
 
 <template>
   <div class="card">
     <div class="left">
-      <el-avatar :size="25" style="margin-left: 3px;" />
+      <div class="top-time-name">
+        <el-avatar :src="userData.userAvatar" :size="30" style="margin-left: 3px;" />
+        <p>{{ userData.userName }}</p>
+      </div>
+      <p>{{ moment(props.item.createTime).format('YYYY-MM-DD HH:mm') }}</p>
     </div>
     <div class="right">
       <div class="top">
-        <div class="top-time-name">
-          <p>力扣官方题解</p>
-          <p>2023-04-09 10:30</p>
-        </div>
-        <p>分割回文数 Ⅲ</p>
+        <p>{{ props.item.title }}</p>
         <el-text truncated line-clamp="3">
-          方法一：动态规划 我们用 f[i][j] 表示对于字符串 S 的前 i 个字符，将它分割成 j 个非空且不相交的回文串，最少需要修改的字符数。在进行状态转移时，我们可以枚举第 j 个回文串的起始位置
-          i0，那么就有如下的状态转移方程： f[i][j] = min(f[i0][j - 1] + cost(S, i0 + 1, i)) 其中 cost(S, l, r) 表示将 S 中第 l 个到第 r
-          个字符组成的子串变成回文串，最少需要修改的字符数。
+          {{ props.item.context }}
         </el-text>
       </div>
       <div class="bottom">
@@ -37,58 +54,88 @@
 
 <style lang="less" scoped>
 .card {
-  // width: 80vh;
+  width: 100%;
+  height: 100%;
+  /* 新增 */
   display: flex;
-  justify-content: first baseline;
-  padding-top: 10px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  overflow: hidden;
+  /* 新增 */
 
   .left {
-    // float: left;
-    margin-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+
+    >p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .top-time-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   }
 
   .right {
-    margin-right: 20px;
-
-    .bottom {
-      border-bottom: 1px solid #0000001a;
-      padding: 10px 0;
-
-      .el-text {
-        margin-right: 10px;
-
-      }
-    }
+    flex: 1;
+    /* 新增 */
+    display: flex;
+    flex-direction: column;
+    /* 新增 */
+    padding: 12px;
 
     .top {
-      .top-time-name {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 5px;
-      }
 
-      >p {
-        font-size: 15px !important;
-        margin-bottom: 5px !important;
-        font-weight: bold;
-      }
+      margin-bottom: 10px;
 
-      p {
-        font-size: 14px;
-        margin-bottom: 5px;
-
-        &:first-child {
-          color: #0000008c;
-        }
+      >p:first-of-type {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
       }
 
       .el-text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #666;
+        display: -webkit-box;
         white-space: pre-wrap;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
     }
 
+    .bottom {
+      padding: 12px 0 0;
+      border-top: 1px solid #f0f0f0;
+      margin-top: auto;
+      /* 新增 */
 
+      .el-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .el-text {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #999;
+          font-size: 14px;
+
+          &:hover {
+            color: var(--el-color-primary);
+          }
+        }
+      }
+    }
   }
 }
 </style>

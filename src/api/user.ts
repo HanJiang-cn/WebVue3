@@ -47,4 +47,8 @@ function getPlanListApi() {
   return get(Api.PlanList)
 }
 
-export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi }
+function getIdInfoApi(data: any) {
+  return get(Api.GetInfo, data)
+}
+
+export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi, getIdInfoApi }

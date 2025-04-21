@@ -244,6 +244,11 @@ const routes = [
         component: () => import('@/views/PostMain/PostCreate.vue'),
       },
       {
+        path: 'solutionpost',
+        name: 'SolutionPost',
+        component: () => import('@/views/PostMain/SolutionPost.vue'),
+      },
+      {
         path: 'solutioncreate',
         name: 'SolutionCreate',
         component: () => import('@/views/PostMain/SolutionCreate.vue'),

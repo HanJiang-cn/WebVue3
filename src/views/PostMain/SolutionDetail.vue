@@ -1,11 +1,11 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElNotification, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { solutionDelete } from '@/api/admin'
-import { getSolutionListApi } from '@/api/solution'
+import { getMySolutionListApi } from '@/api/solution'
 import { usePagination } from '@/hooks/usePagination'
 import moment from 'moment'
 
@@ -13,20 +13,11 @@ const router = useRouter()
 // 数据相关
 const loading = ref(false)
 const postList = ref([])
-// 筛选条件
-const filter = reactive({
-  title: '',
-  sort: 'newest'
-})
 
-// 搜索帖子
-const fetchPosts = () => {
-  loadData()
-}
 // 获取帖子列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getSolutionListApi({ ...pageInfo, title: filter.title })
+  const { data: { records, total } } = await getMySolutionListApi({ ...pageInfo })
   loading.value = false
   postList.value = records
   setTotals(Number(total))
@@ -38,7 +29,7 @@ const loadData = async () => {
 // 浏览帖子
 const handleBrowse = (id) => {
   window.open(router.resolve({
-    path: '/post',
+    path: '/post/solutionpost',
     query: {
       id: id
     }
@@ -99,21 +90,6 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         发布新题解
       </el-button>
     </div>
-    <!-- 筛选工具栏 -->
-    <div class="filter-bar">
-      <el-input v-model="filter.title" placeholder="搜索题解标题..." clearable style="width: 300px" @change="fetchPosts">
-        <template #prefix>
-          <el-icon>
-            <Search />
-          </el-icon>
-        </template>
-      </el-input>
-
-      <el-select v-model="filter.sort" placeholder="排序方式" style="width: 150px; margin-left: 15px" @change="fetchPosts">
-        <el-option label="最新发布" value="newest" />
-        <el-option label="最近更新" value="updated" />
-      </el-select>
-    </div>
 
     <!-- 帖子列表 -->
     <el-table :data="postList" v-loading="loading" style="width: 100%"
@@ -121,8 +97,19 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <el-table-column prop="title" label="标题" min-width="250">
         <template #default="{ row }">
           <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
-          <el-tag v-if="row.isTop" effect="dark" type="info" size="small" style="margin-left: 8px">
+          <el-tag v-if="row.isTop" type="info" size="small" style="margin-left: 8px">
             置顶
+          </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="status" label="状态" width="150">
+        <template #default="{ row }">
+          <el-tag v-if="row.status === 1" type="success" size="small">
+            已审核
+          </el-tag>
+          <el-tag v-else type="danger" size="small">
+            未审核
           </el-tag>
         </template>
       </el-table-column>
@@ -202,34 +189,6 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       font-weight: 500;
       letter-spacing: 0.5px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  }
-
-  .filter-bar {
-    margin-bottom: 24px;
-    padding: 16px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(64, 158, 255, 0.08);
-
-    .el-input {
-      :deep(.el-input__wrapper) {
-        border-radius: 8px;
-        padding: 0 16px;
-        transition: box-shadow 0.3s;
-
-        &:hover {
-          box-shadow: 0 0 0 2px fade(#409EFF, 20%);
-        }
-      }
-    }
-
-    .el-select {
-      margin-left: 12px;
-
-      :deep(.el-input__wrapper) {
-        border-radius: 8px;
-      }
     }
   }
 
