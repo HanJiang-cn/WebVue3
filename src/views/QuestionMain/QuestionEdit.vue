@@ -99,6 +99,13 @@ onMounted(() => {
       <el-form-item label="题目名称">
         <el-input v-model="form.title" placeholder="请输入题目名称" />
       </el-form-item>
+      <el-form-item label="难度">
+        <el-radio-group v-model="form.difficult" size="large">
+          <el-radio-button label="简单" value="1" />
+          <el-radio-button label="适中" value="2" />
+          <el-radio-button label="困难" value="3" />
+        </el-radio-group>
+      </el-form-item>
       <el-form-item label="内容" prop="content">
         <MdEditor :constEdit="form.content" @modelValue="uploadContent" style="width: 100%;" />
       </el-form-item>

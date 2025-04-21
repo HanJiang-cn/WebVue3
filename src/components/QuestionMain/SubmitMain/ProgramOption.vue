@@ -22,7 +22,7 @@ const addData = reactive({
   },
   tags: [],
   title: '',
-  diffcult: '',
+  difficulty: '',
 })
 function uploadContent(data) {
   addData.content = data
@@ -56,7 +56,7 @@ const rules = {
       trigger: 'change',
     }
   ],
-  diffcult: [
+  difficulty: [
     {
       required: true,
       message: '请选择难度',
@@ -167,8 +167,8 @@ const handelBack = () => {
         <el-cascader v-model="addData.tags" :options="options" />
       </div>
     </el-form-item>
-    <el-form-item label="难度" prop="diffcult">
-      <el-segmented v-model="addData.diffcult" :options="locationPOptions" />
+    <el-form-item label="难度" prop="difficulty">
+      <el-segmented v-model="addData.difficulty" :options="locationPOptions" />
     </el-form-item>
     <el-form-item label="题目" prop="title">
       <el-input v-model="addData.title" type="textarea" />

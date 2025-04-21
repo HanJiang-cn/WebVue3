@@ -9,10 +9,10 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const questions = ref([])
 const loading = ref(false)
-const radio1 = ref('全部')
-const radio2 = ref('全部')
-const radio3 = ref('全部')
-const radio4 = ref('全部')
+const direction = ref('全部')
+const knowledge = ref('全部')
+const type = ref('全部')
+const difficult = ref('全部')
 // 筛选条件
 const filter = reactive({
   title: '',
@@ -65,12 +65,12 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <span class="heading">方向</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="radio1" size="large">
+          <el-radio-group v-model="direction" size="large">
             <el-radio-button label="全部" value="全部" />
             <el-radio-button label="Java" value="Java" />
-            <el-radio-button label="Web" value="Web" />
+            <!-- <el-radio-button label="Web" value="Web" />
             <el-radio-button label="C++" value="C++" />
-            <el-radio-button label="多选" value="Pathon" />
+            <el-radio-button label="多选" value="Pathon" /> -->
           </el-radio-group>
         </div>
       </div>
@@ -78,7 +78,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     <div class="column">
       <span class="heading">知识点</span>
       <div>
-        <el-radio-group v-model="radio2" size="large">
+        <el-radio-group v-model="knowledge" size="large">
           <el-radio-button label="全部" value="全部" />
         </el-radio-group>
       </div>
@@ -87,24 +87,24 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <span class="heading">题型</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="radio3" size="large">
+          <el-radio-group v-model="type" size="large">
             <el-radio-button label="全部" value="全部" />
             <el-radio-button label="编程题" value="编程题" />
-            <el-radio-button label="单选" value="单选" />
+            <!-- <el-radio-button label="单选" value="单选" />
             <el-radio-button label="多选" value="多选" />
             <el-radio-button label="判断" value="判断" />
             <el-radio-button label="填空" value="填空" />
             <el-radio-button label="简答" value="简答" />
-            <el-radio-button label="程序填空" value="程序填空" />
+            <el-radio-button label="程序填空" value="程序填空" /> -->
           </el-radio-group>
         </div>
       </div>
     </div>
     <div class="column">
-      <span class="heading">方向</span>
+      <span class="heading">难度</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="radio4" size="large">
+          <el-radio-group v-model="difficult" size="large">
             <el-radio-button label="全部" value="全部" />
             <el-radio-button label="简单" value="简单" />
             <el-radio-button label="适中" value="适中" />
@@ -128,9 +128,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
             <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="tags" label="难度" width="120" />
-        <template>
-        </template>
+        <el-table-column prop="difficult" label="难度" width="120" />
         <el-table-column prop="current" label="时间" width="180">
           <template #default="{ row }">
             <div class="time-cell" style="font-size: 12px;">
@@ -140,7 +138,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize"
+      <el-pagination v-model:current-page="pageInfo.current" v-model:page-size="pageInfo.pageSize" style="margin-top: 15px;"
         :page-sizes="[10, 20, 30, 40]" layout="sizes, prev, pager, next, jumper, total" :total="totals" background
         @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </template>

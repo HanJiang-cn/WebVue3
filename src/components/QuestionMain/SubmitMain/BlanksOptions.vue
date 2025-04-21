@@ -14,7 +14,7 @@ const ruleForm = reactive({
   },
   tags: [],
   title: '',
-  diffcult: '',
+  difficulty: '',
 })
 const options = [
   {
@@ -43,7 +43,7 @@ const rules = {
       trigger: 'change',
     }
   ],
-  diffcult: [
+  difficulty: [
     {
       required: true,
       message: '请选择难度',
@@ -129,8 +129,8 @@ const resetForm = () => {
     :options="options" />
   </div>
     </el-form-item>
-    <el-form-item label="难度" prop="diffcult">
-      <el-segmented v-model="ruleForm.diffcult" :options="locationBOptions" />
+    <el-form-item label="难度" prop="difficulty">
+      <el-segmented v-model="ruleForm.difficulty" :options="locationBOptions" />
     </el-form-item>
     <el-form-item label="题目" prop="title">
       <el-input v-model="ruleForm.title" type="textarea" />
