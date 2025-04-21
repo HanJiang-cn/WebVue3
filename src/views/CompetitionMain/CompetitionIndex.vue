@@ -125,7 +125,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
               <div class="meta-info">
                 <p><span>主办方：</span>{{ item.organizer }}</p>
-                <p><span>级别：</span>{{ item.type===1?'团队赛':'个人赛' }}</p>
+                <p><span>级别：</span>{{ item.type===0?'团队赛':'个人赛' }}</p>
                 <p><span>报名时间：</span>{{ moment(item.startTime).format('YYYY-MM-DD HH:mm') }}</p>
                 <p><span>比赛时间：</span>{{ moment(item.endTime).format('YYYY-MM-DD HH:mm') }}</p>
               </div>
@@ -175,8 +175,8 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           <div class="filter-group">
             <h3>竞赛类别</h3>
             <el-radio-group v-model="searchParams.type" @change="handleFilterChange">
-              <el-radio-button :value="0">个人赛</el-radio-button>
-              <el-radio-button :value="1">团队赛</el-radio-button>
+              <el-radio-button :value="1">个人赛</el-radio-button>
+              <el-radio-button :value="0">团队赛</el-radio-button>
             </el-radio-group>
           </div>
         </div>

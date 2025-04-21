@@ -9,6 +9,7 @@ enum Api {
   DeleteCompetition = '/competition/delCompetition',
   IsApprovedCompetition = '/competition/adminReview',
   searchCompetition = '/competition/search',
+  signCompetition = '/competition/enter'
 }
 function addCompetition(data: any): Promise<any> {
   return post(Api.AddCompetition, data)
@@ -34,6 +35,9 @@ function isApprovedCompetition(competitionId:number, isApproved:boolean ): Promi
 function searchCompetition(data: any): Promise<any> {
   return get(Api.searchCompetition, data)
 }
+function signCompetition(competitionId:number,userId:number): Promise<any> {
+  return post(`/competition/enter?competitionId=${competitionId}&userId=${userId}`)
+}
 export {
   addCompetition,
   getCompetitionAdminListApi,
@@ -42,5 +46,6 @@ export {
   getCompetition,
   deleteCompetition,
   isApprovedCompetition,
-  searchCompetition
+  searchCompetition,
+  signCompetition
 }

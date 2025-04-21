@@ -1,11 +1,13 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { searchCompetition } from '@/api/competition'
+import { searchCompetition ,signCompetition} from '@/api/competition'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 import moment from 'moment'
-
+//从userStore中导入用户id
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
 // 状态映射
 const statusMap = {
   1: { text: '正在报名', class: 'status-ongoing' },
@@ -15,7 +17,7 @@ const statusMap = {
 
 const id = ref(router.currentRoute.value.query.id)
 const competition = ref({})
-const defaultCover = 'https://publicqn.saikr.com/2025/02/10/contest67a976966e69e5.59569765739159202339.png'
+const defaultCover = 'https://publicqn.saikr.com/saikr/contest/1741945485113/1741945485113c8rsy744kh9.png'
 
 // 计算竞赛状态
 const competitionStatus = computed(() => {
@@ -38,12 +40,27 @@ const remainingDays = computed(() => {
 const getCompetition = async () => {
   try {
     const { data } = await searchCompetition({ competitionId: id.value })
-    console.log(data)
-      competition.value = data.data[0]
-      console.log(competition.value)
+    // 将返回数组的第一个元素赋值给 competition
+    if (data && data.length > 0) {
+      competition.value = data[0]
 
+      // 处理可能的空值字段
+      competition.value.views = competition.value.views || 0
+      competition.value.pushName = competition.value.pushName || '大赛组委会'
+    }
   } catch (error) {
     ElMessage.error('获取竞赛信息失败')
+  }
+}
+// 报名
+const handleSignUp = async () => {
+  try {
+    const { data } = await signCompetition( id.value, userStore.id )
+    console.log(data)
+    ElMessage.success('报名成功')
+    router.push({ path: '/competition' })
+  } catch (error) {
+    ElMessage.error('报名失败')
   }
 }
 
@@ -104,16 +121,30 @@ onMounted(getCompetition)
               <span class="label">竞赛类型：</span>
               <span class="value">{{ competition.type === 1 ? '个人赛' : '团队赛' }}</span>
             </div>
-            <div class="meta-item">
+            <!-- <div class="meta-item">
               <span class="label">浏览次数：</span>
               <span class="value">{{ (competition.views / 10000).toFixed(1) }}万</span>
-            </div>
+            </div> -->
             <div class="meta-item">
               <span class="label">发布机构：</span>
               <span class="value">{{ competition.pushName || '大赛组委会' }}</span>
             </div>
           </div>
-          <el-button type="primary" class="signup-btn">立即报名</el-button>
+          <el-button
+      v-if="competitionStatus !== 3"
+      type="primary"
+      class="signup-btn"
+      @click="handleSignUp"
+      :disabled="competitionStatus !== 1"
+    >
+      立即报名
+    </el-button>
+    <div
+      v-else
+      class="disabled-tip"
+    >
+      报名已截止
+    </div>
         </div>
       </aside>
     </main>
@@ -159,9 +190,12 @@ onMounted(getCompetition)
   }
 
   .status-tag {
-    padding: 4px 12px;
+  width: 80px;
+    padding: 6px 12px;
     border-radius: 16px;
     font-size: 14px;
+    text-align: center;
+
 
     &.status-ongoing { background: #e8f4ff; color: #1890ff; }
     &.status-processing { background: #fff7e6; color: #faad14; }
@@ -244,7 +278,15 @@ onMounted(getCompetition)
       font-weight: 500;
     }
   }
-
+  .disabled-tip {
+    margin-top: 20px;
+    padding: 12px;
+    text-align: center;
+    background: #f5f7fa;
+    color: #909399;
+    border-radius: 4px;
+    border: 1px solid #e4e7ed;
+  }
   .signup-btn {
     width: 100%;
     margin-top: 20px;
@@ -252,4 +294,5 @@ onMounted(getCompetition)
     font-size: 16px;
   }
 }
+
 </style>

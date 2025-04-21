@@ -26,7 +26,7 @@ import ProgramOption from '@/components/QuestionMain/SubmitMain/ProgramOption.vu
 //   },
 //   tags: [],
 //   title: '',
-//   diffcult: '',
+//   difficulty: '',
 // })
 // const options = [
 //   {
@@ -56,7 +56,7 @@ import ProgramOption from '@/components/QuestionMain/SubmitMain/ProgramOption.vu
 //       trigger: 'change',
 //     },
 //   ],
-//   diffcult: [
+//   difficulty: [
 //     {
 //       required: true,
 //       message: '请选择难度',
@@ -152,8 +152,8 @@ import ProgramOption from '@/components/QuestionMain/SubmitMain/ProgramOption.vu
               <el-cascader :show-all-levels="false" v-model="ruleForm.tags" :options="options" @change="handleChange" />
             </div>
           </el-form-item>
-          <el-form-item label="难度" prop="diffcult">
-            <el-segmented v-model="ruleForm.diffcult" :options="locationOptions" />
+          <el-form-item label="难度" prop="difficulty">
+            <el-segmented v-model="ruleForm.difficulty" :options="locationOptions" />
           </el-form-item>
           <el-form-item label="题目" prop="title">
             <el-input v-model="ruleForm.title" type="textarea" />
