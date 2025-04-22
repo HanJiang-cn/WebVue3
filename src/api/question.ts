@@ -94,13 +94,13 @@ function submitQuestionApi(data: submitQuestionData) {
 function ceshiApi(data: any) {
   return post(Api.ceshi, data)
 }
-function AddCompetitionPaper(data:any){
-  return post(Api.AddCompetitionPaper,data)
+function AddCompetitionPaper(competitionId:number,questionId:Array<number>){
+  return post(`/competition/addComQues?competitionId=${competitionId}&questionId=${questionId}`)
 }
 function dailyQuestionApi(data:any){
   return get(Api.dailyQuestion,data)
 }
-function getCompetitionQuestionApi(data:any){
-  return get(Api.getCompetitionQuestion,data)
+function getCompetitionQuestionApi(competitionId:number){
+  return post(`/competition/user/getComQues?competitionId=${competitionId}`)
 }
 export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi}

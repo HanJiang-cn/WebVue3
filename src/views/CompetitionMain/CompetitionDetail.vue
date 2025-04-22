@@ -38,6 +38,7 @@ const remainingDays = computed(() => {
 
 // 获取竞赛详情
 const getCompetition = async () => {
+  console.log(id.value)
   try {
     const { data } = await searchCompetition({ competitionId: id.value })
     // 将返回数组的第一个元素赋值给 competition
@@ -190,7 +191,7 @@ onMounted(getCompetition)
   }
 
   .status-tag {
-  width: 80px;
+  width: 75px;
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 14px;

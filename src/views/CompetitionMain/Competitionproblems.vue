@@ -1,13 +1,13 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import logo from '@/assets/logo.webp'
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
 import { useRouter } from 'vue-router'
 import { getCompetitionQuestionApi } from '@/api/question'
-
 const router = useRouter()
+const competitionId = ref(router.currentRoute.value.query.competitionId)
 const visible = ref(false)
 const visible1 = ref(false)
 const visible2 = ref(false)
@@ -18,15 +18,20 @@ const activeName = ref('1')
 const activeName1 = ref('1')
 const activeName2 = ref('1')
 const competitionQuestion= ref([])
+const competitionName = ref('');
+// 加载竞赛题目
 const loadData = async () => {
   try {
-    const { data: { records, total } } = await getCompetitionQuestionApi()
-    competitionQuestion.value = records
+    const { data } = await getCompetitionQuestionApi( competitionId.value)
+    competitionQuestion.value = data
+    competitionName.value = competitionQuestion.value[0].name;
     console.log(competitionQuestion.value)
+    console.log(competitionQuestion.value[0].name)
   } catch (error) {
-    console.error('题目加载失败', error)
+    console.error('题目加载失败，错误信息:', error);
   }
 }
+
 const tableData = [
   {
     date: '2023-06-01',
@@ -66,6 +71,15 @@ const tableData = [
 
 
 ]
+
+// // 题目切换方法
+// const switchQuestion = (direction) => {
+//   if (direction === 'prev' && currentQuestionIndex.value > 0) {
+//     currentQuestionIndex.value--
+//   } else if (direction === 'next' && currentQuestionIndex.value < competitionQuestion.value.length - 1) {
+//     currentQuestionIndex.value++
+//   }
+// }
 
 const Visable = () => {
   visibles.value = !visibles.value
@@ -123,6 +137,9 @@ const handleLogout = () => {
 const handleNav = (name) => {
   window.open(router.resolve({ path: name, }).href, '_self')
 }
+onMounted(() => {
+  loadData()
+})
 </script>
 
 <template>
@@ -179,7 +196,7 @@ const handleNav = (name) => {
             </div>
           </el-col>
           <el-col :span="8" class="center">
-            <span>这是一个竞赛名称</span>
+            <span>{{competitionName }}</span>
           </el-col>
           <el-col :span="8" class="right">
             <div>
@@ -369,7 +386,7 @@ const handleNav = (name) => {
                             <li>请确保已掌握相关解题思路和算法</li>
                           </ol>
                         </div>
-                        <p class="source">题目来源：<a>力扣（LeetCode）</a></p>
+                        <p class="source">题目来源：<a>孟神</a></p>
                       </div>
                     </div>
                   </el-row>

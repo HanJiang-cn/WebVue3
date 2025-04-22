@@ -53,16 +53,17 @@ const submitPaper = async () => {
   }
 
   try {
-    const params = {
-      competitionId: competitionId.value,
-      questions: Array.from(selectedQuestions.value) // 转换为数组
-    }
 
-    await AddCompetitionPaper(params)
+    const params =await AddCompetitionPaper(competitionId.value,Array.from(selectedQuestions.value) // 转换为数组
+)
     console.log(params)
 
     ElMessage.success('试卷创建成功')
-    // 可选：跳转到比赛页面
+    // 跳转到比赛页面
+    router.push({
+      path: '/competition/answer',
+      query: { competitionId: competitionId.value }
+    })
 
   } catch (error) {
     ElMessage.error(`试卷创建失败: ${error.message}`)

@@ -192,7 +192,7 @@ onMounted(() => {
             </div>
           </el-col>
           <el-col :span="8" class="center">
-            <span>{{ questionData.title }}</span>
+            <span >{{ questionData.title }}</span>
           </el-col>
           <el-col :span="8" class="right">
             <div>
@@ -485,6 +485,9 @@ onMounted(() => {
           font-weight: 600;
           letter-spacing: 0.5px;
           font-size: 18px;
+overflow: hidden;
+text-overflow:ellipsis;
+white-space: nowrap;
 
         }
       }

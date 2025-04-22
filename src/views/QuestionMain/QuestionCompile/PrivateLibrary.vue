@@ -32,6 +32,7 @@ const loadData = async () => {
   loading.value = false
   questions.value = records
   setTotals(Number(total))
+  console.log(questions.value)
 }
 
 // 删除帖子

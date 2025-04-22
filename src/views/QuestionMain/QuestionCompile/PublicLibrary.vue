@@ -12,7 +12,7 @@ const loading = ref(false)
 const direction = ref('全部')
 const knowledge = ref('全部')
 const type = ref('全部')
-const difficult = ref('全部')
+const difficulty = ref('全部')
 // 筛选条件
 const filter = reactive({
   title: '',
@@ -104,7 +104,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <span class="heading">难度</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="difficult" size="large">
+          <el-radio-group v-model="difficulty" size="large">
             <el-radio-button label="全部" value="全部" />
             <el-radio-button label="简单" value="简单" />
             <el-radio-button label="适中" value="适中" />
@@ -128,7 +128,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
             <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="difficult" label="难度" width="120" />
+        <el-table-column prop="difficulty" label="难度" width="120" />
         <el-table-column prop="current" label="时间" width="180">
           <template #default="{ row }">
             <div class="time-cell" style="font-size: 12px;">
