@@ -39,6 +39,12 @@ const activeMenu = ref(currentRoute.path)
                   </el-icon>
                   <span>帖子管理</span>
                 </el-menu-item>
+                <el-menu-item index="/admin/problem">
+                  <el-icon>
+                    <ContainerOutlined />
+                  </el-icon>
+                  <span>题目管理</span>
+                </el-menu-item>
                 <el-sub-menu index="1">
                   <template #title>
                     <el-icon>

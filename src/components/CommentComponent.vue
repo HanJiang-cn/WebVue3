@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { UToast, Time, type CommentApi, type CommentSubmitApi, type ConfigApi } from 'undraw-ui'
+import { useUserStore } from '@/stores/user'
 
 const config = reactive<ConfigApi>({
   user: {} as any, // 当前用户信息
@@ -14,6 +15,8 @@ const config = reactive<ConfigApi>({
     likes: false    // 关闭点赞按钮显示
   }
 })
+
+const userStore = useUserStore()
 
 /**
  * 评论对象数据结构
@@ -82,9 +85,9 @@ const comments = [
 setTimeout(() => {
   // 当前登录用户数据
   config.user = {
-    id: 1,
-    username: '杜甫 [唐代]',
-    avatar: 'https://static.juzicon.com/images/image-180327173755-IELJ.jpg',
+    id: userStore.id,
+    username: userStore.userName,
+    avatar: userStore.userAvatar,
   }
   config.comments = comments
 }, 500)

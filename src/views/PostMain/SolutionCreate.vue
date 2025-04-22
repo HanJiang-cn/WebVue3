@@ -3,7 +3,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { addSolutionApi } from '@/api/solution'
+import { addSolutionApi, addDraftApi } from '@/api/solution'
 import { useRouter } from 'vue-router'
 import MdEditor from '@/components/MdEditor.vue'
 import Cookies from 'js-cookie'
@@ -50,8 +50,10 @@ const DRAFT_KEY = 'solution_draft'
 const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
 
 // 保存草稿
-const saveDraft = () => {
-  Cookies.set(DRAFT_KEY, JSON.stringify(form), COOKIE_OPTIONS)
+const saveDraft = async () => {
+  // Cookies.set(DRAFT_KEY, JSON.stringify(form), COOKIE_OPTIONS)
+  const res = await addDraftApi({ ... form })
+  console.log(res)
   ElNotification({
     title: '提示',
     message: '草稿已保存',
@@ -60,35 +62,38 @@ const saveDraft = () => {
   })
 }
 // 清除草稿
-const clearDraft = () => {
-  Cookies.remove(DRAFT_KEY)
-  formRef.value.resetFields()
-  ElMessage({
-    message: '草稿已清除',
-    type: 'success',
-  })
-  // 刷新页面
-  window.location.reload()
-}
+// const clearDraft = () => {
+//   Cookies.remove(DRAFT_KEY)
+//   formRef.value.resetFields()
+//   ElMessage({
+//     message: '草稿已清除',
+//     type: 'success',
+//   })
+//   // 刷新页面
+//   window.location.reload()
+// }
 // 加载草稿
+// function loadDraft() {
+//   const draft = Cookies.get(DRAFT_KEY)
+//   if (draft) {
+//     try {
+//       const parsed = JSON.parse(draft)
+//       // Object.assign 是为了确保 tags 和 category 被正确地加载
+//       // 即使它们在草稿中被存储为数组或字符串，也能正确地转换为数组。
+//       Object.assign(form, parsed)
+//       ElNotification({
+//         title: '草稿加载成功',
+//         message: '检测到未发布的草稿，已自动加载',
+//         type: 'info',
+//         duration: 3000
+//       })
+//     } catch (e) {
+//       console.error('草稿解析失败:', e)
+//     }
+//   }
+// }
 function loadDraft() {
-  const draft = Cookies.get(DRAFT_KEY)
-  if (draft) {
-    try {
-      const parsed = JSON.parse(draft)
-      // Object.assign 是为了确保 tags 和 category 被正确地加载
-      // 即使它们在草稿中被存储为数组或字符串，也能正确地转换为数组。
-      Object.assign(form, parsed)
-      ElNotification({
-        title: '草稿加载成功',
-        message: '检测到未发布的草稿，已自动加载',
-        type: 'info',
-        duration: 3000
-      })
-    } catch (e) {
-      console.error('草稿解析失败:', e)
-    }
-  }
+
 }
 
 onMounted(() => {
@@ -117,9 +122,6 @@ const submitForm = async () => {
           })
           Cookies.remove(DRAFT_KEY) // 清除草稿
           formRef.value.resetFields()
-          // window.open(router.resolve({
-          //   path: '/post/detail',
-          // }).href, '_self')
           if (router.currentRoute.value.query.id !== undefined) {
             router.push({
               path: '/problems/solution',
@@ -152,7 +154,7 @@ const submitForm = async () => {
   <el-form ref="formRef" :model="form" :rules="rules" class="post-container">
     <!-- 头部 -->
     <div class="post-header">
-      <h1 class="post-title">发布新内容</h1>
+      <h1 class="post-title">发布新题解</h1>
       <div class="post-tips">
         <el-icon>
           <InfoFilled />
@@ -203,9 +205,9 @@ const submitForm = async () => {
       <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
         立即发布
       </el-button>
-      <el-button size="large" @click="clearDraft">
+      <!-- <el-button size="large" @click="clearDraft">
         重置页面
-      </el-button>
+      </el-button> -->
       <el-button size="large" @click="saveDraft">
         保存草稿
       </el-button>

@@ -114,9 +114,21 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         </template>
       </el-table-column>
 
-      <el-table-column prop="category" label="分类" width="120" />
+      <el-table-column prop="category" label="分类" width="120">
+        <template #default="{ row }">
+          <el-tag type="info" size="small">{{ row.post_classes }}</el-tag>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="时间" width="200">
+      <el-table-column prop="tags" label="标签" width="150">
+        <template #default="{ row }">
+          <span v-for="(tag, index) in row.tagList" :key="index" class="tag-item">
+            <el-tag type="success" size="small" style="margin-right: 5px;">{{ tag }}</el-tag>
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="时间" width="180">
         <template #default="{ row }">
           <div class="time-cell">
             <div>发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm') }}</div>

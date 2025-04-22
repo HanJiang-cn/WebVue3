@@ -38,7 +38,7 @@ const routes = [
       },
     ],
   },
-  // 登录&注册
+  // 功能页面
   {
     path: '/accounts',
     name: 'Accounts',
@@ -79,6 +79,11 @@ const routes = [
             path: 'post',
             name: 'CollectionPost',
             component: () => import('@/views/AccountsMain/CollectionView/CollectionPost.vue'),
+          },
+          {
+            path: 'solution',
+            name: 'CollectionSolution',
+            component: () => import('@/views/AccountsMain/CollectionView/CollectionSolution.vue'),
           },
         ],
       },
@@ -341,6 +346,11 @@ const routes = [
         meta: {
           needAuth: 'admin',
         },
+      },
+      {
+        path: 'problem',
+        name: 'AdminProblem',
+        component: () => import('@/views/AdminMain/AdminProblem.vue'),
       },
       {
         path: 'users',

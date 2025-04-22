@@ -2,9 +2,12 @@
 import { post, get } from '@/utils/http'
 enum Api {
   add = '/solution/user/publish',
+  addDraft = '/solution/user/addCloud',
   getSolutionInfo = '/solution/user/get',
   getSolutionList = '/solution/user/getList',
-  getMySolutionList = '/solution/user/getMySolution'
+  getMySolutionList = '/solution/user/getMySolution',
+  addFavour = '/solution_favour/',
+  getFavourSolutionList = '/solution_favour/my/list/pageSolution',
 }
 
 // interface submitQuestionData {
@@ -15,6 +18,10 @@ enum Api {
 
 function addSolutionApi(data: any) {
   return post(Api.add, data)
+}
+
+function addDraftApi(data: any) {
+  return post(Api.addDraft, data)
 }
 
 function getSolutionInfoApi(data: any) {
@@ -29,4 +36,12 @@ function getMySolutionListApi(data: any) {
   return get(Api.getMySolutionList, data)
 }
 
-export { addSolutionApi, getSolutionInfoApi, getSolutionListApi, getMySolutionListApi }
+function favourSolutionApi(data: any) {
+  return post(Api.addFavour, data)
+}
+
+function getFavourSolutionListApi(data: any) {
+  return post(Api.getFavourSolutionList, data)
+}
+
+export { addSolutionApi, addDraftApi, getSolutionInfoApi, getSolutionListApi, getMySolutionListApi, favourSolutionApi, getFavourSolutionListApi }

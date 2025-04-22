@@ -3,6 +3,7 @@ import { post, get } from '@/utils/http'
 
 enum Api {
   AddPost = '/post/add',
+  AddDraft = '/post/user/addCloud',
   DeletePost = '/post/delete',
   EditPost = '/post/edit',
   GetPost = '/post/get/vo',
@@ -45,6 +46,10 @@ function addPostApi(data: AddPostData): Promise<any> {
   return post(Api.AddPost, data)
 }
 
+function addDraftApi(data: any): Promise<any> {
+  return post(Api.AddDraft, data)
+}
+
 function deletePostApi(data: DeletePostData): Promise<any> {
   return post(Api.DeletePost, data)
 }
@@ -75,6 +80,7 @@ function favourMyListPostApi(data: any): Promise<any> {
 
 export {
   addPostApi,
+  addDraftApi,
   deletePostApi,
   editPostApi,
   getPostApi,

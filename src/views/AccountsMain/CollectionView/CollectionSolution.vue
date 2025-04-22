@@ -1,17 +1,16 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { favourMyListPostApi, favourPostApi } from '@/api/post'
+import { getFavourSolutionListApi, favourSolutionApi } from '@/api/solution'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification } from 'element-plus'
 import moment from 'moment'
 
-const title = ref('')
 // 收藏数据
 const loading = ref(false)
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await favourMyListPostApi({ ...pageInfo, title: title.value })
+  const { data: { records, total } } = await getFavourSolutionListApi({ ...pageInfo, title: title.value })
   loading.value = false
   collections.value = records
   setTotals(Number(total))
@@ -30,11 +29,12 @@ const { totals, pageInfo, handleCurrentChange, setTotals } = usePagination(loadD
 
 // 收藏列表
 const collections = ref([])
+const title = ref('')
 
 // 取消收藏
 const handleCancelFavour = async (id) => {
   try {
-    const res = await favourPostApi({ postId: id })
+    const res = await favourSolutionApi({ postId: id })
     if (res.code === 0) {
       ElNotification({
         title: '取消收藏成功',
@@ -55,7 +55,7 @@ const handleCancelFavour = async (id) => {
 
 <template>
   <div class="collection-header">
-    <h2>帖子</h2>
+    <h2>题解</h2>
     <el-input v-model="title" placeholder="搜索收藏内容" class="search-input" suffix-icon="Search" @change="loadData" />
   </div>
 

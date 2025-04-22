@@ -108,14 +108,20 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           <el-tag v-if="row.status === 1" type="success" size="small">
             已审核
           </el-tag>
-          <el-tag v-else type="danger" size="small">
+          <el-tag v-else-if="row.status === 0" type="danger" size="small">
             未审核
+          </el-tag>
+          <el-tag v-else type="warning" size="small">
+            草稿
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column prop="category" label="分类" width="120" />
-
+      <el-table-column prop="solutionClass" label="分类" width="150">
+        <template #default="{ row }">
+          <el-tag size="mini">{{ row.solutionClass ? row.solutionClass : '未分类'}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="时间" width="200">
         <template #default="{ row }">
           <div class="time-cell">
@@ -125,7 +131,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         </template>
       </el-table-column>
 
-      <el-table-column prop="viewCount" label="阅读量" width="100" align="center" />
+      <el-table-column prop="viewCount" label="浏览量" width="100" align="center" />
 
       <el-table-column label="操作" width="120" fixed="right">
         <template #default="{ row }">

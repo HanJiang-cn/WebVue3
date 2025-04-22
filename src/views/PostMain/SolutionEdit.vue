@@ -14,10 +14,10 @@ const formRef = ref(null)
 const form = reactive({
   title: '',
   context: '',
-  // category: '',
   id: router.currentRoute.value.query.id,
   questionId: '',
-  // tags: [],
+  status: 0,
+  solutionClass: '',
   // cover: null
 })
 const getSoultionData = async () => {
@@ -25,8 +25,9 @@ const getSoultionData = async () => {
   if (res.code === 0) {
     form.title = res.data.title
     form.context = res.data.context
-    // form.category = item.category
     form.questionId = res.data.questionId
+    form.status = res.data.status
+    form.solutionClass = res.data.solutionClass
   }
 }
 onMounted(() => {
@@ -49,7 +50,7 @@ const rules = reactive({
     { required: true, message: '内容不能为空', trigger: 'blur' },
     { min: 20, message: '内容至少20个字符', trigger: 'blur' }
   ],
-  category: [
+  solutionClass: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
 })
@@ -57,6 +58,38 @@ const rules = reactive({
 // 处理富文本内容上传
 function uploadContent(data) {
   form.context = data
+}
+
+// 提交草稿
+const submitDraft = async () => {
+  submitting.value = true
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        const res = await solutionUpdate({
+          ...form,
+        })
+        if (res.code === 0) {
+          ElNotification({
+            title: '成功',
+            message: '保存草稿成功',
+            type: 'success',
+          })
+        }
+        submitting.value = false
+        return
+      }
+      catch (error) {
+        ElNotification({
+          title: '保存草稿失败',
+          message: error.message || '请检查网络连接后重试',
+          type: 'error'
+        })
+        submitting.value = false
+      }
+    }
+  })
+  submitting.value = false
 }
 
 // 提交表单
@@ -110,7 +143,7 @@ const submitForm = async () => {
   <el-form ref="formRef" :model="form" :rules="rules" class="post-container">
     <!-- 头部 -->
     <div class="post-header">
-      <h1 class="post-title">发布新内容</h1>
+      <h1 class="post-title">编辑题解</h1>
       <div class="post-tips">
         <el-icon>
           <InfoFilled />
@@ -132,8 +165,8 @@ const submitForm = async () => {
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
-        <el-form-item prop="category" label="分类">
-          <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
+        <el-form-item prop="solutionClass" label="分类">
+          <el-select v-model="form.solutionClass" placeholder="请选择分类" clearable class="full-width">
             <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -161,6 +194,9 @@ const submitForm = async () => {
       <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
         立即发布
       </el-button>
+      <el-button v-show="form.status === 2" size="large" :loading="submitting" @click="submitDraft">
+        保存草稿
+      </el-button>
     </div>
   </el-form>
 </template>
@@ -183,6 +219,18 @@ const submitForm = async () => {
       font-size: 24px;
       color: var(--el-text-color-primary);
       margin-bottom: 8px;
+    }
+
+    .post-tips {
+      display: flex;
+      align-items: center;
+      color: var(--el-text-color-secondary);
+      font-size: 14px;
+
+      .el-icon {
+        margin-right: 8px;
+        color: var(--el-color-info);
+      }
     }
   }
 

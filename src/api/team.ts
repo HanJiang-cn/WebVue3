@@ -8,6 +8,7 @@ enum Api {
   Quit = '/team/quit',
   MyTeamList = '/team/list/my/create',
   MyJoinTeamList = '/team/list/my/join',
+  StarTeamList = '/team/user/starTeam',
 }
 
 interface QuitData {
@@ -38,4 +39,8 @@ function myJoinTeamListApi(data: any): Promise<any> {
   return get(Api.MyJoinTeamList, data)
 }
 
-export { addTeamApi, deleteTeamApi, quitTeamApi, myTeamListApi, myJoinTeamListApi, joinTeamApi }
+function starTeamListApi(data: any): Promise<any> {
+  return post(Api.StarTeamList, data)
+}
+
+export { addTeamApi, deleteTeamApi, quitTeamApi, myTeamListApi, myJoinTeamListApi, joinTeamApi, starTeamListApi }

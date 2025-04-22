@@ -122,12 +122,12 @@ const handleFavorite = async () => {
         <PreviewOnly :content="postData.context" />
       </div>
       <div class="post-actions">
-        <el-button @click="handleLike" :class="{ 'liked': isLiked }">
+        <!-- <el-button @click="handleLike" :class="{ 'liked': isLiked }">
           <el-icon :color="isLiked ? '#f56c6c' : ''">
             <LikeOutlined />
           </el-icon>
           {{ likeCount }}
-        </el-button>
+        </el-button> -->
 
         <el-button @click="handleFavorite" :class="{ 'favorited': isFavorited }">
           <el-icon :color="isFavorited ? '#e6a23c' : ''">

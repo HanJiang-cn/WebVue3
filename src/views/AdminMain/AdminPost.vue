@@ -121,11 +121,11 @@ const handleDelete = async (id) => {
         <template #default="{ row }">
           <span style="font-size: 12px;">阅读：{{ row.readCount }}</span>
           <br />
-          <span style="font-size: 12px;">点赞：{{ row.likeCount }}</span>
+          <span style="font-size: 12px;">点赞：{{ row.favourNum }}</span>
           <br />
           <span style="font-size: 12px;">评论：{{ row.commentCount }}</span>
           <br />
-          <span style="font-size: 12px;">收藏：{{ row.collectCount }}</span>
+          <span style="font-size: 12px;">收藏：{{ row.thumbNum }}</span>
         </template>
       </el-table-column>
       <el-table-column label="时间" width="190">

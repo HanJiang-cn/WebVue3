@@ -2,19 +2,25 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { favourMyListPostApi, favourPostApi } from '@/api/post'
+import { getFavourSolutionListApi, favourSolutionApi } from '@/api/solution'
 import { usePagination } from '@/hooks/usePagination'
 import { ElNotification } from 'element-plus'
+import { useRouter } from 'vue-router'
 import moment from 'moment'
 
 // 收藏数据
+// 收藏列表
+const collections = ref([])
 const loading = ref(false)
+// 收藏数据
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await favourMyListPostApi({ ...pageInfo, })
+  const { data: { records, total } } = await favourMyListPostApi({ ...pageInfo, pageSize: 5 })
+  const { data: { records: solutionRecords, total: solutionTotal } } = await getFavourSolutionListApi({...pageInfo, pageSize: 5 })
   loading.value = false
-  collections.value = records
-  setTotals(Number(total))
-  collections.value = records.map((records) => ({
+  collections.value = [...records, ...solutionRecords]
+  setTotals(Number(total) + Number(solutionTotal))
+  collections.value = collections.value.map((records) => ({
     ...records,
     time: moment(records.createTime).format('YYYY-MM-DD HH:mm')
   }))
@@ -26,9 +32,6 @@ onMounted(() => {
 })
 
 const { totals, pageInfo, handleCurrentChange, setTotals } = usePagination(loadData)
-
-// 收藏列表
-const collections = ref([])
 
 // 取消收藏
 const handleCancelFavour = async (id) => {
@@ -50,12 +53,31 @@ const handleCancelFavour = async (id) => {
     })
   }
 }
+
+// 点击收藏项跳转到文章详情页
+const router = useRouter()
+const handleItemClick = (item) => {
+  if (!item.post_classes) {
+    window.open(router.resolve({
+      path: '/post/solutionpost',
+      query: {
+        id: item.id
+      }
+    }).href, '_blank')
+  } else {
+    window.open(router.resolve({
+      path: '/post',
+      query: {
+        id: item.id
+      }
+    }).href, '_blank')
+  }
+}
 </script>
 
 <template>
   <div class="collection-header">
     <h2>全部</h2>
-    <el-input placeholder="搜索收藏内容" class="search-input" suffix-icon="Search" />
   </div>
 
   <el-divider />
@@ -65,8 +87,8 @@ const handleCancelFavour = async (id) => {
       <el-empty :image-size="200" />
     </div>
     <el-card v-for="item in collections" :key="item.id" class="collection-item" shadow="hover">
-      <div class="item-content">
-        <h3>{{ item.title }}</h3>
+      <div class="item-content" @click="handleItemClick(item)">
+        <h3 >{{ item.title }}</h3>
         <div class="item-meta">
           <span v-if="item.type" class="item-type">{{ item.type }}</span>
           <span class="item-time">{{ item.time }}</span>
@@ -157,6 +179,7 @@ const handleCancelFavour = async (id) => {
     .item-content {
       flex: 1;
       min-width: 0;
+      cursor: pointer;
 
       h3 {
         margin: 0 0 8px 0;

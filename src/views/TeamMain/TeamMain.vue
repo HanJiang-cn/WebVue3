@@ -3,69 +3,11 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getRecommendBannerListApi } from '@/api/community'
+import { starTeamListApi } from '@/api/team'
 
 const router = useRouter()
 
 const tagTypes = ['', 'success', 'warning', 'danger']
-
-const topTeams = ref([
-  {
-    id: 1,
-    name: '算法征服者',
-    logo: '',
-    tags: ['动态规划', '图论', 'ACM'],
-    members: 5,
-    maxMembers: 6,
-    wins: 12,
-    power: 9850,
-    rating: 4.8
-  },
-  {
-    id: 1,
-    name: '算法征服者',
-    logo: '',
-    tags: ['动态规划', '图论', 'ACM'],
-    members: 5,
-    maxMembers: 6,
-    wins: 12,
-    power: 9850,
-    rating: 4.8
-  },
-  {
-    id: 1,
-    name: '算法征服者',
-    logo: '',
-    tags: ['动态规划', '图论', 'ACM'],
-    members: 5,
-    maxMembers: 6,
-    wins: 12,
-    power: 9850,
-    rating: 4.8
-  },
-  {
-    id: 1,
-    name: '算法征服者',
-    logo: '',
-    tags: ['动态规划', '图论', 'ACM'],
-    members: 5,
-    maxMembers: 6,
-    wins: 12,
-    power: 9850,
-    rating: 4.8
-  },
-  {
-    id: 1,
-    name: '算法征服者',
-    logo: '',
-    tags: ['动态规划', '图论', 'ACM'],
-    members: 5,
-    maxMembers: 6,
-    wins: 12,
-    power: 9850,
-    rating: 4.8
-  },
-  // 更多数据...
-])
 
 const joinedTeams = ref([
   {
@@ -107,8 +49,19 @@ const getBannerList = async () => {
     bannerList.value = res.data
   }
 }
+
+// 明星队伍
+const topTeams = ref([])
+const getStarTeamList = async () => {
+  const res = await starTeamListApi()
+  if (res.code === 0) {
+    topTeams.value = res.data
+  }
+}
+
 onMounted(() => {
   getBannerList()
+  getStarTeamList()
 })
 </script>
 
@@ -142,9 +95,11 @@ onMounted(() => {
                 TOP {{ index + 1 }}
               </div>
               <div class="card-header">
-                <el-avatar :size="80" shape="square" :src="team.logo" class="team-logo">
-                  <img v-if="!team.logo" src="" />
-                </el-avatar>
+                <div class="team-avatar">
+                  <div class="avatar-bg" :style="{ backgroundColor: `hsl(${index * 360 / topTeams.length}, 60%, 60%)` }">
+                    {{ index + 1 }}
+                  </div>
+                </div>
                 <div class="team-meta">
                   <h4 class="team-name">{{ team.name }}</h4>
                   <div class="team-tags">
@@ -160,26 +115,26 @@ onMounted(() => {
                   <el-icon>
                     <User />
                   </el-icon>
-                  <span>{{ team.members }}/{{ team.maxMembers }}</span>
+                  <span>{{ team.members }}/{{ team.maxNum }}</span>
                 </div>
                 <div class="stat-item">
                   <el-icon>
                     <Trophy />
                   </el-icon>
-                  <span>{{ team.wins }} 次夺冠</span>
+                  <span>{{ team.status === 0 ? '公开战队' : team.status === 1 ? '私有战队' : '公开加密战队' }}</span>
                 </div>
                 <div class="stat-item">
                   <el-icon>
                     <DataAnalysis />
                   </el-icon>
-                  <span>战力 {{ team.power }}</span>
+                  <span>战力 {{ team.teamScore }}</span>
                 </div>
               </div>
             </div>
           </div>
         </el-card>
 
-        <!-- 全国排名 -->
+        <!-- 全国排名
         <el-card class="section-card">
           <template #header>
             <div class="section-header">
@@ -200,7 +155,7 @@ onMounted(() => {
             <el-table-column prop="team" label="队伍名称" />
             <el-table-column prop="score" label="积分" />
           </el-table>
-        </el-card>
+        </el-card> -->
       </div>
 
       <!-- 侧边栏 -->
@@ -274,6 +229,27 @@ onMounted(() => {
 @warning-color: #e6a23c;
 @danger-color: #f56c6c;
 @info-color: #909399;
+
+.team-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .avatar-bg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2em;
+  }
+
+}
 
 .default-layout {
   max-width: 1400px;

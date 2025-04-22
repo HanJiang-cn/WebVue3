@@ -31,6 +31,7 @@ const post = ref({
 })
 const postData = ref({})
 const postUser = ref({})
+const posterror = ref('')
 const currentUrl = ref(window.location.href)
 const createTime = ref('')
 const router = useRouter()
@@ -46,6 +47,7 @@ const getPostInfor = async () => {
     favoriteCount.value = data.favourNum
   } catch (error) {
     console.error('获取帖子详情失败:', error)
+    posterror.value = 1
   }
 }
 onMounted(() => {
@@ -104,7 +106,7 @@ const handleFavorite = async () => {
 </script>
 
 <template>
-  <div class="post-container">
+  <div class="post-container" v-if="posterror !== 1">
     <!-- 返回按钮 -->
     <div class="back-button">
       <el-button type="text" @click="$router.back()">
@@ -139,14 +141,14 @@ const handleFavorite = async () => {
       <h1 class="post-title">{{ postData.title }}</h1>
 
       <div class="post-meta">
-        <el-tag type="info">{{ post.category }}</el-tag>
+        <el-tag type="info">{{ postData.post_classes }}</el-tag>
         <el-tag v-for="(tag, index) in postData.tagList" :key="index" class="post-tag">
           {{ tag }}
         </el-tag>
         <span class="views">阅读 {{ post.views }}</span>
       </div>
 
-      <img v-if="post.cover" :src="post.cover" class="post-cover">
+      <img v-if="postData.post_picture" :src="postData.post_picture" class="post-cover">
 
       <PreviewOnly :content="postData.content" />
       <!-- <div class="content" v-html="postData.content">
@@ -197,6 +199,18 @@ const handleFavorite = async () => {
     <div class="comment-section">
       <h3>评论（{{ post.comments }}）</h3>
       <CommentComponent />
+    </div>
+  </div>
+  <div class="empty-container" v-else>
+    <div class="empty-container">
+      <div class="empty-icon">
+        <el-icon>
+          <ExclamationCircleOutlined />
+        </el-icon>
+      </div>
+      <div class="empty-text">
+        <span>该帖子不存在</span>
+      </div>
     </div>
   </div>
 </template>
@@ -459,6 +473,29 @@ const handleFavorite = async () => {
 
   .post-title {
     font-size: 1.5em !important;
+  }
+}
+
+.empty-container {
+  .empty-container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    color: #999;
+    margin-bottom: 16px;
+  }
+
+  .empty-text {
+    font-size: 16px;
+    color: #666;
   }
 }
 </style>

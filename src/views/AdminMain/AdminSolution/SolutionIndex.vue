@@ -128,7 +128,7 @@ const handleDelete = (id) => {
       </el-table-column>
       <el-table-column prop="status" label="题解状态">
         <template #default="{ row }">
-          <el-tag :type="row.status === 0 ? 'warning' : 'success'">{{ row.status === 0 ? '待审核' : '已审核' }}</el-tag>
+          <el-tag :type="row.status === 0 ? 'warning' : row.status === 1 ? 'success' : 'info'">{{ row.status === 0 ? '待审核' : row.status === 1 ? '已审核' : '草稿' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="时间" width="180">

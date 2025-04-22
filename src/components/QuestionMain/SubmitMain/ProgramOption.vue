@@ -136,7 +136,7 @@ const submitForm = () => {
       // 提交成功后删除表单本地存储
       addDataRef.value.resetFields()
       localStorage.removeItem('addData')
-      router.push('/question/compile')
+      router.go(-1)
     } else {
       ElMessage({
         message: '请填写完整信息',

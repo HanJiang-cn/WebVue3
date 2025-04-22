@@ -3,25 +3,27 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
-import { addPostApi } from '@/api/post'
+import { addFileApi } from '@/api/upfile'
+import { addPostApi, addDraftApi } from '@/api/post'
+import { useRouter } from 'vue-router'
 import MdEditor from '@/components/MdEditor.vue'
-import router from '@/router'
 import Cookies from 'js-cookie'
 
+const router = useRouter()
 // 表单引用
 const formRef = ref(null)
 const form = reactive({
   title: '',
   content: '',
-  category: '',
+  post_classes: '',
   tags: [],
-  cover: null
+  post_picture: '',
 })
 const categories = ref([
-  { value: 'tech', label: '技术分享' },
-  { value: 'algorithm', label: '算法题解' },
-  { value: 'life', label: '生活感悟' },
-  { value: 'qa', label: '问题求助' }
+  { value: '技术分享', label: '技术分享' },
+  { value: '算法题解', label: '算法题解' },
+  { value: '生活感悟', label: '生活感悟' },
+  { value: '问题求助', label: '问题求助' }
 ])
 const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
 const submitting = ref(false)
@@ -36,19 +38,19 @@ const rules = reactive({
     { required: true, message: '内容不能为空', trigger: 'blur' },
     { min: 20, message: '内容至少20个字符', trigger: 'blur' }
   ],
-  category: [
+  post_classes: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
 })
 
 // 草稿相关操作
-const DRAFT_KEY = 'post_draft'
-const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
-// const
+// const DRAFT_KEY = 'post_draft'
+// const COOKIE_OPTIONS = { expires: 7 } // 7天后过期
 
 // 保存草稿
-const saveDraft = () => {
-  Cookies.set(DRAFT_KEY, JSON.stringify(form), COOKIE_OPTIONS)
+const saveDraft = async () => {
+  // Cookies.set(DRAFT_KEY, JSON.stringify(form), COOKIE_OPTIONS)
+  const res = await addDraftApi(form)
   ElNotification({
     title: '提示',
     message: '草稿已保存',
@@ -57,35 +59,38 @@ const saveDraft = () => {
   })
 }
 // 清除草稿
-const clearDraft = () => {
-  Cookies.remove(DRAFT_KEY)
-  formRef.value.resetFields()
-  ElMessage({
-    message: '草稿已清除',
-    type: 'success',
-  })
-  // 刷新页面
-  window.location.reload()
-}
+// const clearDraft = () => {
+//   Cookies.remove(DRAFT_KEY)
+//   formRef.value.resetFields()
+//   ElMessage({
+//     message: '草稿已清除',
+//     type: 'success',
+//   })
+//   // 刷新页面
+//   window.location.reload()
+// }
 // 加载草稿
+// function loadDraft() {
+//   const draft = Cookies.get(DRAFT_KEY)
+//   if (draft) {
+//     try {
+//       const parsed = JSON.parse(draft)
+//       // Object.assign 是为了确保 tags 和 post_classes 被正确地加载
+//       // 即使它们在草稿中被存储为数组或字符串，也能正确地转换为数组。
+//       Object.assign(form, parsed)
+//       ElNotification({
+//         title: '草稿加载成功',
+//         message: '检测到未发布的草稿，已自动加载',
+//         type: 'info',
+//         duration: 3000
+//       })
+//     } catch (e) {
+//       console.error('草稿解析失败:', e)
+//     }
+//   }
+// }
 function loadDraft() {
-  const draft = Cookies.get(DRAFT_KEY)
-  if (draft) {
-    try {
-      const parsed = JSON.parse(draft)
-      // Object.assign 是为了确保 tags 和 category 被正确地加载
-      // 即使它们在草稿中被存储为数组或字符串，也能正确地转换为数组。
-      Object.assign(form, parsed)
-      ElNotification({
-        title: '草稿加载成功',
-        message: '检测到未发布的草稿，已自动加载',
-        type: 'info',
-        duration: 3000
-      })
-    } catch (e) {
-      console.error('草稿解析失败:', e)
-    }
-  }
+
 }
 
 onMounted(() => {
@@ -97,18 +102,18 @@ function uploadContent(data) {
 }
 
 // 处理封面图上传
-const handleCoverChange = (file) => {
-  // 校验图片大小和类型
+const fileData = ref(null)
+const beforeAvatarUpload = (file) => {
+  // 检测字符串是否以指定的前缀开始
   const isImage = file.raw.type.startsWith('image/')
   const isLt2M = file.size / 1024 / 1024 < 2
 
   if (!isImage) {
     ElNotification({
-      title: '文件类型错误',
-      message: '只能上传图片文件',
+      title: '错误',
+      message: '请上传 JPEG 或 PNG 格式的图片',
       type: 'error'
     })
-    return false
   }
 
   if (!isLt2M) {
@@ -120,11 +125,35 @@ const handleCoverChange = (file) => {
     return false
   }
 
+  fileData.value = file
+  // 显示缩略图
+  // 本地文件内容读取
   const reader = new FileReader()
+  fileData.value = file
+  // 设置文件加载完成回调（base64格式转换）
   reader.onload = (e) => {
-    form.cover = e.target.result
+    // 将图片Base64数据赋值给表单头像字段
+    form.post_picture = e.target.result
   }
+  // 启动文件读取（将文件转换为Data URL格式）
   reader.readAsDataURL(file.raw)
+}
+const handleUpload = async () => {
+  if (fileData.value) {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    // 添加文件到表单数据，使用原始文件对象
+    formData.append('file', fileData.value.raw)
+    const res = await addFileApi(formData)
+    form.post_picture = res.data
+    console.log(form)
+
+    ElNotification({
+      title: '成功',
+      message: '封面上传成功',
+      type: 'success'
+    })
+  }
 }
 
 // 提交表单
@@ -133,10 +162,8 @@ const submitForm = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const res = await addPostApi({
-          ...form,
-          tags: [...form.tags, form.category] // 将分类加入标签
-        })
+        await handleUpload()
+        const res = await addPostApi({ ...form })
         console.log(res)
         if (res.code === 0) {
           ElNotification({
@@ -144,11 +171,7 @@ const submitForm = async () => {
             message: '发布成功！',
             type: 'success',
           })
-          localStorage.removeItem(DRAFT_KEY) // 清除草稿
           formRef.value.resetFields()
-          // window.open(router.resolve({
-          //   path: '/post/detail',
-          // }).href, '_self')
           router.push('/post/detail')
         }
         submitting.value = false
@@ -194,8 +217,8 @@ const submitForm = async () => {
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
-        <el-form-item prop="category" label="分类">
-          <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
+        <el-form-item prop="post_classes" label="分类">
+          <el-select v-model="form.post_classes" placeholder="请选择分类" clearable class="full-width">
             <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -213,10 +236,10 @@ const submitForm = async () => {
 
     <!-- 封面图上传 -->
     <el-form-item label="封面图" class="form-section">
-      <el-upload action="#" :auto-upload="false" :show-file-list="false" :on-change="handleCoverChange"
-        accept="image/jpeg,image/png">
+      <el-upload action="#" :auto-upload="false" :show-file-list="false" accept="image/jpeg,image/png"
+        :on-change="beforeAvatarUpload" :http-request="handleUpload">
         <div class="cover-upload">
-          <img v-if="form.cover" :src="form.cover" class="cover-preview">
+          <img v-if="form.post_picture" :src="form.post_picture" class="cover-preview">
           <div v-else class="upload-placeholder">
             <el-icon :size="32">
               <Camera />
@@ -232,9 +255,6 @@ const submitForm = async () => {
     <div class="submit-bar">
       <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
         立即发布
-      </el-button>
-      <el-button size="large" @click="clearDraft">
-        重置页面
       </el-button>
       <el-button size="large" @click="saveDraft">
         保存草稿

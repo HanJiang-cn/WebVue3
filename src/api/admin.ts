@@ -23,6 +23,7 @@ enum Api {
   SolutionUpdate = '/solution/update',
   SolutionReview = '/solution/review',
   SolutionReviewList = '/solution/getReviews',
+  ProblemList = '/question/list/page',
 }
 
 interface UpdateData {
@@ -117,6 +118,11 @@ function solutionReview(id: number, isApproved: boolean): Promise<any> {
 function getSolutionReviewList(data: any): Promise<any> {
   return post(Api.SolutionReviewList, data)
 }
+
+function getProblemList(data: any): Promise<any> {
+  return post(Api.ProblemList, data)
+}
+
 export {
   getUserList,
   deleteUser,
@@ -138,4 +144,5 @@ export {
   solutionUpdate,
   solutionReview,
   getSolutionReviewList,
+  getProblemList,
 }

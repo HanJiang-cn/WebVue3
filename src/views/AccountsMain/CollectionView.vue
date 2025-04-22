@@ -13,8 +13,6 @@ const currentPath = router.currentRoute.value.path
 const menuItems = [
   { key: 'all', label: '全部收藏' },
   { key: 'post', label: '帖子' },
-  { key: 'discussion', label: '讨论' },
-  { key: 'problem', label: '题目' },
   { key: 'solution', label: '题解' }
 ]
 

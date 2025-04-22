@@ -14,9 +14,9 @@ const formRef = ref(null)
 const form = reactive({
   title: '',
   content: '',
-  category: '',
+  post_classes: '',
   tags: [],
-  cover: null
+  post_picture: '',
 })
 const categories = ref([
   { value: '技术分享', label: '技术分享' },
@@ -37,7 +37,7 @@ const rules = reactive({
     { required: true, message: '内容不能为空', trigger: 'blur' },
     { min: 20, message: '内容至少20个字符', trigger: 'blur' }
   ],
-  category: [
+  post_classes: [
     { required: true, message: '请选择分类', trigger: 'change' }
   ]
 })
@@ -49,9 +49,10 @@ onMounted(async () => {
     const res = await getPostApi({ id: postId.value })
     if (res.code === 0) {
       Object.assign(form, res.data)
+      form.tags = res.data.tagList
       // 处理服务器返回的封面URL
-      if (res.data.coverUrl) {
-        form.cover = res.data.coverUrl
+      if (res.data.img) {
+        form.post_picture = res.data.img
       }
     }
   } catch (error) {
@@ -68,18 +69,18 @@ function uploadContent(data) {
 }
 
 // 处理封面图上传
-const handleCoverChange = (file) => {
-  // 校验图片大小和类型
+const fileData = ref(null)
+const beforeAvatarUpload = (file) => {
+  // 检测字符串是否以指定的前缀开始
   const isImage = file.raw.type.startsWith('image/')
   const isLt2M = file.size / 1024 / 1024 < 2
 
   if (!isImage) {
     ElNotification({
-      title: '文件类型错误',
-      message: '只能上传图片文件',
+      title: '错误',
+      message: '请上传 JPEG 或 PNG 格式的图片',
       type: 'error'
     })
-    return false
   }
 
   if (!isLt2M) {
@@ -91,11 +92,35 @@ const handleCoverChange = (file) => {
     return false
   }
 
+  fileData.value = file
+  // 显示缩略图
+  // 本地文件内容读取
   const reader = new FileReader()
+  fileData.value = file
+  // 设置文件加载完成回调（base64格式转换）
   reader.onload = (e) => {
-    form.cover = e.target.result
+    // 将图片Base64数据赋值给表单头像字段
+    form.post_picture = e.target.result
   }
+  // 启动文件读取（将文件转换为Data URL格式）
   reader.readAsDataURL(file.raw)
+}
+const handleUpload = async () => {
+  if (fileData.value) {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    // 添加文件到表单数据，使用原始文件对象
+    formData.append('file', fileData.value.raw)
+    const res = await addFileApi(formData)
+    form.post_picture = res.data
+    console.log(form)
+
+    ElNotification({
+      title: '成功',
+      message: '封面上传成功',
+      type: 'success'
+    })
+  }
 }
 
 // 提交表单
@@ -105,10 +130,10 @@ const submitForm = async () => {
     async (valid) => {
       if (valid) {
         try {
+          await handleUpload()
           const res = await editPostApi({
             ...form,
             id: postId.value, // 确保传递帖子ID
-            tags: [...form.tags, form.category]
           })
           if (res.code === 0) {
             ElNotification({
@@ -148,7 +173,7 @@ const submitForm = async () => {
   <el-form ref="formRef" :model="form" :rules="rules" class="post-container">
     <!-- 头部 -->
     <div class="post-header">
-      <h1 class="post-title">编辑内容</h1>
+      <h1 class="post-title">编辑帖子</h1>
       <div class="post-tips">
         <el-icon>
           <InfoFilled />
@@ -170,8 +195,8 @@ const submitForm = async () => {
     <!-- 分类和标签 -->
     <el-row :gutter="24" class="form-section">
       <el-col :xs="24" :sm="12">
-        <el-form-item prop="category" label="分类">
-          <el-select v-model="form.category" placeholder="请选择分类" clearable class="full-width">
+        <el-form-item prop="post_classes" label="分类">
+          <el-select v-model="form.post_classes" placeholder="请选择分类" clearable class="full-width">
             <el-option v-for="item in categories" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -189,10 +214,10 @@ const submitForm = async () => {
 
     <!-- 封面图上传 -->
     <el-form-item label="封面图" class="form-section">
-      <el-upload action="#" :auto-upload="false" :show-file-list="false" :on-change="handleCoverChange"
-        accept="image/jpeg,image/png">
+      <el-upload action="#" :auto-upload="false" :show-file-list="false" accept="image/jpeg,image/png"
+        :on-change="beforeAvatarUpload" :http-request="handleUpload">
         <div class="cover-upload">
-          <img v-if="form.cover" :src="form.cover" class="cover-preview">
+          <img v-if="form.post_picture" :src="form.post_picture" class="cover-preview">
           <div v-else class="upload-placeholder">
             <el-icon :size="32">
               <Camera />

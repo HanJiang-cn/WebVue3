@@ -5,7 +5,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 // import { getPostApi, thumbPostApi, favourPostApi } from '@/api/post'
-import { getSolutionInfoApi } from '@/api/solution'
+import { getSolutionInfoApi, favourSolutionApi } from '@/api/solution'
 import { getIdInfoApi } from '@/api/user'
 import moment from 'moment'
 import PreviewOnly from '@/components/PreviewOnly.vue'
@@ -67,29 +67,11 @@ const handleCopyLink = () => {
   navigator.clipboard.writeText(url)
   ElMessage.success('链接已复制到剪贴板')
 }
-// 点赞处理
-const handleLike = async () => {
-  try {
-    const { data } = await thumbPostApi({
-      postId: id,
-    })
-    if (data === 1) {
-      isLiked.value = true
-      getPostInfor()
-      ElMessage.success('点赞成功')
-    } else {
-      isLiked.value = false
-      getPostInfor()
-      ElMessage.error('取消点赞')
-    }
-  } catch (error) {
-    console.error('点赞失败:', error)
-  }
-}
+
 // 收藏处理
 const handleFavorite = async () => {
   try {
-    const { data } = await favourPostApi({
+    const { data } = await favourSolutionApi({
       postId: id,
     })
     if (data === 1) {
@@ -108,7 +90,7 @@ const handleFavorite = async () => {
 </script>
 
 <template>
-  <div class="post-container">
+  <div class="post-container" v-if="postData.status === 1">
     <!-- 返回按钮 -->
     <div class="back-button">
       <el-button type="text" @click="$router.go(-1)">
@@ -156,13 +138,6 @@ const handleFavorite = async () => {
         logo="https://vitepress.yiov.top/logo.png" />
 
       <div class="post-actions">
-        <el-button @click="handleLike" :class="{ 'liked': isLiked }">
-          <el-icon :color="isLiked ? '#f56c6c' : ''">
-            <LikeOutlined />
-          </el-icon>
-          {{ likeCount }}
-        </el-button>
-
         <el-button @click="handleFavorite" :class="{ 'favorited': isFavorited }">
           <el-icon :color="isFavorited ? '#e6a23c' : ''">
             <Star />
@@ -198,6 +173,30 @@ const handleFavorite = async () => {
     <div class="comment-section">
       <h3>评论（{{ post.comments }}）</h3>
       <CommentComponent />
+    </div>
+  </div>
+  <div class="empty-container" v-else-if="postData.status === 0">
+    <div class="empty-container">
+      <div class="empty-icon">
+        <el-icon>
+          <ExclamationCircleOutlined />
+        </el-icon>
+      </div>
+      <div class="empty-text">
+        <span>该题解暂未发布</span>
+      </div>
+    </div>
+  </div>
+  <div class="empty-container" v-else>
+    <div class="empty-container">
+      <div class="empty-icon">
+        <el-icon>
+          <ExclamationCircleOutlined />
+        </el-icon>
+      </div>
+      <div class="empty-text">
+        <span>该题解不存在</span>
+      </div>
     </div>
   </div>
 </template>
@@ -460,6 +459,29 @@ const handleFavorite = async () => {
 
   .post-title {
     font-size: 1.5em !important;
+  }
+}
+
+.empty-container{
+  .empty-container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    color: #999;
+    margin-bottom: 16px;
+  }
+
+  .empty-text {
+    font-size: 16px;
+    color: #666;
   }
 }
 </style>
