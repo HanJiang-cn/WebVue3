@@ -2,11 +2,13 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, defineProps, defineEmits, onMounted } from 'vue'
-import { getApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
 import { useRouter } from 'vue-router'
+import { getCompetitionQuestionApi } from '@/api/question'
 
 const router = useRouter()
+const competitionId = ref(router.currentRoute.value.query.competitionId)
+const competitionQuestion = ref([])
 // 定义 props ,当父组件传递过来的 message 为 true 时，抽屉打开。
 // 抽屉的 value 一定要绑定为 :model-value ！！！
 const props = defineProps({
@@ -26,8 +28,10 @@ const huidao = () => {
 const loading = ref(false)
 const tableData = ref([])
 const loadData = async () => {
+  console.log(competitionId.value)
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo })
+  const { data: { records, total } } = await getCompetitionQuestionApi(competitionId.value,{ ...pageInfo })
+  competitionQuestion.value = records
   loading.value = false
   tableData.value = records
   setTotals(Number(total))

@@ -46,6 +46,7 @@ const loadData = async () => {
     const params = {
       ...pageInfo,
       type: searchParams.value.type,
+      afoot: searchParams.value.afoot
     }
 
     const { data: { records, total } } = await getCompetitionUserListApi(params)
@@ -84,7 +85,6 @@ const handleFilterChange = () => {
   pageInfo.current = 1
   loadData()
 }
-
 onMounted(loadData)
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 </script>
@@ -143,8 +143,8 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           </article>
         </div>
 
-        <!-- 分页 -->
-        <el-pagination
+      <!-- 分页 -->
+      <el-pagination
           v-model:current-page="pageInfo.current"
           v-model:page-size="pageInfo.pageSize"
           :page-sizes="[10, 20, 30, 40]"
