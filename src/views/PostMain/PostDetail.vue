@@ -15,7 +15,6 @@ const postList = ref([])
 // 筛选条件
 const filter = reactive({
   title: '',
-  sort: 'newest'
 })
 
 // 搜索帖子
@@ -95,11 +94,6 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           </el-icon>
         </template>
       </el-input>
-
-      <el-select v-model="filter.sort" placeholder="排序方式" style="width: 150px; margin-left: 15px" @change="fetchPosts">
-        <el-option label="最新发布" value="newest" />
-        <el-option label="最近更新" value="updated" />
-      </el-select>
     </div>
 
     <!-- 帖子列表 -->
@@ -111,6 +105,13 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           <el-tag v-if="row.isTop" effect="dark" type="info" size="small" style="margin-left: 8px">
             置顶
           </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="status" label="状态">
+        <template #default="{ row }">
+          <el-tag v-if="row.status === 0" type="success" size="small">已发布</el-tag>
+          <el-tag v-if="row.status === 1" type="warning" size="small">草稿</el-tag>
         </template>
       </el-table-column>
 

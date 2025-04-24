@@ -131,7 +131,7 @@ const handleFavorite = async () => {
 
       <img v-if="post.cover" :src="post.cover" class="post-cover">
 
-      <PreviewOnly :content="postData.content" />
+      <PreviewOnly :content="postData.context" />
       <!-- <div class="content" v-html="postData.content">
     </div> -->
       <LinkCard url="https://vitepress.yiov.top/" title="Vitepress中文搭建教程" description="https://vitepress.yiov.top/"

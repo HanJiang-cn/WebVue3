@@ -7,7 +7,6 @@ import moment from 'moment'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const loading = ref(false)
 const afootMap = {
   1: { text: '正在报名', class: 'afoot-ongoing' },
   2: { text: '进行中', class: 'afoot-processing' },
@@ -40,39 +39,80 @@ const calcRemainingDays = (item) => {
 }
 
 // 加载数据
+const loading = ref(false)
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+const allData = ref([]) // 新增本地数据存储
+
+
 const loadData = async () => {
   loading.value = true
   try {
-    const params = {
-      ...pageInfo,
-      type: searchParams.value.type,
-      afoot: searchParams.value.afoot
-    }
-
-    const { data: { records, total } } = await getCompetitionUserListApi(params)
-
-    dataList.value = records.map(item => ({
+    const { data: { records } } = await getCompetitionUserListApi({ pageSize: 1000 })
+    allData.value = records.map(item => ({
       ...item,
       remainingDays: calcRemainingDays(item),
       afoot: calcafoot(item),
       afootInfo: afootMap[calcafoot(item)],
       type: item.type,
     }))
-     // 根据筛选条件过滤数据
-     dataList.value = dataList.value.filter(item => {
-      if (searchParams.value.afoot!== 0 && item.afoot!== searchParams.value.afoot) {
-        return false
-      }
-      if (searchParams.value.type!== null && item.type!== searchParams.value.type) {
-        return false
-      }
-      return true
-    })
-    setTotals(Number(total))
+
+    // 处理筛选和排序
+    handleFilterChange()
   } finally {
     loading.value = false
   }
 }
+
+// 修改后的筛选处理方法
+const handleFilterChange = () => {
+  const filtered = allData.value.filter(item => {
+    if (searchParams.value.afoot !== 0 && item.afoot !== searchParams.value.afoot) return false
+    if (searchParams.value.type !== null && item.type !== searchParams.value.type) return false
+    return true
+  })
+
+  // 排序：进行中和报名中的在前（状态2，1），已结束在后（状态3）
+  filtered.sort((a, b) => {
+    // 已结束的排在最后
+    if (a.afoot === 3) return 1
+    if (b.afoot === 3) return -1
+    // 其他状态降序排列
+    return b.afoot - a.afoot
+  })
+
+  total.value = filtered.length
+  const startIndex = (currentPage.value - 1) * pageSize.value
+  const endIndex = startIndex + pageSize.value
+  dataList.value = filtered.slice(startIndex, endIndex)
+  console.log(dataList.value);
+
+}
+
+// 新增分页处理方法
+const handleSizeChange = (newSize) => {
+  pageSize.value = newSize
+  // 返回到页面顶部
+  window.scrollTo({
+    top: 0,
+    // behavior 是可选的，用于指定滚动的动画效果，'smooth' 表示平滑滚动
+    behavior: 'smooth'
+  })
+  handleFilterChange()
+}
+
+const handleCurrentChange = (newPage) => {
+  currentPage.value = newPage
+  window.scrollTo({
+    top: 0,
+    // behavior 是可选的，用于指定滚动的动画效果，'smooth' 表示平滑滚动
+    behavior: 'smooth'
+  })
+  handleFilterChange()
+}
+
+
 const handleDetail = (id) => {
   console.log(id)
   router.push({
@@ -80,13 +120,10 @@ const handleDetail = (id) => {
     query: { id: id }
   })
 }
-// 筛选条件变化时重新加载数据
-const handleFilterChange = () => {
-  pageInfo.current = 1
-  loadData()
-}
 onMounted(loadData)
-const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
+// const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
+
+
 </script>
 
 <template>
@@ -104,28 +141,19 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <!-- 右侧筛选栏 -->
       <section class="content-main">
         <div v-loading="loading" class="competition-list">
-          <article
-            v-for="item in dataList"
-            :key="item.id"
-            class="competition-item"
-          >
-            <div @click="handleDetail(item.id)"
-
-              class="cover-link"
-            >
+          <article v-for="item in dataList" :key="item.id" class="competition-item">
+            <div @click="handleDetail(item.id)" class="cover-link">
               <img :src="item.cover" alt="竞赛封面">
             </div>
             <div class="competition-info">
-              <div @click="handleDetail(item.id)"
-                class="title-link"
-              >
+              <div @click="handleDetail(item.id)" class="title-link">
                 <span class="hot-tag" v-if="item.hot">TOP 1</span>
                 {{ item.name }}
               </div>
 
               <div class="meta-info">
                 <p><span>主办方：</span>{{ item.organizer }}</p>
-                <p><span>级别：</span>{{ item.type===0?'团队赛':'个人赛' }}</p>
+                <p><span>级别：</span>{{ item.type === 0 ? '团队赛' : '个人赛' }}</p>
                 <p><span>报名时间：</span>{{ moment(item.startTime).format('YYYY-MM-DD HH:mm') }}</p>
                 <p><span>比赛时间：</span>{{ moment(item.endTime).format('YYYY-MM-DD HH:mm') }}</p>
               </div>
@@ -143,17 +171,10 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           </article>
         </div>
 
-      <!-- 分页 -->
-      <el-pagination
-          v-model:current-page="pageInfo.current"
-          v-model:page-size="pageInfo.pageSize"
-          :page-sizes="[10, 20, 30, 40]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="totals"
-          background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <!-- 分页 -->
+        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 30, 40]"
+          layout="total, sizes, prev, pager, next, jumper" :total="total" background @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" />
       </section>
 
       <!-- 左侧筛选栏 -->
@@ -161,10 +182,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
         <div class="filter-section">
           <div class="filter-group">
             <h3>状态筛选</h3>
-            <el-select
-              v-model="searchParams.afoot"
-              @change="handleFilterChange"
-            >
+            <el-select v-model="searchParams.afoot" @change="handleFilterChange">
               <el-option label="全部" :value="0" />
               <el-option label="正在报名" :value="1" />
               <el-option label="进行中" :value="2" />
@@ -199,7 +217,8 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
 
 .main-content {
   display: grid;
-  grid-template-columns: 1fr 280px; /* 交换列顺序 */
+  grid-template-columns: 1fr 280px;
+  /* 交换列顺序 */
   gap: 24px;
   margin-top: 40px;
 }
@@ -209,32 +228,35 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
     padding: 20px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
-    .filter-group  {
+    .filter-group {
       margin-bottom: 15px;
-      h3{
+
+      h3 {
         margin-bottom: 15px;
       }
-        :deep(.el-radio-group) {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          transition: all 0.3s ease;
 
-          .el-radio-button {
+      :deep(.el-radio-group) {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        transition: all 0.3s ease;
+
+        .el-radio-button {
+          border-radius: 5px;
+          border: none;
+          color: #333;
+          font-size: 14px;
+
+          .el-radio-button__inner {
             border-radius: 5px;
-            border: none;
-            color: #333;
-            font-size: 14px;
-
-            .el-radio-button__inner {
-              border-radius: 5px;
-              border: 0;
-            }
+            border: 0;
           }
         }
       }
+    }
+
     .el-radio-group {
       display: grid;
       gap: 8px;
@@ -256,7 +278,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
   padding: 20px;
   background: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   .cover-link {
     display: block;
@@ -324,9 +346,20 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       border-radius: 16px;
       font-size: 12px;
 
-      &.afoot-ongoing { background: #e8f4ff; color: #1890ff; }
-      &.afoot-processing { background: #fff7e6; color: #faad14; }
-      &.afoot-ended { background: #fff0f0; color: #ff4d4f; }
+      &.afoot-ongoing {
+        background: #e8f4ff;
+        color: #1890ff;
+      }
+
+      &.afoot-processing {
+        background: #fff7e6;
+        color: #faad14;
+      }
+
+      &.afoot-ended {
+        background: #fff0f0;
+        color: #ff4d4f;
+      }
     }
 
     .countdown {

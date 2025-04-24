@@ -87,6 +87,12 @@ const routes = [
           },
         ],
       },
+      // 聊天
+      {
+        path: 'chat',
+        name: 'Chat',
+        component: () => import('@/views/AccountsMain/ChatView.vue'),
+      }
     ],
   },
   // 做题页面

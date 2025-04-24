@@ -8,6 +8,7 @@ enum Api {
   EditPost = '/post/edit',
   GetPost = '/post/get/vo',
   GetPostList = '/post/my/list/page/vo',
+  GetAllPostList = '/post/list/page/vo',
   ThumbPost = '/post_thumb/',
   FavourPost = '/post_favour/',
   FavourMyListPost = '/post_favour/my/list/page',
@@ -66,6 +67,10 @@ function getPostListApi(data: any): Promise<any> {
   return post(Api.GetPostList, data)
 }
 
+function getAllPostListApi(data: any): Promise<any> {
+  return post(Api.GetAllPostList, data)
+}
+
 function thumbPostApi(data: ThumbPostData): Promise<any> {
   return post(Api.ThumbPost, data)
 }
@@ -84,6 +89,7 @@ export {
   deletePostApi,
   editPostApi,
   getPostApi,
+  getAllPostListApi,
   getPostListApi,
   thumbPostApi,
   favourPostApi,

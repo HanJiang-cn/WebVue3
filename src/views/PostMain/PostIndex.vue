@@ -148,7 +148,7 @@ const handleFavorite = async () => {
         <span class="views">阅读 {{ post.views }}</span>
       </div>
 
-      <img v-if="postData.post_picture" :src="postData.post_picture" class="post-cover">
+      <el-image v-if="postData.post_picture" :src="postData.post_picture" class="post-cover"></el-image>
 
       <PreviewOnly :content="postData.content" />
       <!-- <div class="content" v-html="postData.content">
@@ -306,7 +306,7 @@ const handleFavorite = async () => {
 
     .post-cover {
       width: 100%;
-      max-height: 400px;
+      min-height: 400px;
       object-fit: cover;
       border-radius: 8px;
       margin-bottom: 24px;

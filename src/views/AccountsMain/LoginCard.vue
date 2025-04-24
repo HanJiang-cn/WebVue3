@@ -151,7 +151,7 @@ const startCountdown = () => {
               </el-form-item>
               <el-form-item prop="password">
                 <el-input placeholder="请输入密码" v-model="formData.users.userPassword" type="password" show-password
-                  @change="handleSubmitForm2">
+                  @keyup.enter="handleSubmitForm2">
                   <template #prefix>
                     <el-icon>
                       <LockFilled />
