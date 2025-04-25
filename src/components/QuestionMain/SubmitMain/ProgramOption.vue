@@ -20,6 +20,14 @@ const addData = reactive({
     stackLimit: '',
     timeLimit: ''
   },
+  question_example: [
+    {
+      explain: '',
+      input: '',
+      output: ''
+    }
+  ],
+  question_prompt: [],
   tags: [],
   title: '',
   difficulty: '',
@@ -78,17 +86,36 @@ const rules = {
   answer: [
     { required: true, message: '请填写答案', trigger: 'blur' },
   ],
+
   judgeConfig: {
-    memoryLimit: [
-      { required: true, message: '请填写内存限制', trigger: 'blur' }
-    ],
+  memoryLimit: [
+    { required: true, message: '请填写内存限制', trigger: 'blur' },
+    { min: 0, message: '内存限制不能小于0', trigger: 'blur' }
+  ],
     stackLimit: [
       { required: true, message: '请填写栈限制', trigger: 'blur' }
     ],
     timeLimit: [
-      { required: true, message: '请填写时间限制', trigger: 'blur' }
+      { required: true, message: '请填写时间限制', trigger: 'blur' },
+      { min: 0, message: '时间限制不能小于0', trigger: 'blur' }
     ]
-  }
+  },
+  question_example: [
+    {
+      explain: [
+        { required: true, message: '请填写解释', trigger: 'blur' }
+      ],
+      input: [
+        { required: true, message: '请填写输入', trigger: 'blur' }
+      ],
+      output: [
+        { required: true, message: '请填写输出', trigger: 'blur' }
+      ]
+    }
+  ],
+  question_prompt: [
+  {required: true, message: '请填写提示', trigger: 'blur'}
+  ]
 }
 
 const addSample = () => {
@@ -100,7 +127,13 @@ const removeSample = (index) => {
   addData.judgeCase.splice(index, 1)
   console.log(addData.judgeCase)
 }
-
+const addQuestionExample = () => {
+  addData.question_example.push({ explain: '', input: '', output: '' })
+  console.log(addData.question_example)
+}
+const removeQuestionExample = (index) => {
+  addData.question_example.splice(index, 1)
+}
 // 保存表单数据到 LocalStorage
 const saveFormToLocalStorage = () => {
   localStorage.setItem('addData', JSON.stringify(addData))
@@ -133,10 +166,11 @@ const submitForm = () => {
         message: '提交成功',
         type: 'success',
       })
+      console.log(res)
       // 提交成功后删除表单本地存储
       addDataRef.value.resetFields()
       localStorage.removeItem('addData')
-      router.push('/question/compile')
+      // router.push('/question/compile')
     } else {
       ElMessage({
         message: '请填写完整信息',
@@ -176,7 +210,8 @@ const handelBack = () => {
     <el-form-item label="内容" prop="content">
       <MdEditor v-model="addData.content" @modelValue="uploadContent" style="width: 100%;" />
     </el-form-item>
-    <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
+ <div class="ex">
+  <div v-for="(judgeCase, index) in addData.judgeCase" :key="index" class="sample-io">
       <el-form-item :label="`样本输入 ${index + 1}`" :prop="`judgeCase.${index}.input`" :rules="rules.input">
         <el-input v-model="judgeCase.input" type="textarea" />
       </el-form-item>
@@ -186,7 +221,28 @@ const handelBack = () => {
       <el-button type="danger" @click="removeSample(index)">删除</el-button>
     </div>
     <el-form-item>
-      <el-button type="primary" @click="addSample">添加样例输入输出</el-button>
+      <el-button type="primary" @click="addSample" style="margin-bottom: 15px;">添加样例输入输出</el-button>
+    </el-form-item>
+ </div>
+<div class="ex">
+<div v-for="(question_example, index) in addData.question_example" :key="index" class="test">
+      <el-form-item :label="`示例输入 ${index + 1}`" :prop="`question_example.${index}.input`" :rules="rules.question_example.input">
+        <el-input v-model="question_example.input" type="textarea" />
+      </el-form-item>
+      <el-form-item :label="`示例输出 ${index + 1}`" :prop="`question_example.${index}.output`" :rules="rules.question_example.output">
+        <el-input v-model="question_example.output" type="textarea" />
+      </el-form-item>
+      <el-form-item :label="`示例解释 ${index + 1}`" :prop="`question_example.${index}.explain`" :rules="rules.question_example.explain">
+        <el-input v-model="question_example.explain" type="textarea" />
+      </el-form-item>
+      <el-button type="danger" @click="removeQuestionExample(index)" style="margin-bottom: 20px;">删除</el-button>
+    </div>
+    <el-form-item>
+      <el-button type="success" @click="addQuestionExample" style="margin-bottom: 15px;">添加示例输入输出</el-button>
+    </el-form-item>
+  </div>
+    <el-form-item label="提示" prop="question_prompt">
+      <el-input v-model="addData.question_prompt" type="textarea" />
     </el-form-item>
     <el-form-item label="内存限制" prop="judgeConfig.memoryLimit">
       <el-input v-model="addData.judgeConfig.memoryLimit" type="number" />
@@ -228,5 +284,9 @@ const handelBack = () => {
 
 .el-form-item--default {
   margin-bottom: 25px;
+}
+.ex{
+  margin: 40px 0;
+  border-bottom: 1px solid #a7c4fd;
 }
 </style>

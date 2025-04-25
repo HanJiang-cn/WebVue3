@@ -3,7 +3,8 @@
 import QuestionIndexCard from '@/components/QuestionMain/QuestionIndexCard.vue'
 import QuestionIndexBackground from '@/components/QuestionMain/QuestionIndexBackground.vue'
 import { ref } from 'vue'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const radio1 = ref('1')
 const tableData = ref([
   {
@@ -89,6 +90,11 @@ const attrs = ref([
     ],
   },
 ])
+const handleHistory= () => {
+    window.open(router.resolve({
+      path: '/question/history',
+    }).href, '_blank')
+}
 </script>
 
 <template>
@@ -100,7 +106,7 @@ const attrs = ref([
         <div class="nav-title">
           <span class="left-title">学习计划</span>
           <span class="right-a">
-            <a href="#">查看更多</a>
+            <span @click="handleHistory">查看更多</span>
           </span>
         </div>
 
@@ -266,12 +272,12 @@ const attrs = ref([
               <el-icon>
                 <Clock />
               </el-icon>
-              <span>查看记录</span>
+              <span @click="handleHistory">查看记录</span>
             </a>
             <a href="#"><el-icon>
                 <DocumentDelete />
               </el-icon>
-              <span>错题练习</span></a>
+              <span @click="handleHistory">错题练习</span></a>
           </div>
         </el-card>
       </el-row>
@@ -307,8 +313,8 @@ const attrs = ref([
       color: #007aff;
       font-size: 14px;
 
-      a {
-        text-decoration: none;
+      span {
+        cursor: pointer;
       }
     }
   }

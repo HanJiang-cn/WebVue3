@@ -30,6 +30,7 @@ const loadData = async () => {
   loading.value = false
   questions.value = records
   setTotals(Number(total))
+  console.log(questions.value)
 }
 
 onMounted(() => {
@@ -129,11 +130,11 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
           </template>
         </el-table-column>
         <el-table-column prop="difficulty" label="难度" width="120" />
-        <el-table-column prop="current" label="时间" width="180">
+        <el-table-column prop="createTime" label="时间" width="180">
           <template #default="{ row }">
             <div class="time-cell" style="font-size: 12px;">
-              <div>发布：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
-              <div v-if="row.current">更新：{{ moment(row.current).format('YYYY-MM-DD HH:mm') }}</div>
+              <div>发布：{{ moment(row.createTime).format('YYYY-MM-DD HH:mm') }}</div>
+              <div v-if="row.updateTime">更新：{{ moment(row.updateTime).format('YYYY-MM-DD HH:mm') }}</div>
             </div>
           </template>
         </el-table-column>

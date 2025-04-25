@@ -1,34 +1,56 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import logo from '@/assets/logo.webp'
-import { ref,onMounted } from 'vue'
+import { ref,onMounted, computed,watch } from 'vue'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
-import QuestionList from '@/components/ProblemsMain/QuestionList.vue'
-import { useRouter } from 'vue-router'
-import { getCompetitionQuestionApi } from '@/api/question'
+import CompetitionQuestionList from '@/components/CometitionMain/CompetitionQuestionList.vue'
+import { useRouter,useRoute } from 'vue-router'
+import { getCompetitionQuestionDetailApi } from '@/api/question'
+import { searchCompetition } from '@/api/competition'
+import { ElMessage } from 'element-plus'
+
+const route = useRoute() // 增加route引用
+const competition = ref({})
 const router = useRouter()
-const competitionId = ref(router.currentRoute.value.query.competitionId)
+// const id = ref(router.currentRoute.value.query.id)
+// const questionId = ref(router.currentRoute.value.query.questionId)
+const id = computed(() => route.query.id)
+const questionId = computed(() => route.query.questionId)
 const visible = ref(false)
-const visible1 = ref(false)
-const visible2 = ref(false)
+
 const visible3 = ref(false)
 const visibles = ref(false)
 const test = ref('')
 const activeName = ref('1')
 const activeName1 = ref('1')
 const activeName2 = ref('1')
-const competitionQuestion= ref([])
+// const competitionQuestion= ref([])
+const competitionQuestion = ref([])
+const currentQuestion = ref({})
 const competitionName = ref('');
 // 加载竞赛题目
-const loadData = async () => {
+const loadQuestions = async () => {
   try {
-    const { data } = await getCompetitionQuestionApi( competitionId.value)
+    const { data } = await getCompetitionQuestionDetailApi(id.value)
     competitionQuestion.value = data
-    competitionName.value = competitionQuestion.value[0].name;
-    console.log(competitionQuestion.value)
-    console.log(competitionQuestion.value[0].name)
+    // 根据questionId查找当前题目
+    if (questionId.value) {
+      currentQuestion.value = competitionQuestion.value.find(q => q.id === questionId.value) || {}
+    }
   } catch (error) {
-    console.error('题目加载失败，错误信息:', error);
+    console.error('题目加载失败:', error)
+  }
+}
+// 获取竞赛详情
+const getCompetition = async () => {
+  try {
+    const { data } = await searchCompetition({ competitionId: id.value })
+    if (data && data.length > 0) {
+      competition.value = data[0] // 获取第一个竞赛信息
+      competitionName.value = competition.value.name
+    }
+  } catch (error) {
+    ElMessage.error('获取竞赛信息失败')
   }
 }
 
@@ -71,7 +93,31 @@ const tableData = [
 
 
 ]
+// 添加切换题目逻辑
+const currentQuestionIndex = computed(() =>
+  competitionQuestion.value.findIndex(q => q.id === questionId.value)
+)
 
+const hasPreviousQuestion = computed(() => currentQuestionIndex.value > 0)
+const hasNextQuestion = computed(() =>
+  currentQuestionIndex.value < competitionQuestion.value.length - 1
+)
+
+const handleSwitchQuestion = (direction) => {
+  const newIndex = direction === 'prev'
+    ? currentQuestionIndex.value - 1
+    : currentQuestionIndex.value + 1
+
+  if (newIndex >= 0 && newIndex < competitionQuestion.value.length) {
+    const newQuestion = competitionQuestion.value[newIndex]
+    router.replace({
+      query: {
+        ...route.query,
+        questionId: newQuestion.id
+      }
+    })
+  }
+}
 // // 题目切换方法
 // const switchQuestion = (direction) => {
 //   if (direction === 'prev' && currentQuestionIndex.value > 0) {
@@ -86,6 +132,10 @@ const Visable = () => {
   console.log(visibles.value)
 }
 
+
+const handleListClose = () => {
+  visibles.value = false
+}
 const value = ref(Date.now() + 1000 * 60 * 60 * 7)
 
 // 用户菜单
@@ -134,11 +184,34 @@ const handleLogout = () => {
     location.reload()
   })
 }
+const processQuestionData = () => {
+  if (currentQuestion.value.judgeCase) {
+    try {
+      currentQuestion.value.examples = JSON.parse(currentQuestion.value.judgeCase).map((item, index) => ({
+        id: index + 1,
+        input: item.input,
+        output: item.output,
+        explanation: item.explanation || ''
+      }))
+    } catch (e) {
+      console.error('评测用例解析失败:', e)
+      currentQuestion.value.examples = []
+    }
+  }
+}
+watch(() => route.query.questionId, (newVal) => {
+  if (newVal) {
+    currentQuestion.value = competitionQuestion.value.find(q => q.id === newVal) || {}
+    processQuestionData()
+  }
+})
 const handleNav = (name) => {
   window.open(router.resolve({ path: name, }).href, '_self')
 }
+
 onMounted(() => {
-  loadData()
+  loadQuestions()
+  getCompetition()
 })
 </script>
 
@@ -162,21 +235,21 @@ onMounted(() => {
                     题目列表
                   </el-button>
                 </el-tooltip>
-                <el-tooltip content="上一题" placement="bottom" effect="light" :visible="visible1">
-                  <el-button type="primary" @mouseenter="visible1 = true" @mouseleave="visible1 = false">
-                    <el-icon :size="15">
-                      <LeftOutlined />
-                    </el-icon>
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip content="下一题" placement="bottom" effect="light" :visible="visible2">
-                  <el-button type="primary" @mouseenter="visible2 = true" @mouseleave="visible2 = false">
-                    <el-icon :size="15">
-                      <RightOutlined />
-                    </el-icon>
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip content="随机题目" placement="bottom" effect="light" :visible="visible3">
+
+  <el-button
+    @click="handleSwitchQuestion('prev')"
+    :disabled="!hasPreviousQuestion"
+  >
+    <LeftOutlined />
+  </el-button>
+  <el-button
+    @click="handleSwitchQuestion('next')"
+    :disabled="!hasNextQuestion"
+  >
+    <RightOutlined />
+  </el-button>
+
+                <!-- <el-tooltip content="随机题目" placement="bottom" effect="light" :visible="visible3">
                   <el-button type="primary" @mouseenter="visible3 = true" @mouseleave="visible3 = false">
                     <el-icon :size="15">
                       <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="shuffle"
@@ -188,7 +261,7 @@ onMounted(() => {
                       </svg>
                     </el-icon>
                   </el-button>
-                </el-tooltip>
+                </el-tooltip> -->
               </el-button-group>
               <span class="time">剩余时间：
                 <el-countdown :value="value" />
@@ -266,71 +339,33 @@ onMounted(() => {
                   <!-- 内容 -->
                   <!-- 题目 -->
                   <el-row>
-                    <h1>
-                      这是一个题的题目
-                    </h1>
+                    <h1>{{ currentQuestion?.title }}</h1>
                   </el-row>
-                  <!-- 标签 -->
-                  <el-row style="margin-top: 10px;">
-                    <el-tag type="success">
-                      简单
-                    </el-tag>
-                    <el-tag type="info">
-                      数组
-                    </el-tag>
-                    <el-tag type="warning">
-                      JavaScript
-                    </el-tag>
-                  </el-row>
+      <!-- 标签 -->
+      <!-- <el-row style="margin-top: 10px;">
+    <el-tag type="success" v-for="item in competitionQuestion[0]?.tags" :key="item">{{ item }}</el-tag>
+  </el-row> -->
                   <!-- 题目描述 -->
                   <el-row style="margin-top: 10px;">
                     <div class="topic-content ">
-                      <div class="topic-content__text">
-                        <h3>
-                          题目描述
-                        </h3>
-                        <p>
-                          给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
-                        </p>
-                        <li>
-                          你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
-                        </li>
-                        <li>
-                          你可以按任意顺序返回答案。
-                        </li>
-                      </div>
-                      <div class="example">
-                        <p>
-                          示例 1：
-                        </p>
-                        <p>
-                          输入：nums = [2,7,11,15], target = 9
-                        </p>
-                        <p>
-                          输出：[0,1]
-                        </p>
-                        <p>
-                          解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
-                        </p>
-                        <p>
-                          示例 2：
-                        </p>
-                        <p>
-                          输入：nums = [3,2,4], target = 6
-                        </p>
-                        <p>
-                          输出：[1,2]
-                        </p>
-                        <p>
-                          示例 3：
-                        </p>
-                        <p>
-                          输入：nums = [3,3], target = 6
-                        </p>
-                        <p>
-                          输出：[0,1]
-                        </p>
-                      </div>
+                      <!-- 修改题目描述部分 -->
+  <div class="topic-content__text">
+    <h3>题目描述</h3>
+    <p class="difficulty">本题目难度：<span>{{ currentQuestion?.difficulty }}</span></p>
+    <p v-html="currentQuestion?.content"></p>
+    <ul v-if="currentQuestion?.question_prompt">
+      <li v-for="(question_prompt, index) in currentQuestion?.question_prompt" :key="index">{{ question_prompt }}</li>
+    </ul>
+
+  </div>
+  <div class="example" v-if="currentQuestion?.examples">
+    <p v-for="(example, index) in currentQuestion?.examples" :key="index">
+      <span class="example-label">示例 {{ index + 1 }}：</span>
+      <span class="example-input">输入：{{ example.input }}</span>
+      <span class="example-output">输出：{{ example.output }}</span>
+      <span class="example-explanation" v-if="example.explanation">解释：{{ example.explanation }}</span>
+    </p>
+  </div>
                     </div>
                     <!-- 提交记录 -->
                     <el-collapse style="width: 100%;">
@@ -444,7 +479,10 @@ onMounted(() => {
         </el-row>
       </el-main>
       <!-- 每日一题 -->
-      <QuestionList :visible="visibles" @colse="visibles = false"></QuestionList>
+      <CompetitionQuestionList
+    :visible="visibles"
+    @close="handleListClose"
+  />
     </el-container>
   </div>
 </template>
@@ -572,6 +610,8 @@ onMounted(() => {
                 font-size: 15px;
               }
             }
+
+
           }
 
           .el-button-group {
@@ -611,6 +651,7 @@ onMounted(() => {
                 color: #1a1a1a;
                 background: #E2E2E2;
               }
+
             }
           }
         }
@@ -781,10 +822,11 @@ onMounted(() => {
 
           // 示例
           .example {
+            width: 817px;
             background: rgba(#409EFF, 0.03);
             border: 1px solid rgba(#409EFF, 0.1);
             border-radius: 8px;
-            padding: 20px;
+            padding: 20px 0 20px 20px;
             margin: 24px 0;
             position: relative;
 

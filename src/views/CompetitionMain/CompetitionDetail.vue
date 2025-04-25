@@ -64,7 +64,15 @@ const handleSignUp = async () => {
     ElMessage.error('报名失败')
   }
 }
-
+//点击进行考试
+const handleExam = () => {
+  router.push({
+    path: '/competition/answer',
+    query: {
+      id: id.value
+    }
+  })
+}
 onMounted(getCompetition)
 </script>
 
@@ -146,6 +154,7 @@ onMounted(getCompetition)
     >
       报名已截止
     </div>
+    <el-button type=" primary" class="signup-btn" @click="handleExam">进行考试</el-button>
         </div>
       </aside>
     </main>

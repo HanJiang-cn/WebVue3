@@ -2,24 +2,22 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, defineProps, defineEmits, onMounted } from 'vue'
-import { getApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
 import { useRouter } from 'vue-router'
+import { getCompetitionQuestionDetailApi } from '@/api/question'
 
 const router = useRouter()
-// 定义 props ,当父组件传递过来的 message 为 true 时，抽屉打开。
-// 抽屉的 value 一定要绑定为 :model-value ！！！
+const id = ref(router.currentRoute.value.query.id)
+// 删除不必要的 competitionQuestion 变量
 const props = defineProps({
   visible: {
     type: Boolean,
-    // 设置默认值
     default: false
   }
 })
 
 const emits = defineEmits(['colse'])
 const huidao = () => {
-  // 关闭抽屉
   emits('colse')
 }
 
@@ -27,25 +25,33 @@ const loading = ref(false)
 const tableData = ref([])
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo })
-  loading.value = false
-  tableData.value = records
-  setTotals(Number(total))
+  try {
+    const { data } = await getCompetitionQuestionDetailApi(id.value)
+    tableData.value = data  // 将获取的数据赋值给 tableData
+    console.log('Loaded data:', data)
+  } catch (error) {
+    console.error('Error loading data:', error)
+  } finally {
+    loading.value = false
+  }
 }
+
 onMounted(() => {
   loadData()
 })
+
 const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = usePagination(loadData)
 
-const handleBrowse = (id) => {
-  window.open(router.resolve({
-    path: '/problems/question',
+const handleBrowse = (qId) => {
+  router.push({
+    path: '/competition/answer',
     query: {
-      id: id
+      id: id.value,
+      questionId: qId // 传递具体题目ID
     }
-  }).href, '_self')
+  })
+  emits('close')
 }
-
 </script>
 
 <template>
@@ -56,11 +62,11 @@ const handleBrowse = (id) => {
         <CloseOutlined @click="close" />
       </div>
     </template>
-    <el-table :data="tableData" stripe style="width: 100%">
+    <el-table :data="tableData" v-loading="loading" stripe style="width: 100%">
       <el-table-column label="序号" type="index" width="60" />
       <el-table-column label="题目" prop="title">
         <template #default="scope">
-          <div class="cell" @click="handleBrowse(scope.row.id)">
+          <div class="cell" @click="handleBrowse(scope.row.id)" style="cursor: pointer; color: var(--el-color-primary)">
             {{ scope.row.title }}
           </div>
         </template>
@@ -83,11 +89,16 @@ const handleBrowse = (id) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 16px;
 
   span {
     font-size: 20px;
     color: black;
     cursor: pointer;
   }
+}
+
+.cell:hover {
+  text-decoration: underline;
 }
 </style>
