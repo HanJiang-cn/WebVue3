@@ -228,7 +228,7 @@ const handleNav = (name: string) => {
         <el-row justify="end" align="middle" style="height: 100%; width: 90%;" v-show="!userStore.id">
           <el-row :gutter="40" justify="end" align="middle">
             <el-col :span="3">
-              <el-button size="small" type="info" text>
+              <el-button size="small" type="info" text @click="handleNav('/search')">
                 <el-icon :size="18">
                   <Search />
                 </el-icon>

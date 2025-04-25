@@ -55,6 +55,9 @@ const handleSubmit = async () => {
       type: 'success',
     })
     addBannerVisible.value = false
+    form.value = {
+      banner: '',
+    }
     loadData()
   }
 }

@@ -51,7 +51,14 @@ const rules = {
 
 // 添加新成员
 const addMember = () => {
-  form.value.members.push({ name: '', phone: '' })
+  if (form.value.members.length >= form.value.maxNum) {
+    ElMessage.warning(`最多只能添加${form.value.maxNum}位成员`)
+    return
+  }
+  else {
+    form.value.members.push({ name: '', phone: '' })
+  }
+
 }
 
 // 删除成员
@@ -142,10 +149,11 @@ const resetForm = () => {
         <h4 class="section-title">队伍成员</h4>
         <el-form-item prop="members">
           <div class="member-list">
+            <el-alert title="创建队伍时，可以暂时不用添加成员" type="info" show-icon />
             <div class="member-item" v-for="(member, index) in form.members" :key="index">
               <span class="member-title">成员{{ index + 1 }}</span>
               <el-input v-model="member.name" placeholder="姓名" class="member-input" />
-              <el-input v-model="member.phone" placeholder="手机号" class="member-input" />
+              <el-input v-model="member.phone" placeholder="成员ID" class="member-input" />
               <el-select v-model="member.role" placeholder="角色" class="member-input">
                 <el-option label="队员" value="member" />
                 <el-option label="队长" value=" leader" />

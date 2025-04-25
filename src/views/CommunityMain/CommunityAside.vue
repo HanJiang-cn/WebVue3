@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { getRecommendUserListApi } from '@/api/community'
 
 const emits = defineEmits(['switch'])
-const input3 = ref('')
+const search = ref('')
 const switchIndex = ref(1)
 const router = useRouter()
 
@@ -46,13 +46,29 @@ const getRecommendUserList = async () => {
 onMounted(() => {
   getRecommendUserList()
 })
+
+// 搜索功能
+const handleSearch = () => {
+  if (search.value.trim() === '') {
+    return
+  }
+  // 路由跳转到搜索结果页面
+  window.open(
+    router.resolve({
+      path: '/search',
+      query: {
+        search: search.value,
+        type: switchIndex.value % 2 === 0 ? 'solution' : 'post'
+      }
+    }).href, '_self')
+}
 </script>
 
 <template>
   <div class="search">
-    <el-input v-model="input3" style="max-width: 600px" placeholder="搜索">
+    <el-input v-model="search" style="max-width: 600px" placeholder="搜索" @keyup.enter="handleSearch">
       <template #suffix>
-        <el-button icon="Search" />
+        <el-button icon="Search" @click="handleSearch" />
       </template>
     </el-input>
   </div>

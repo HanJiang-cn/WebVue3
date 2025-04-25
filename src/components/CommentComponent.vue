@@ -1,8 +1,9 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted, defineProps } from 'vue'
 import { UToast, Time, type CommentApi, type CommentSubmitApi, type ConfigApi } from 'undraw-ui'
 import { useUserStore } from '@/stores/user'
+import { getCommentListApi } from '@/api/comment'
 
 const config = reactive<ConfigApi>({
   user: {} as any, // 当前用户信息
@@ -17,6 +18,24 @@ const config = reactive<ConfigApi>({
 })
 
 const userStore = useUserStore()
+const props = defineProps({
+  postid: {
+    type: String,
+  }
+})
+
+// 获取评论列表
+const loadData = async () => {
+  const res = await getCommentListApi({
+    postId: props.postid,
+  })
+  console.log(res);
+  console.log(props.postid);
+
+}
+onMounted(() => {
+  loadData()
+})
 
 /**
  * 评论对象数据结构

@@ -8,6 +8,7 @@ enum Api {
   GetInfo = '/user/get/vo',
   Update = '/user/update/my',
   PlanList = '/user/Index/getPlan',
+  GetCollection = '/admin/info/user/getInfo'
 }
 
 interface LoginData {
@@ -51,4 +52,8 @@ function getIdInfoApi(data: any) {
   return get(Api.GetInfo, data)
 }
 
-export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi, getIdInfoApi }
+function getCollectionInfoApi(data: any) {
+  return get(Api.GetCollection, data)
+}
+
+export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi, getIdInfoApi, getCollectionInfoApi }

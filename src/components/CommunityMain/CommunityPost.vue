@@ -5,7 +5,8 @@ import { ref, defineProps } from 'vue'
 const props = defineProps(['item'])
 const postData = ref({})
 postData.value = props.item
-console.log(postData.value)
+const content = ref('')
+content.value = props.item?.content?.replace(/[^\u4e00-\u9fa5\d]/g, '') || props.item?.context?.replace(/[^\u4e00-\u9fa5\d]/g, '')
 
 </script>
 
@@ -14,16 +15,16 @@ console.log(postData.value)
     <div class="top">
       <!-- 头像 -->
       <div class="right">
-        <el-avatar :size="30" />
+        <el-avatar :src="props.item?.user.userAvatar" :size="30" />
       </div>
       <!-- 内容 -->
       <div class="center">
-        <p>LeetCode</p>
-        <p>七周算法特训</p>
-        <el-text truncated line-clamp="2">{{ props.item?.content }}</el-text>
+        <p>{{ props.item?.user.userName }}</p>
+        <p>{{ props.item?.title }}</p>
+        <el-text truncated line-clamp="2">{{ content }}</el-text>
       </div>
-      <div class="left">
-        <img :src="tp" alt="" />
+      <div class="left" v-if="props.item?.post_picture">
+        <img :src="props.item?.post_picture" alt="" />
       </div>
     </div>
     <!-- 底部 -->

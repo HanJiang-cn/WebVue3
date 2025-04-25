@@ -71,7 +71,7 @@ const handleChangeBg = (val: number) => {
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  background-image: url(/src/assets/0.jpg);
+  background-image: url(${bannerList.value[0]});
   background-size: cover;
   background-position: center;
   transition: all 0.3s ease;
@@ -108,7 +108,7 @@ const handleChangeBg = (val: number) => {
       .carousel-item {
         width: 100%;
         height: 100%;
-        background-image: url(/src/assets/0.jpg);
+        background-image: url(${bannerList.value[0]});
         background-size: cover;
         background-position: center;
       }

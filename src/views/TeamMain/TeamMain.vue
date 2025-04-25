@@ -28,17 +28,8 @@ const joinedTeams = ref([
   }
 ])
 
-const handleCreate = () => {
-  router.push('/team/create')
-}
-const handleMatch = () => {
-  router.push('/team/match')
-}
-const handleList = () => {
-  router.push('/team/list')
-}
-const handleJoin = () => {
-  router.push('/team/join')
+const handleSwitch = (name) => {
+  router.push('/team/' + name)
 }
 
 // banner
@@ -96,7 +87,8 @@ onMounted(() => {
               </div>
               <div class="card-header">
                 <div class="team-avatar">
-                  <div class="avatar-bg" :style="{ backgroundColor: `hsl(${index * 360 / topTeams.length}, 60%, 60%)` }">
+                  <div class="avatar-bg"
+                    :style="{ backgroundColor: `hsl(${index * 360 / topTeams.length}, 60%, 60%)` }">
                     {{ index + 1 }}
                   </div>
                 </div>
@@ -173,10 +165,15 @@ onMounted(() => {
                 </div>
               </template>
               <div class="action-buttons">
-                <el-button type="primary" icon="Plus" class="action-btn" @click="handleCreate">创建队伍</el-button>
-                <el-button type="warning" icon="Search" class="action-btn" @click="handleJoin">加入队伍</el-button>
-                <el-button type="success" icon="Search" class="action-btn" @click="handleMatch">匹配队伍</el-button>
-                <el-button type="info" icon="View" class="action-btn" @click="handleList">查看队伍</el-button>
+                <el-button type="primary" icon="Plus" class="action-btn"
+                  @click="handleSwitch('create')">创建队伍</el-button>
+                <el-button type="warning" icon="Search" class="action-btn"
+                  @click="handleSwitch('join')">加入队伍</el-button>
+                <el-button type="success" icon="Search" class="action-btn"
+                  @click="handleSwitch('match')">匹配队伍</el-button>
+                <el-button type="danger" icon="Search" class="action-btn"
+                  @click="handleSwitch('match')">匹配队友</el-button>
+                <el-button type="info" icon="View" class="action-btn" @click="handleSwitch('list')">查看队伍</el-button>
               </div>
             </el-card>
 
@@ -239,6 +236,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+
   .avatar-bg {
     width: 100%;
     height: 100%;

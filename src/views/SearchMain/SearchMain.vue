@@ -86,6 +86,17 @@ const handleClick = (result) => {
     }).href, '_blank')
   }
 }
+
+// 从地址栏获取查询参数
+const searchParams = router.currentRoute.value.query.search
+const typeParams = router.currentRoute.value.query.type
+if (searchParams) {
+  searchQuery.value = searchParams
+  activeType.value = typeParams
+  handleSearch()
+  // console.log(searchParams);
+
+}
 </script>
 
 <template>

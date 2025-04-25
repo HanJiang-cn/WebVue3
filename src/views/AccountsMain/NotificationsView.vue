@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { getCollectionInfoApi } from '@/api/user'
 
 // 定义当前激活的标签页
 const activeTab = ref('notice')
@@ -31,26 +32,40 @@ const notices = ref([
 ])
 
 // 动态数据
-const activities = ref([
-  {
-    id: 1,
-    type: 'update',
-    content: '用户张三更新了项目文档',
-    time: '2023-11-28 15:20'
-  },
-  {
-    id: 2,
-    type: 'comment',
-    content: '李四评论了你的分享: "这个想法很有创意！"',
-    time: '2023-11-27 11:05'
-  },
-  {
-    id: 3,
-    type: 'like',
-    content: '王五等10人点赞了你的动态',
-    time: '2023-11-26 18:30'
+// const activities = ref([
+//   {
+//     id: 1,
+//     type: 'update',
+//     content: '用户张三更新了项目文档',
+//     time: '2023-11-28 15:20'
+//   },
+//   {
+//     id: 2,
+//     type: 'comment',
+//     content: '李四评论了你的分享: "这个想法很有创意！"',
+//     time: '2023-11-27 11:05'
+//   },
+//   {
+//     id: 3,
+//     type: 'like',
+//     content: '王五等10人点赞了你的动态',
+//     time: '2023-11-26 18:30'
+//   }
+// ])
+
+// 获取通知数据
+const getCollectionlist = async () => {
+  try {
+    const { data } = await getCollectionInfoApi()
+    notices.value = data
+    console.log('获取通知数据:', data)
+  } catch (error) {
+    console.error('获取通知数据失败:', error)
   }
-])
+}
+onMounted(() => {
+  getCollectionlist()
+})
 
 // 标记通知为已读
 const markAsRead = (id) => {
@@ -82,22 +97,22 @@ const markAllAsRead = () => {
         <el-tab-pane label="通知" name="notice">
           <div class="tab-header">
             <span class="unread-count">
-              未读通知: {{notices.filter(n => !n.read).length}} 条
+              未读通知: {{notices.filter(n => n.status === '未读').length}} 条
             </span>
             <el-button type="text" @click="markAllAsRead" :disabled="notices.every(n => n.read)">
               全部标记为已读
             </el-button>
           </div>
 
-          <el-scrollbar height="400px">
-            <div v-for="notice in notices" :key="notice.id" class="notice-item" :class="{ 'unread': !notice.read }"
-              @click="markAsRead(notice.id)">
+          <el-scrollbar>
+            <div v-for="notice in notices" :key="notice.id" class="notice-item"
+              :class="{ 'unread': notice.status === '未读' }" @click="markAsRead(notice.id)">
               <div class="notice-content">
-                <h3>{{ notice.title }}</h3>
-                <p>{{ notice.content }}</p>
-                <div class="notice-time">{{ notice.time }}</div>
+                <h3>{{ notice.infoTitle }}</h3>
+                <p>{{ notice.infoContext }}</p>
+                <div class="notice-time">{{ notice.createTime }}</div>
               </div>
-              <el-tag v-if="!notice.read" type="danger" size="small">未读</el-tag>
+              <el-tag v-if="notice.status === '未读'" type="danger" size="small">未读</el-tag>
             </div>
 
             <el-empty v-if="notices.length === 0" description="暂无通知" />
@@ -105,7 +120,7 @@ const markAllAsRead = () => {
         </el-tab-pane>
 
         <!-- 动态标签页 -->
-        <el-tab-pane label="动态" name="activity">
+        <!-- <el-tab-pane label="动态" name="activity">
           <el-scrollbar height="400px">
             <div v-for="activity in activities" :key="activity.id" class="activity-item">
               <div class="activity-icon">
@@ -127,7 +142,7 @@ const markAllAsRead = () => {
 
             <el-empty v-if="activities.length === 0" description="暂无动态" />
           </el-scrollbar>
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
     </el-card>
   </div>
@@ -246,12 +261,13 @@ const markAllAsRead = () => {
 
         .notice-content {
           h3 {
-            font-size: 15px;
+            font-size: 16px;
             margin-bottom: 6px;
             color: #1F2937;
           }
 
           p {
+            font-size: 14px;
             line-height: 1.6;
             color: #6B7280;
           }

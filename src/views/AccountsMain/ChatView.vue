@@ -2,17 +2,19 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
+import { useUserStore } from '@/stores/user'
 import { usePage } from 'undraw-ui'
 import emoji from '@/assets/emoji.ts'
 
 // 下载表情包资源emoji.zip https://gitee.com/undraw/undraw-ui/releases/tag/v1.0.0
 // static文件放在public下,引入emoji.ts文件可以移动assets下引入,也可以自定义到指定位置
 
+const userStore = useUserStore()
 const config = reactive({
   user: {
-    id: 1,
-    username: 'user',
-    avatar: 'https://static.juzicon.com/images/image-180327173755-IELJ.jpg'
+    id: userStore.id,
+    username: userStore.userName,
+    avatar: userStore.userAvatar
   },
   data: [],
   emoji: emoji // 可选
@@ -143,10 +145,10 @@ function submit(val, finish) {
     const chat = {
       id: ++id,
       content: val,
-      uid: 1,
+      uid: userStore.id,
       user: {
-        username: 'user',
-        avatar: 'https://static.juzicon.com/images/image-180327173755-IELJ.jpg'
+        username: userStore.userName,
+        avatar: userStore.userAvatar
       },
       createTime: new Date()
     }
@@ -159,10 +161,51 @@ function submit(val, finish) {
   <u-chat :config="config" @load-more="loadMore" @submit="submit">
     <template #header>
       <div style="height: 40px; display: flex; align-items: center;">
-        <div>聊天</div>
+        <span>聊天</span>
       </div>
     </template>
   </u-chat>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less">
+.u-chat {
+  header {
+    span {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  }
+
+  main {
+    .el-scrollbar {
+      .message-item {
+        .message-box {
+          .main-column {
+            .content {
+              .text {
+                div {
+                  padding: 8px !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  footer {
+    .u-editor {
+      height: 150px;
+
+      .rich-input {
+        height: 100px;
+      }
+
+      .footer {
+        padding-top: 12px;
+      }
+    }
+  }
+}
+</style>

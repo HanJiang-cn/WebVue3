@@ -198,7 +198,7 @@ const handleFavorite = async () => {
     <!-- 评论区域 -->
     <div class="comment-section">
       <h3>评论（{{ post.comments }}）</h3>
-      <CommentComponent />
+      <CommentComponent :postid="id" />
     </div>
   </div>
   <div class="empty-container" v-else>
