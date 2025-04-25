@@ -24,8 +24,8 @@ const form = reactive({
   isStart:0,
 })
 const type = ref([
-  { value: '1', label: '团队赛' },
-  { value: '0', label: '个人赛' },
+  { value: '1', label: '个人赛' },
+  { value: '0', label: '团队赛' },
 ])
 const submitting = ref(false)
 

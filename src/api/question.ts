@@ -12,7 +12,9 @@ enum Api {
   getMydetail='/question/get',
   AddCompetitionPaper='/competition/addComQues',
   dailyQuestion='/user/Index/getQuestion',
-  getCompetitionQuestion='/competition/user/getComQues'
+  getCompetitionQuestion='/competition/user/getComQues',
+  getCompetitionQuestionDetail='/competition/user/getComQues/Info',
+  historyErrorQuestion='/question/user/errorRecord'
 }
 interface addData {
   answer: string
@@ -25,6 +27,15 @@ interface addData {
   }
   tags: Array<string>
   title: string
+  question_example: [
+    {
+      input: string
+      output: string
+    }
+  ]
+  question_prompt: Array<string>
+  difficulty: number
+
 }
 interface editData {
   id: number
@@ -103,4 +114,10 @@ function dailyQuestionApi(data:any){
 function getCompetitionQuestionApi(competitionId:number){
   return post(`/competition/user/getComQues?competitionId=${competitionId}`)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi}
+function historyErrorQuestionApi(data:any){
+  return post(Api.historyErrorQuestion,data)
+}
+function getCompetitionQuestionDetailApi(competitionId:number){
+  return post(`/competition/user/getComQues/Info?competitionId=${competitionId}`)
+}
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi,historyErrorQuestionApi,getCompetitionQuestionDetailApi}

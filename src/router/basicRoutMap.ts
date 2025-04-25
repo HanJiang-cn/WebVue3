@@ -187,6 +187,11 @@ const routes = [
         name: 'QuestionPaper',
         component: () => import('@/views/QuestionMain/QuestionPaper.vue'),
       },
+      {
+        path:'history',
+        name:'HistoryList',
+        component: () => import('@/views/QuestionMain/QuestionHostory.vue'),
+      }
     ],
   },
   // 组队

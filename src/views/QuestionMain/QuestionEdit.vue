@@ -36,6 +36,7 @@ const fetchQuestionDetail = async () => {
       // 使用Object.assign需要排除judgeCase字段
       const { judgeCase, ...rest } = data
       Object.assign(form, rest)
+
     }
     console.log(data)
   } catch (error) {
@@ -100,10 +101,10 @@ onMounted(() => {
         <el-input v-model="form.title" placeholder="请输入题目名称" />
       </el-form-item>
       <el-form-item label="难度">
-        <el-radio-group v-model="form.difficult" size="large">
-          <el-radio-button label="简单" value="1" />
-          <el-radio-button label="适中" value="2" />
-          <el-radio-button label="困难" value="3" />
+        <el-radio-group v-model="form.difficulty" size="large">
+          <el-radio-button label="简单" value="简单" />
+          <el-radio-button label="适中" value="适中" />
+          <el-radio-button label="困难" value="困难" />
         </el-radio-group>
       </el-form-item>
       <el-form-item label="内容" prop="content">
