@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import logo from '@/assets/logo.webp'
-import { ref,onMounted, computed,watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import CodemirrorEditor from '@/components/ProblemsMain/CodemirrorEditor.vue'
 import CompetitionQuestionList from '@/components/CometitionMain/CompetitionQuestionList.vue'
-import { useRouter,useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { getCompetitionQuestionDetailApi } from '@/api/question'
 import { searchCompetition } from '@/api/competition'
 import { ElMessage } from 'element-plus'
@@ -236,18 +236,12 @@ onMounted(() => {
                   </el-button>
                 </el-tooltip>
 
-  <el-button
-    @click="handleSwitchQuestion('prev')"
-    :disabled="!hasPreviousQuestion"
-  >
-    <LeftOutlined />
-  </el-button>
-  <el-button
-    @click="handleSwitchQuestion('next')"
-    :disabled="!hasNextQuestion"
-  >
-    <RightOutlined />
-  </el-button>
+                <el-button @click="handleSwitchQuestion('prev')" :disabled="!hasPreviousQuestion">
+                  <LeftOutlined />
+                </el-button>
+                <el-button @click="handleSwitchQuestion('next')" :disabled="!hasNextQuestion">
+                  <RightOutlined />
+                </el-button>
 
                 <!-- <el-tooltip content="随机题目" placement="bottom" effect="light" :visible="visible3">
                   <el-button type="primary" @mouseenter="visible3 = true" @mouseleave="visible3 = false">
@@ -269,7 +263,7 @@ onMounted(() => {
             </div>
           </el-col>
           <el-col :span="8" class="center">
-            <span>{{competitionName }}</span>
+            <span>{{ competitionName }}</span>
           </el-col>
           <el-col :span="8" class="right">
             <div>
@@ -341,31 +335,33 @@ onMounted(() => {
                   <el-row>
                     <h1>{{ currentQuestion?.title }}</h1>
                   </el-row>
-      <!-- 标签 -->
-      <!-- <el-row style="margin-top: 10px;">
+                  <!-- 标签 -->
+                  <!-- <el-row style="margin-top: 10px;">
     <el-tag type="success" v-for="item in competitionQuestion[0]?.tags" :key="item">{{ item }}</el-tag>
   </el-row> -->
                   <!-- 题目描述 -->
                   <el-row style="margin-top: 10px;">
                     <div class="topic-content ">
                       <!-- 修改题目描述部分 -->
-  <div class="topic-content__text">
-    <h3>题目描述</h3>
-    <p class="difficulty">本题目难度：<span>{{ currentQuestion?.difficulty }}</span></p>
-    <p v-html="currentQuestion?.content"></p>
-    <ul v-if="currentQuestion?.question_prompt">
-      <li v-for="(question_prompt, index) in currentQuestion?.question_prompt" :key="index">{{ question_prompt }}</li>
-    </ul>
+                      <div class="topic-content__text">
+                        <h3>题目描述</h3>
+                        <p class="difficulty">本题目难度：<span>{{ currentQuestion?.difficulty }}</span></p>
+                        <p v-html="currentQuestion?.content"></p>
+                        <ul v-if="currentQuestion?.question_prompt">
+                          <li v-for="(question_prompt, index) in currentQuestion?.question_prompt" :key="index">{{
+                            question_prompt }}</li>
+                        </ul>
 
-  </div>
-  <div class="example" v-if="currentQuestion?.examples">
-    <p v-for="(example, index) in currentQuestion?.examples" :key="index">
-      <span class="example-label">示例 {{ index + 1 }}：</span>
-      <span class="example-input">输入：{{ example.input }}</span>
-      <span class="example-output">输出：{{ example.output }}</span>
-      <span class="example-explanation" v-if="example.explanation">解释：{{ example.explanation }}</span>
-    </p>
-  </div>
+                      </div>
+                      <div class="example" v-if="currentQuestion?.examples">
+                        <p v-for="(example, index) in currentQuestion?.examples" :key="index">
+                          <span class="example-label">示例 {{ index + 1 }}：</span>
+                          <span class="example-input">输入：{{ example.input }}</span>
+                          <span class="example-output">输出：{{ example.output }}</span>
+                          <span class="example-explanation" v-if="example.explanation">解释：{{ example.explanation
+                            }}</span>
+                        </p>
+                      </div>
                     </div>
                     <!-- 提交记录 -->
                     <el-collapse style="width: 100%;">
@@ -479,10 +475,7 @@ onMounted(() => {
         </el-row>
       </el-main>
       <!-- 每日一题 -->
-      <CompetitionQuestionList
-    :visible="visibles"
-    @close="handleListClose"
-  />
+      <CompetitionQuestionList :visible="visibles" @close="handleListClose" />
     </el-container>
   </div>
 </template>

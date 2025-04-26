@@ -31,7 +31,6 @@ const post = ref({
 })
 const postData = ref({})
 const postUser = ref({})
-const posterror = ref('')
 const currentUrl = ref(window.location.href)
 const createTime = ref('')
 const router = useRouter()
@@ -47,7 +46,6 @@ const getPostInfor = async () => {
     favoriteCount.value = data.favourNum
   } catch (error) {
     console.error('获取帖子详情失败:', error)
-    posterror.value = 1
   }
 }
 onMounted(() => {
@@ -106,7 +104,7 @@ const handleFavorite = async () => {
 </script>
 
 <template>
-  <div class="post-container" v-if="posterror !== 1">
+  <div class="post-container" v-if="postData.status === 0 || postData.status === 1">
     <!-- 返回按钮 -->
     <div class="back-button">
       <el-button type="text" @click="$router.back()">

@@ -1,9 +1,10 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup>
-import { ref } from 'vue'
+<script setup>
+import { onMounted, ref } from 'vue'
 import { ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { getCollectionInfoApi } from '@/api/user'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -28,7 +29,7 @@ const handelLogin = () => {
 const handelRegister = () => {
   router.push('/accounts/register')
 }
-const handleMenuClick = (item: any) => {
+const handleMenuClick = (item) => {
   if (item.name === 'profile') {
     handleNav('/user')
   } else if (item.name === 'settings') {
@@ -54,9 +55,25 @@ const handleLogout = () => {
     location.reload()
   })
 }
-const handleNav = (name: string) => {
+const handleNav = (name) => {
   window.open(router.resolve({ path: name, }).href, '_self')
 }
+
+// 消息通知
+const isdotread = ref(false)
+const getCollectionInfo = async () => {
+  const res = await getCollectionInfoApi()
+  if (res.code === 0) {
+    res.data.forEach((item) => {
+      if (item.status === '未读') {
+        isdotread.value = true
+      }
+    })
+  }
+}
+onMounted(() => {
+  getCollectionInfo()
+})
 </script>
 
 <template>
@@ -179,11 +196,13 @@ const handleNav = (name: string) => {
             </el-button>
           </el-col>
           <el-col :span="3">
-            <el-button size="small" text @click="handleNav('/accounts/notifications')">
-              <el-icon :size="18">
-                <BellFilled />
-              </el-icon>
-            </el-button>
+            <el-badge :is-dot="isdotread" class="item" :offset="[-4, 5]">
+              <el-button size="small" text @click="handleNav('/accounts/notifications')">
+                <el-icon :size="18">
+                  <BellFilled />
+                </el-icon>
+              </el-button>
+            </el-badge>
           </el-col>
           <el-col :span="3">
             <el-popover trigger="click" placement="bottom" :width="240" :offset="10">

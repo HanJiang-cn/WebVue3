@@ -112,8 +112,8 @@ const handleDelete = async (id) => {
       <el-table-column prop="userName" label="发表用户" />
       <el-table-column prop="userRole" label="帖子状态">
         <template #default="{ row }">
-          <el-tag :type="row ? 'success' : 'danger'">
-            {{ row ? '已发布' : '违规' }}
+          <el-tag :type="row.status === 0 ? 'success' : 'warning'">
+            {{ row.status === 0 ? '已发布' : '草稿' }}
           </el-tag>
         </template>
       </el-table-column>

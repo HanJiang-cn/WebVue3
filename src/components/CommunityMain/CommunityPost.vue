@@ -50,6 +50,10 @@ content.value = props.item?.content?.replace(/[^\u4e00-\u9fa5\d]/g, '') || props
   padding-bottom: 20px;
   cursor: pointer;
 
+  .center {
+    margin-bottom: 10px;
+  }
+
   .top {
     display: flex;
     justify-content: space-between;
@@ -95,6 +99,9 @@ content.value = props.item?.content?.replace(/[^\u4e00-\u9fa5\d]/g, '') || props
     margin-left: 50px;
     border-bottom: 1px solid #0000001a;
     padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     .el-text {
       margin-right: 10px;

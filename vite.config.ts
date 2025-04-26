@@ -19,9 +19,9 @@ export default defineConfig({
         target: 'http://120.46.86.24:8101/',
         changeOrigin: true,
         ws: true,
-        pathRewritre: {
-          '^/': '',
-        },
+        // pathRewritre: {
+        //   '^/': '',
+        // },
       },
     },
   },

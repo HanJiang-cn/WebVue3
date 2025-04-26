@@ -1,7 +1,8 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getCollectionInfoApi } from '@/api/user'
+import { getCollectionInfoApi, confirmNotificationApi } from '@/api/user'
+import { ElNotification } from 'element-plus'
 
 // 定义当前激活的标签页
 const activeTab = ref('notice')
@@ -68,17 +69,32 @@ onMounted(() => {
 })
 
 // 标记通知为已读
-const markAsRead = (id) => {
-  const notice = notices.value.find(item => item.id === id)
-  if (notice) {
-    notice.read = true
+const markAsRead = async (id, status) => {
+  if (status === '已读') {
+    return
+  } else {
+    const res = await confirmNotificationApi(id)
+    if (res.code === 0) {
+      ElNotification({
+        title: '成功',
+        message: '已标记为已读',
+        type: 'success',
+        duration: 2000
+      })
+      const notice = notices.value.find(n => n.id === id)
+      if (notice) {
+        notice.status = '已读'
+      }
+    }
   }
 }
 
 // 标记所有通知为已读
 const markAllAsRead = () => {
   notices.value.forEach(notice => {
-    notice.read = true
+    if (notice.status === '未读') {
+      markAsRead(notice.id, notice.status)
+    }
   })
 }
 </script>
@@ -99,14 +115,14 @@ const markAllAsRead = () => {
             <span class="unread-count">
               未读通知: {{notices.filter(n => n.status === '未读').length}} 条
             </span>
-            <el-button type="text" @click="markAllAsRead" :disabled="notices.every(n => n.read)">
+            <el-button type="text" @click="markAllAsRead" :disabled="notices.every(n => n.status === '已读')">
               全部标记为已读
             </el-button>
           </div>
 
           <el-scrollbar>
             <div v-for="notice in notices" :key="notice.id" class="notice-item"
-              :class="{ 'unread': notice.status === '未读' }" @click="markAsRead(notice.id)">
+              :class="{ 'unread': notice.status === '未读' }" @click="markAsRead(notice.id, notice.status)">
               <div class="notice-content">
                 <h3>{{ notice.infoTitle }}</h3>
                 <p>{{ notice.infoContext }}</p>
@@ -151,7 +167,8 @@ const markAllAsRead = () => {
 <style lang="less" scoped>
 .notification-container {
   padding: 20px;
-  max-height: 100vh;
+  // max-height: 100vh;
+  min-height: 522px;
   overflow-y: auto;
 
   .notification-card {

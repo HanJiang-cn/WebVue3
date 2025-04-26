@@ -37,8 +37,14 @@ const handleMyPost = () => {
   }
 }
 
+interface UserInfo {
+  userAvatar: string
+  userName: string
+  userProfile: string
+}
+
 // 获取推荐用户列表
-const recommendUserList = ref([])
+const recommendUserList = ref<UserInfo[]>([])
 const getRecommendUserList = async () => {
   const res = await getRecommendUserListApi()
   recommendUserList.value = res.data
@@ -87,7 +93,7 @@ const handleSearch = () => {
         <span>推荐作者</span>
       </div>
       <div class="content">
-        <div class="writer-item" v-for="item in recommendUserList" :key="item">
+        <div class="writer-item" v-for="item in recommendUserList" :key="item.userName">
           <el-avatar :size="40" class="avatar" :src="item.userAvatar" />
           <div class="info">
             <div class="name">

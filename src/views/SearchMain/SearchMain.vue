@@ -16,7 +16,6 @@ const kong = ref(false)
 
 watch(activeType, () => {
   // 切换类型时重置查询条件
-  searchQuery.value = ''
   searchResults.value = []
   kong.value = false
 })

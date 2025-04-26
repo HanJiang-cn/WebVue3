@@ -9,7 +9,7 @@ const visable = ref(true)
 function switchNavMenu() {
   // 获取当前路由
   const currentRoute = router.currentRoute.value
-  if (currentRoute.path === '/competition/answer') {
+  if (currentRoute.path.includes('answer')) {
     visable.value = false
   }
 }

@@ -164,8 +164,43 @@ const submitForm = async () => {
       }
     }
   )
-
   submitting.value = false
+}
+
+// 保存为草稿
+const submitFormDraft = async () => {
+  submitting.value = true
+  await formRef.value.validate(
+    async (valid) => {
+      if (valid) {
+        try {
+          await handleUpload()
+          const res = await editPostApi({
+            ...form,
+            id: postId.value, // 确保传递帖子ID
+          })
+          if (res.code === 0) {
+            ElNotification({
+              title: '保存成功',
+              message: '帖子已保存为草稿',
+              type: 'success'
+            })
+          }
+          submitting.value = false
+        } catch (error) {
+          console.error('编辑帖子失败:', error)
+          ElNotification({
+            title: '提交失败',
+            message: '编辑帖子失败，请重试',
+            type: 'error'
+          })
+        }
+        return false
+      } else {
+        return true
+      }
+    }
+  )
 }
 </script>
 
@@ -233,6 +268,9 @@ const submitForm = async () => {
     <div class="submit-bar">
       <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
         立即保存
+      </el-button>
+      <el-button size="large" :loading="submitting" @click="submitFormDraft">
+        保存草稿
       </el-button>
     </div>
   </el-form>

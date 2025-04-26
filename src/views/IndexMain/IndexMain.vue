@@ -5,8 +5,14 @@ import MainCard from '@/components/IndexMain/MainCard.vue'
 import tp from '@/assets/tp.webp'
 import { useRouter } from 'vue-router'
 
+interface Plan {
+  id: string;
+  user_plan: string;
+  plan_desc: string;
+}
+
 const router = useRouter()
-const plans = ref([])
+const plans = ref<Plan[]>([])
 const loadData = async () => {
   const { data } = await getPlanListApi()
   plans.value = data
