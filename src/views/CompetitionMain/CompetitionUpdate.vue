@@ -87,14 +87,8 @@ const getDetail = async () => {
       form.tel = competition.tel || ''
       form.status = String(competition.status || '')
       form.isStart = competition.isStart || 0
-
-      // 处理时间格式（假设时间戳在competition.startTime）
-      form.startTime = competition.startTime
-        ? formatDateTime(competition.startTime)
-        : ''
-      form.endTime = competition.endTime
-        ? formatDateTime(competition.endTime)
-        : ''
+  form.startTime = competition.startTime ? formatDateTime(competition.startTime) : ''
+  form.endTime = competition.endTime ? formatDateTime(competition.endTime) : ''
 
       console.log('处理后的表单数据:', JSON.parse(JSON.stringify(form))) // 调试输出
     }
@@ -105,13 +99,16 @@ const getDetail = async () => {
 }
 
 // 时间格式化方法
-const formatDateTime = (timestamp) => {
+const formatDateTime = (timeValue) => {
   try {
-    const date = new Date(Number(timestamp)) // 确保是数字类型
-    const pad = n => n.toString().padStart(2, '0')
+    const date = new Date(timeValue) // 直接使用ISO字符串创建Date对象
+    if (isNaN(date.getTime())) throw new Error('Invalid date')
+
+    const pad = (n) => n.toString().padStart(2, '0')
     return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`
   } catch {
-    return '' // 处理异常时间格式
+    console.error('时间格式错误:', timeValue)
+    return ''
   }
 }
 
@@ -210,10 +207,10 @@ const submitForm = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        const res = await addCompetition({
+        const res = await updateCompetitionApi({
           ...form,
-          startTime: form.startTime ? new Date(form.startTime).getTime() : null,
-          endTime: form.endTime ? new Date(form.endTime).getTime() : null,
+          startTime: new Date(form.startTime).getTime(),
+          endTime: new Date(form.endTime).getTime(),
           type: form.type,  // 直接使用选择器值
           status: form.status ? 1 : 0
         })

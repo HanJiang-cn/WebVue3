@@ -11,10 +11,11 @@ enum Api {
   submitQuestion = '/question/question_submit/do',
   getMydetail='/question/get',
   AddCompetitionPaper='/competition/addComQues',
-  dailyQuestion='/user/Index/getQuestion',
+  dailyQuestion='/question/user/everyRecord',
   getCompetitionQuestion='/competition/user/getComQues',
   getCompetitionQuestionDetail='/competition/user/getComQues/Info',
-  historyErrorQuestion='/question/user/errorRecord'
+  historyErrorQuestion='/question/user/errorRecord',
+  getEveryRecord='/question/user/getSign'
 }
 interface addData {
   answer: string
@@ -109,7 +110,7 @@ function AddCompetitionPaper(competitionId:number,questionId:Array<number>){
   return post(`/competition/addComQues?competitionId=${competitionId}&questionId=${questionId}`)
 }
 function dailyQuestionApi(data:any){
-  return get(Api.dailyQuestion,data)
+  return post(Api.dailyQuestion,data)
 }
 function getCompetitionQuestionApi(competitionId:number){
   return post(`/competition/user/getComQues?competitionId=${competitionId}`)
@@ -120,4 +121,7 @@ function historyErrorQuestionApi(data:any){
 function getCompetitionQuestionDetailApi(competitionId:number){
   return post(`/competition/user/getComQues/Info?competitionId=${competitionId}`)
 }
-export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi,historyErrorQuestionApi,getCompetitionQuestionDetailApi}
+function getEveryRecordApi(){
+  return get(Api.getEveryRecord)
+}
+export { addApi, deleteApi, editApi, getApi, getMyApi, getDetailApi, ceshiApi, submitQuestionApi,getMydetailApi,AddCompetitionPaper,dailyQuestionApi ,getCompetitionQuestionApi,historyErrorQuestionApi,getCompetitionQuestionDetailApi,getEveryRecordApi}

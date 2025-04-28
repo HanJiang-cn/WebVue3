@@ -17,30 +17,40 @@ const form = reactive({
     input: '',
     output: ''
   }],
+  question_example: [
+    {
+      explain: '',
+      input: '',
+      output: ''
+    }
+  ],
+  question_prompt: [],
   tags: [],
   title: '',
+  difficulty: '',
 })
 //获取题目详情方法
 const fetchQuestionDetail = async () => {
   try {
     const { code, data } = await getDetailApi({ id: questionId.value })
     if (code === 0) {
-      // 转换测试用例格式
-      if (typeof data.judgeCase === 'string') {
-        data.judgeCase = JSON.parse(data.judgeCase)
+      // 解析字符串类型的数据
+      data.judgeCase = typeof data.judgeCase === 'string' ? JSON.parse(data.judgeCase) : data.judgeCase
+      data.question_example = typeof data.question_example === 'string' ? JSON.parse(data.question_example) : []
+      data.question_prompt = typeof data.question_prompt === 'string' ? JSON.parse(data.question_prompt) : []
+
+      // 确保至少有1个示例
+      if (data.question_example.length === 0) {
+        data.question_example.push({ input: '', output: '', explain: '' })
       }
 
-      // 保留原有judgeCase结构
-      form.judgeCase.splice(0, form.judgeCase.length, ...(data.judgeCase || []))
-
-      // 使用Object.assign需要排除judgeCase字段
-      const { judgeCase, ...rest } = data
-      Object.assign(form, rest)
-
+      Object.assign(form, {
+        ...data,
+        tags: data.tags || []
+      })
     }
-    console.log(data)
   } catch (error) {
-    ElMessage.error('获取题目详情失败: ' + error.message)
+    ElMessage.error('数据解析失败: ' + error.message)
   }
 }
 function uploadContent(data) {
@@ -48,7 +58,7 @@ function uploadContent(data) {
   console.log(data)
 }
 // 添加测试用例（编程题）
-const addSample = () => {
+const addJudgeCase= () => {
   form.judgeCase.push({
     input: '',
     output: ''
@@ -56,8 +66,28 @@ const addSample = () => {
 }
 
 // 删除测试用例
-const removeSample = (index) => {
+const removeJudgeCase = (index) => {
   form.judgeCase.splice(index, 1)
+}
+// 添加示例输入输出
+const addSample = () => {
+  form.question_example.push({
+    input: '',
+    output: '',
+    explain: ''
+  })
+}
+// 删除示例输入输出
+const removeSample = (index) => {
+  form.question_example.splice(index, 1)
+}
+// 添加提示
+const addPrompt = () => {
+  form.question_prompt.push('')
+}
+// 删除提示
+const removePrompt = (index) => {
+  form.question_prompt.splice(index, 1)
 }
 // 修改后的 handleSubmit
 const handleSubmit = async () => {
@@ -110,16 +140,44 @@ onMounted(() => {
       <el-form-item label="内容" prop="content">
         <MdEditor :constEdit="form.content" @modelValue="uploadContent" style="width: 100%;" />
       </el-form-item>
-      <div v-for="(judgeCase, index) in form.judgeCase" :key="index" class="sample-io">
+  <div class="ex">
+    <div v-for="(judgeCase, index) in form.judgeCase" :key="index" class="sample-io">
         <el-form-item :label="`输入用例 ${index + 1}`">
           <el-input v-model="judgeCase.input" type="textarea" />
         </el-form-item>
         <el-form-item :label="`输出用例 ${index + 1}`">
           <el-input v-model="judgeCase.output" type="textarea" />
         </el-form-item>
-        <el-button type="danger" @click="removeSample(index)">删除</el-button>
+        <el-button class="but" type="danger" @click="removeJudgeCase(index)">删除</el-button>
       </div>
-      <el-button @click="addSample">添加测试用例</el-button>
+      <el-button class="but" @click="addJudgeCase">添加测试用例</el-button>
+  </div>
+ <div class="ex">
+  <div v-for="(example, index) in form.question_example" :key="index" class="sample-io">
+    <el-form-item :label="`示例 ${index + 1}`">
+        <el-input v-model="example.input" placeholder="示例输入" />
+    </el-form-item>
+    <el-form-item :label="`示例 ${index + 1}`">
+        <el-input v-model="example.output" placeholder="示例输出" />
+    </el-form-item>
+    <el-form-item :label="`示例 ${index + 1}`">
+        <el-input v-model="example.explain" placeholder="示例解释" />
+    </el-form-item>
+    <el-button class="but" type="danger" @click="removeSample(index)">删除</el-button>
+  </div>
+  <el-button class="but" @click="addSample">添加示例</el-button>
+ </div>
+
+  <!-- 提示渲染 -->
+<div class="ex">
+  <div v-for="(prompt, index) in form.question_prompt" :key="'prompt'+index" class="sample-io">
+    <el-form-item :label="`提示 ${index + 1}`">
+      <el-input v-model="form.question_prompt[index]" type="textarea" />
+    </el-form-item>
+    <el-button class="but" type="danger" @click="removePrompt(index)">删除提示</el-button>
+  </div>
+  <el-button class="but" @click="addPrompt">添加提示</el-button>
+</div>
       <el-form-item label="正确答案">
         <el-input v-model="form.answer" type="textarea" :rows="3" />
       </el-form-item>
@@ -155,5 +213,17 @@ onMounted(() => {
   margin-top: 12px;
   margin-left: 50px;
   margin-bottom: 20px;
+}
+.but{
+  margin-bottom: 10px;
+}
+.sample-io {
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #c0c4cc;
+  padding-bottom: 20px;
+}
+.ex{
+  margin: 40px 0;
+  border-bottom: 1px solid #a7c4fd;
 }
 </style>

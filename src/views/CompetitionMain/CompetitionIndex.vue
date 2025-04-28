@@ -143,7 +143,7 @@ onMounted(loadData)
         <div v-loading="loading" class="competition-list">
           <article v-for="item in dataList" :key="item.id" class="competition-item">
             <div @click="handleDetail(item.id)" class="cover-link">
-              <img :src="item.cover" alt="竞赛封面">
+              <img :src="item.coverUrl" alt="竞赛封面">
             </div>
             <div class="competition-info">
               <div @click="handleDetail(item.id)" class="title-link">

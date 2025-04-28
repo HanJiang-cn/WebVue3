@@ -5,7 +5,6 @@ import { onMounted, ref } from 'vue'
 import CommentComponent from '@/components/CommentComponent.vue'
 import { getDetailApi } from '@/api/question'
 import { useRouter } from 'vue-router'
-import PreviewOnly from '@/components/PreviewOnly.vue'
 
 const router = useRouter()
 const tableData = [
@@ -49,25 +48,46 @@ const tableData = [
 ]
 const questionData = ref({})
 
-const getQuestionInfo = async () => {
+const getQuestion = async () => {
   const { data } = await getDetailApi({ id: router.currentRoute.value.query.id })
-  // console.log(res)
+  console.log(data)
   questionData.value = data
+  processQuestionData()
 }
+// 新增工具函数：安全解析 JSON
+const safeParseJSON = (str, defaultValue = []) => {
+    // 如果已经是数组或对象直接返回
+    if (Array.isArray(str) || typeof str === 'object') return str
+  if (!str) return defaultValue
+  try {
+    const sanitized = str
+      .replace(/'/g, '"')
+      .replace(/\\/g, '\\\\')
+    return JSON.parse(sanitized)
+  } catch (e) {
+    console.error('JSON解析失败:', e)
+    return defaultValue
+  }
+}
+//处理题目数据
+const processQuestionData = () => {
+  console.log('原始题目数据:', questionData.value)
+  questionData.value.tags = safeParseJSON(questionData.value.tags || '[]')
+  questionData.value.judgeCase = safeParseJSON(questionData.value.judgeCase || '[]')
+  questionData.value.question_example = safeParseJSON(questionData.value.question_example || '[]')
+  questionData.value.question_prompt = safeParseJSON(questionData.value.question_prompt || '[]')
 
+  console.log('处理后的题目数据:', {
+    tags: questionData.value.tags,
+    judgeCase: questionData.value.judgeCase,
+    question_example: questionData.value.question_example,
+    question_prompt: questionData.value.question_prompt
+  })
+}
 onMounted(() => {
-  getQuestionInfo()
+  getQuestion()
 })
 
-// < !-- < el - tag type = "success" >
-//   简单
-//   </el - tag >
-//   < !-- < el - tag type = "info" >
-// 数组
-//   </el - tag >
-// <el-tag type="warning">
-//     JavaScript -->
-// </el-tag>
 </script>
 
 <template>
@@ -86,46 +106,56 @@ onMounted(() => {
   <!-- 提交记录&评论 -->
   <el-row style="margin-top: 10px;">
     <div class="topic-content ">
-      <div class="topic-content__text">
-        <h3>
-          题目描述
-        </h3>
-        <PreviewOnly :content="questionData.content" />
-        <!-- <div v-html="questionData.content">
-        </div> -->
-        <!-- <p>
-          给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
-        </p>
-        <li>
-          你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
-        </li>
-        <li>
-          你可以按任意顺序返回答案。
-        </li> -->
-      </div>
-      <div class="example">
-        <div>
-          <p>
-            示例 1：
-          </p>
-          <p>
-            输入：nums = [2,7,11,15], target = 9
-          </p>
-          <p>
-            输出：[0,1]
-          </p>
-        </div>
-      </div>
-      <div class="hint">
-        <h3>
-          提示：
-        </h3>
-        <!-- <p>2 <= nums.length <=104 </p>
-            <p>-109 <= nums[i] <=109 </p>
-                <p> -109 <= target <=109 </p> -->
-        <p>只会存在一个有效答案</p>
-      </div>
-    </div>
+                      <!-- 题目描述部分 -->
+                      <div class="topic-content__text">
+                        <h3>题目描述</h3>
+                        <p class="difficulty">本题目难度：<span>{{ questionData?.difficulty }}</span></p>
+                        <div v-html="questionData?.content" class="content"></div>
+                        <!-- 标签渲染 -->
+                        <el-row class="tags-row" v-if="questionData?.tags?.length">
+                          <el-tag v-for="(tag, index) in questionData.tags" :key="index" type="success"
+                            class="tag-item">
+                            {{ tag }}
+                          </el-tag>
+                        </el-row>
+
+                        <!-- 评测用例渲染 -->
+                        <div v-if="questionData?.judgeCase?.length" class="judge-cases">
+                          <h4>评测用例</h4>
+                          <ul>
+                            <li v-for="(caseItem, index) in questionData.judgeCase" :key="index">
+                              <div class="case-item">
+                                <label>输入：</label>
+                                <pre>{{ caseItem.input }}</pre>
+                                <label>输出：</label>
+                                <pre>{{ caseItem.output }}</pre>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <!-- 题目提示 -->
+                        <div  v-if="questionData?.question_prompt">
+                          <ul>
+                            <li
+                            v-for="(prompt, index) in questionData?.question_prompt" :key="index"
+                              class="hint">
+                              <div>
+                                <div style="font-size: larger;"><strong>提示</strong>{{ index + 1 }}</div>
+                                <div>{{ prompt }}</div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="example"   v-if="questionData?.question_example?.length">
+                        <p v-for="(example, index) in questionData.question_example" :key="index">
+                          <span class="example-label">输入：{{ example.input }}&nbsp;</span>
+                          <span class="example-input">输出：{{ example.output }}&nbsp;</span>
+                          <span class="example-output">解释：{{ example.explain }}&nbsp;</span>
+                        </p>
+                      </div>
+                    </div>
     <!-- 提交记录&评论 -->
     <el-collapse style="width: 100%;">
       <!-- 提交记录 -->

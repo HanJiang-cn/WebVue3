@@ -131,8 +131,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <span class="heading">难度</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="difficult" size="large">
-            <el-radio-button label="全部" value="全部" />
+          <el-radio-group v-model="difficulty" size="large">
             <el-radio-button label="简单" value="简单" />
             <el-radio-button label="适中" value="适中" />
             <el-radio-button label="困难" value="困难" />
@@ -155,7 +154,7 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
             <span class="title-text" @click="handleBrowse(row.id)">{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="difficult" label="难度" width="120" />
+        <el-table-column prop="difficulty" label="难度" width="120" />
         <template>
         </template>
         <el-table-column prop="createTime" label="时间" width="180">
