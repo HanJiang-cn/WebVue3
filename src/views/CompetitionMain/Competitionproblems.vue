@@ -12,19 +12,14 @@ import { ElMessage } from 'element-plus'
 const route = useRoute() // 增加route引用
 const competition = ref({})
 const router = useRouter()
-// const id = ref(router.currentRoute.value.query.id)
-// const questionId = ref(router.currentRoute.value.query.questionId)
 const id = computed(() => route.query.id)
 const questionId = computed(() => route.query.questionId)
 const visible = ref(false)
-
-const visible3 = ref(false)
 const visibles = ref(false)
 const test = ref('')
 const activeName = ref('1')
 const activeName1 = ref('1')
 const activeName2 = ref('1')
-// const competitionQuestion= ref([])
 const competitionQuestion = ref([])
 const currentQuestion = ref({})
 const competitionName = ref('');
@@ -33,10 +28,24 @@ const loadQuestions = async () => {
   try {
     const { data } = await getCompetitionQuestionDetailApi(id.value)
     competitionQuestion.value = data
-    // 根据questionId查找当前题目
-    if (questionId.value) {
-      currentQuestion.value = competitionQuestion.value.find(q => q.id === questionId.value) || {}
+
+    // 当没有questionId时立即设置第一个题目
+    if (!route.query.questionId && competitionQuestion.value.length) {
+      const firstId = competitionQuestion.value[0].id
+      router.replace({
+        query: { ...route.query, questionId: firstId },
+        // 添加回调确保路由更新完成
+        onComplete: () => {
+          currentQuestion.value = competitionQuestion.value[0]
+          processQuestionData()
+        }
+      })
+      return
     }
+    // 已有questionId时直接处理数据
+    currentQuestion.value = competitionQuestion.value.find(q => q.id === route.query.questionId) || {}
+    console.log(currentQuestion)
+    processQuestionData()
   } catch (error) {
     console.error('题目加载失败:', error)
   }
@@ -118,14 +127,6 @@ const handleSwitchQuestion = (direction) => {
     })
   }
 }
-// // 题目切换方法
-// const switchQuestion = (direction) => {
-//   if (direction === 'prev' && currentQuestionIndex.value > 0) {
-//     currentQuestionIndex.value--
-//   } else if (direction === 'next' && currentQuestionIndex.value < competitionQuestion.value.length - 1) {
-//     currentQuestionIndex.value++
-//   }
-// }
 
 const Visable = () => {
   visibles.value = !visibles.value
@@ -184,27 +185,50 @@ const handleLogout = () => {
     location.reload()
   })
 }
-const processQuestionData = () => {
-  if (currentQuestion.value.judgeCase) {
-    try {
-      currentQuestion.value.examples = JSON.parse(currentQuestion.value.judgeCase).map((item, index) => ({
-        id: index + 1,
-        input: item.input,
-        output: item.output,
-        explanation: item.explanation || ''
-      }))
-    } catch (e) {
-      console.error('评测用例解析失败:', e)
-      currentQuestion.value.examples = []
-    }
+// 新增工具函数：安全解析 JSON
+const safeParseJSON = (str, defaultValue = []) => {
+  // 如果已经是数组或对象直接返回
+  if (Array.isArray(str) || typeof str === 'object') return str
+  if (!str) return defaultValue
+  try {
+    const sanitized = str
+      .replace(/'/g, '"')
+      .replace(/\\/g, '\\\\')
+    return JSON.parse(sanitized)
+  } catch (e) {
+    console.error('JSON解析失败:', e)
+    return defaultValue
   }
 }
-watch(() => route.query.questionId, (newVal) => {
-  if (newVal) {
-    currentQuestion.value = competitionQuestion.value.find(q => q.id === newVal) || {}
-    processQuestionData()
-  }
-})
+// 处理当前题目数据
+const processQuestionData = () => {
+  if (!currentQuestion.value) return
+
+  currentQuestion.value.tags = safeParseJSON(currentQuestion.value.tags || '[]')
+  currentQuestion.value.judgeCase = safeParseJSON(currentQuestion.value.judgeCase || '[]')
+  currentQuestion.value.question_example = safeParseJSON(currentQuestion.value.question_example || '[]')
+  currentQuestion.value.question_prompt = safeParseJSON(currentQuestion.value.question_prompt || '[]')
+
+  console.log('处理后的题目数据:', {
+    tags: currentQuestion.value.tags,
+    judgeCase: currentQuestion.value.judgeCase,
+    question_example: currentQuestion.value.question_example,
+    question_prompt: currentQuestion.value.question_prompt
+  })
+}
+watch(
+  () => route.query.questionId,
+  (newVal) => {
+    if (newVal && competitionQuestion.value.length) {
+      const question = competitionQuestion.value.find(q => q.id === newVal)
+      if (question) {
+        currentQuestion.value = { ...question } // 创建新对象避免污染原始数据
+        processQuestionData()
+      }
+    }
+  },
+  { immediate: true }
+)
 const handleNav = (name) => {
   window.open(router.resolve({ path: name, }).href, '_self')
 }
@@ -342,24 +366,53 @@ onMounted(() => {
                   <!-- 题目描述 -->
                   <el-row style="margin-top: 10px;">
                     <div class="topic-content ">
-                      <!-- 修改题目描述部分 -->
+                      <!-- 题目描述部分 -->
                       <div class="topic-content__text">
                         <h3>题目描述</h3>
                         <p class="difficulty">本题目难度：<span>{{ currentQuestion?.difficulty }}</span></p>
-                        <p v-html="currentQuestion?.content"></p>
-                        <ul v-if="currentQuestion?.question_prompt">
-                          <li v-for="(question_prompt, index) in currentQuestion?.question_prompt" :key="index">{{
-                            question_prompt }}</li>
-                        </ul>
+                        <div v-html="currentQuestion?.content" class="content"></div>
+                        <!-- 标签渲染 -->
+                        <el-row class="tags-row" v-if="currentQuestion?.tags?.length">
+                          <el-tag v-for="(tag, index) in currentQuestion.tags" :key="index" type="success"
+                            class="tag-item">
+                            {{ tag }}
+                          </el-tag>
+                        </el-row>
 
+                        <!-- 评测用例渲染 -->
+                        <div v-if="currentQuestion?.judgeCase?.length" class="judge-cases">
+                          <h4>评测用例</h4>
+                          <ul>
+                            <li v-for="(caseItem, index) in currentQuestion.judgeCase" :key="index">
+                              <div class="case-item">
+                                <label>输入：</label>
+                                <pre>{{ caseItem.input }}</pre>
+                                <label>输出：</label>
+                                <pre>{{ caseItem.output }}</pre>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <!-- 题目提示 -->
+                        <div  v-if="currentQuestion?.question_prompt">
+                          <ul>
+                            <li
+                            v-for="(prompt, index) in currentQuestion?.question_prompt" :key="index"
+                              class="hint">
+                              <div>
+                                <div style="font-size: larger;"><strong>提示</strong>{{ index + 1 }}</div>
+                                <div>{{ prompt }}</div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div class="example" v-if="currentQuestion?.examples">
-                        <p v-for="(example, index) in currentQuestion?.examples" :key="index">
-                          <span class="example-label">示例 {{ index + 1 }}：</span>
-                          <span class="example-input">输入：{{ example.input }}</span>
-                          <span class="example-output">输出：{{ example.output }}</span>
-                          <span class="example-explanation" v-if="example.explanation">解释：{{ example.explanation
-                            }}</span>
+                      <div class="example"   v-if="currentQuestion?.question_example?.length">
+                        <p v-for="(example, index) in currentQuestion.question_example" :key="index">
+                          <span class="example-label">输入：{{ example.input }}&nbsp;</span>
+                          <span class="example-input">输出：{{ example.output }}&nbsp;</span>
+                          <span class="example-output">解释：{{ example.explain }}&nbsp;</span>
                         </p>
                       </div>
                     </div>
@@ -815,7 +868,7 @@ onMounted(() => {
 
           // 示例
           .example {
-            width: 817px;
+            width: 780px;
             background: rgba(#409EFF, 0.03);
             border: 1px solid rgba(#409EFF, 0.1);
             border-radius: 8px;
@@ -1030,5 +1083,49 @@ onMounted(() => {
       }
     }
   }
+
+  /* 标签样式 */
+  .tags-row {
+    margin: 12px 0;
+
+    .tag-item {
+      margin-right: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  }
+
+  /* 评测用例样式 */
+  .judge-cases {
+    margin-top: 20px;
+
+    .case-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 8px 0;
+
+      pre {
+        margin: 4px 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+    }
+  }
+      // 提示
+    .hint {
+      background: #fff9f0;
+      border-left: 4px solid #E6A23C;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 24px 0;
+      div {
+      color: #8c6b3f;
+      font-size: 14px;
+
+    }
+
+    }
 }
+
 </style>

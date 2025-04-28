@@ -58,7 +58,7 @@ const handleBrowse = (qId) => {
   <el-drawer :model-value="visible" direction="ltr" :show-close="false" @close="huidao">
     <template #header="{ close }">
       <div class="drawer-header">
-        <span @click="close">每日一题</span>
+        <span @click="close">题目列表</span>
         <CloseOutlined @click="close" />
       </div>
     </template>

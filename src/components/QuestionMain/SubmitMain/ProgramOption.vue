@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch, } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addApi } from '@/api/question'
 import MdEditor from '@/components/MdEditor.vue'
@@ -114,7 +114,21 @@ const rules = {
     }
   ],
   question_prompt: [
-  {required: true, message: '请填写提示', trigger: 'blur'}
+    {
+      type: 'array',
+      required: true,
+      message: '至少需要一个提示',
+      trigger: 'change'
+    },
+    // {
+    //   validator: (rule, value, callback) => {
+    //     if (value.some(item => !item.trim())) {
+    //       callback(new Error('提示内容不能为空'))
+    //     } else {
+    //       callback()
+    //     }
+    //   }
+    // }
   ]
 }
 
@@ -133,6 +147,14 @@ const addQuestionExample = () => {
 }
 const removeQuestionExample = (index) => {
   addData.question_example.splice(index, 1)
+}
+// 添加提示
+const addPrompt = () => {
+  addData.question_prompt.push('') // 添加空字符串作为新提示
+}
+// 删除提示
+const removePrompt = (index) => {
+  addData.question_prompt.splice(index, 1)
 }
 // 保存表单数据到 LocalStorage
 const saveFormToLocalStorage = () => {
@@ -221,7 +243,7 @@ const handelBack = () => {
       <el-button type="danger" @click="removeSample(index)">删除</el-button>
     </div>
     <el-form-item>
-      <el-button type="primary" @click="addSample" style="margin-bottom: 15px;">添加样例输入输出</el-button>
+      <el-button type="primary" @click="addSample" style="margin-bottom: 15px;">添加测试样例</el-button>
     </el-form-item>
  </div>
 <div class="ex">
@@ -241,9 +263,38 @@ const handelBack = () => {
       <el-button type="success" @click="addQuestionExample" style="margin-bottom: 15px;">添加示例输入输出</el-button>
     </el-form-item>
   </div>
-    <el-form-item label="提示" prop="question_prompt">
-      <el-input v-model="addData.question_prompt" type="textarea" />
+  <div
+    v-for="(question_prompt, index) in addData.question_prompt"
+    :key="index"
+    class="prompt-item"
+  >
+    <el-form-item
+      :label="`提示 ${index + 1}`"
+      :prop="`question_prompt.${index}`"
+      :rules="rules.question_prompt"
+    >
+      <el-input
+        v-model="addData.question_prompt[index]"
+        type="textarea"
+        placeholder="请输入提示内容"
+      />
+      <el-button
+        type="danger"
+        @click="removePrompt(index)"
+        style="margin-left: 10px;"
+      >
+        删除
+      </el-button>
     </el-form-item>
+  </div>
+
+  <el-button
+    type="primary"
+    @click="addPrompt"
+    style="margin-bottom: 15px;"
+  >
+    添加新提示
+  </el-button>
     <el-form-item label="内存限制" prop="judgeConfig.memoryLimit">
       <el-input v-model="addData.judgeConfig.memoryLimit" type="number" />
     </el-form-item>

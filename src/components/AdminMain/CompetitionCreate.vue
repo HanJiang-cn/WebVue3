@@ -4,6 +4,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification, ElMessage } from 'element-plus'
 import {addCompetition} from '@/api/competition'
+import { addFileApi } from '@/api/upfile'
 import MdEditor from '@/components/MdEditor.vue'
 import router from '@/router'
 import Cookies from 'js-cookie'
@@ -118,18 +119,18 @@ function uploadInfo(data) {
 }
 
 // 处理封面图上传
-const handleCoverChange = (file) => {
-  // 校验图片大小和类型
+const fileData = ref(null)
+const beforeAvatarUpload = (file) => {
+  // 检测字符串是否以指定的前缀开始
   const isImage = file.raw.type.startsWith('image/')
   const isLt2M = file.size / 1024 / 1024 < 2
 
   if (!isImage) {
     ElNotification({
-      title: '文件类型错误',
-      message: '只能上传图片文件',
+      title: '错误',
+      message: '请上传 JPEG 或 PNG 格式的图片',
       type: 'error'
     })
-    return false
   }
 
   if (!isLt2M) {
@@ -141,11 +142,35 @@ const handleCoverChange = (file) => {
     return false
   }
 
+  fileData.value = file
+  // 显示缩略图
+  // 本地文件内容读取
   const reader = new FileReader()
+  fileData.value = file
+  // 设置文件加载完成回调（base64格式转换）
   reader.onload = (e) => {
-    form.cover = e.target.result
+    // 将图片Base64数据赋值给表单头像字段
+    form.coverUrl = e.target.result
   }
+  // 启动文件读取（将文件转换为Data URL格式）
   reader.readAsDataURL(file.raw)
+}
+const handleUpload = async () => {
+  if (fileData.value) {
+    // 创建 FormData 对象
+    const formData = new FormData()
+    // 添加文件到表单数据，使用原始文件对象
+    formData.append('file', fileData.value.raw)
+    const res = await addFileApi(formData)
+    form.coverUrl = res.data
+    console.log(form)
+
+    ElNotification({
+      title: '成功',
+      message: '封面上传成功',
+      type: 'success'
+    })
+  }
 }
 
 // 提交表单
@@ -154,6 +179,7 @@ const submitForm = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
+        await handleUpload()
         const res = await addCompetition({
           ...form,
           startTime: form.startTime ? new Date(form.startTime).getTime() : null,
@@ -267,27 +293,22 @@ const submitForm = async () => {
         </el-col>
       </el-row>
 
-      <!-- 封面图上传 -->
-      <el-form-item label="封面图：" class="form-section">
-        <el-upload
-          action="#"
-          :auto-upload="false"
-          :show-file-list="false"
-          :on-change="handleCoverChange"
-          accept="image/jpeg,image/png"
-        >
-          <div class="cover-upload">
-            <img v-if="form.coverUrl" :src="form.coverUrl" class="cover-preview">
-            <div v-else class="upload-placeholder">
-              <el-icon :size="32" class="upload-icon">
-                <Camera />
-              </el-icon>
-              <div class="upload-text">点击上传封面图</div>
-              <div class="upload-tips">建议尺寸：800x450，支持JPG/PNG格式</div>
-            </div>
+  <!-- 封面图上传 -->
+  <el-form-item label="封面图" class="form-section">
+      <el-upload action="#" :auto-upload="false" :show-file-list="false" accept="image/jpeg,image/png"
+        :on-change="beforeAvatarUpload" :http-request="handleUpload">
+        <div class="cover-upload">
+          <img v-if="form.coverUrl" :src="form.coverUrl" class="cover-preview">
+          <div v-else class="upload-placeholder">
+            <el-icon :size="32">
+              <Camera />
+            </el-icon>
+            <div class="upload-text">点击上传封面</div>
+            <div class="upload-tips">建议尺寸：800x450，支持JPG/PNG格式</div>
           </div>
-        </el-upload>
-      </el-form-item>
+        </div>
+      </el-upload>
+    </el-form-item>
     </div>
 
     <!-- 提交栏 -->
