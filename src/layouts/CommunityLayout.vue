@@ -141,6 +141,7 @@ const handleChangeBg = (val: number) => {
     text-align: right;
 
     .aside-content {
+      width: 350px;
       text-align: left;
       height: 100%;
     }

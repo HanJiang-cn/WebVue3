@@ -1,24 +1,23 @@
-<script lang="ts" setup>
+<!-- eslint-disable vue/block-lang -->
+<script setup>
 import { getPlanListApi } from '@/api/user'
 import { onMounted, ref } from 'vue'
 import MainCard from '@/components/IndexMain/MainCard.vue'
 import tp from '@/assets/tp.webp'
 import { useRouter } from 'vue-router'
+import CommunityPost from '@/components/CommunityMain/CommunityPost.vue'
+import { getAllPostListApi } from '@/api/post'
 
-interface Plan {
-  id: string;
-  user_plan: string;
-  plan_desc: string;
-}
+const tagsClick = ref('')
 
 const router = useRouter()
-const plans = ref<Plan[]>([])
+const plans = ref([])
 const loadData = async () => {
   const { data } = await getPlanListApi()
   plans.value = data
 }
 // 处理子组件事件
-const handleBrowse = (id: string) => {
+const handleBrowse = (id) => {
   router.push({
     path: '/problems/question',
     query: { id }
@@ -27,12 +26,41 @@ const handleBrowse = (id: string) => {
 onMounted(() => {
   loadData()
 })
-const loading = ref(true)
-setTimeout(() => {
-  loading.value = false
-}, 2000)
+// const loading = ref(true)
+// setTimeout(() => {
+//   loading.value = false
+// }, 2000)
 
-const radio1 = ref('1')
+// 滚动加载
+const size = ref(10)
+const listtotal = ref(10)
+const scrollDisabled = ref(false)
+const footerdiv = ref(false)
+const loading = ref(false)
+
+const recommendPostList = ref([])
+const getRecommendPostList = async (size, tags) => {
+  const res = await getAllPostListApi({
+    current: 1,
+    pageSize: size,
+    tags: tags
+  })
+  recommendPostList.value = res.data.records
+  listtotal.value = res.data.total
+}
+onMounted(() => {
+  getRecommendPostList()
+})
+const infiniteHandler = () => {
+  size.value += 5
+  console.log('加载成功');
+  if (recommendPostList.value.length < +listtotal.value) {
+    getRecommendPostList(size.value)
+  } else {
+    scrollDisabled.value = true
+    footerdiv.value = true
+  }
+}
 </script>
 
 <template>
@@ -67,16 +95,30 @@ const radio1 = ref('1')
   <div class="content">
     <el-affix target=".content" :offset="0">
       <div style="width: 100%; text-align: left;">
-        <el-radio-group v-model="radio1" size="large">
-          <el-radio-button label="New York" value="1" />
-          <el-radio-button label="Washington" value="Washington" />
-          <el-radio-button label="Los Angeles" value="Los Angeles" />
-          <el-radio-button label="Chicago" value="Chicago" />
+        <el-radio-group v-model="tagsClick" size="large">
+          <el-radio-button label="全部" value="" @click="getRecommendPostList(10, [])" />
+          <el-radio-button label="题目交流" value="题目交流" @click="getRecommendPostList(10, ['题目交流'])" />
+          <el-radio-button label="职业发展" value="职业发展" @click="getRecommendPostList(10, ['职业发展'])" />
+          <el-radio-button label="前端" value="前端" @click="getRecommendPostList(10, ['前端'])" />
+          <el-radio-button label="数据结构" value="数据结构" @click="getRecommendPostList(10, ['数据结构'])" />
+          <el-radio-button label="面试经验" value="面试经验" @click="getRecommendPostList(10, ['面试经验'])" />
+          <el-radio-button label="学习方法" value="学习方法" @click="getRecommendPostList(10, ['学习方法'])" />
         </el-radio-group>
       </div>
     </el-affix>
-    <div class="content-card">
-      <div class="top">
+    <div class="content-card" v-infinite-scroll="infiniteHandler" :infinite-scroll-disabled="scrollDisabled"
+      infinite-scroll-distance="10">
+      <div v-loading="loading">
+        <CommunityPost v-for="item in recommendPostList" :key="item.id" @click="handlePost(item.id)" :item="item">
+        </CommunityPost>
+        <div v-if="footerdiv" class="loading-message">
+          <el-icon :size="16" color="#64748b" class="icon-check">
+            <Check />
+          </el-icon>
+          <span class="text">已经到底啦~</span>
+        </div>
+      </div>
+      <!-- <div class="top">
         <div class="right">
           <el-avatar :size="30" />
         </div>
@@ -91,8 +133,8 @@ const radio1 = ref('1')
       </div>
       <div class="bottom">
       </div>
-    </div>
-    <el-skeleton class="content-card" :loading="loading" animated
+    </div> -->
+      <!-- <el-skeleton class="content-card" :loading="loading" animated
       :throttle="{ leading: 500, trailing: 500, initVal: true }" v-for="item in 15" :key="item">
       <template #template>
         <div class="content-card">
@@ -115,7 +157,7 @@ const radio1 = ref('1')
         </div>
 
       </template>
-      <template #default>
+<template #default>
         <div class="content-card">
           <div class="top">
             <div class="right">
@@ -134,7 +176,8 @@ const radio1 = ref('1')
           </div>
         </div>
       </template>
-    </el-skeleton>
+</el-skeleton> -->
+    </div>
   </div>
 </template>
 
@@ -202,58 +245,80 @@ const radio1 = ref('1')
 
 .content {
   margin-top: 40px;
-  text-align: center;
+  // text-align: center;
   height: 100%;
   border-radius: 4px;
 }
 
 .content-card {
-  padding-top: 16px;
-  padding-right: 25px;
-  padding-bottom: 20px;
-  height: 90px;
-  cursor: pointer;
+  // padding-top: 16px;
+  // padding-right: 25px;
+  // padding-bottom: 20px;
+  // // height: 90px;
+  // cursor: pointer;
 
-  .top {
+  // .top {
+  //   display: flex;
+  //   justify-content: space-between;
+
+  //   .center {
+  //     width: 100%;
+  //     height: 80px;
+  //     margin-left: 20px;
+  //     text-align: left;
+
+  //     .el-skeleton-item {
+  //       margin-left: 30px;
+  //       margin-bottom: 10px;
+  //     }
+
+  //     p {
+  //       &:first-child {
+  //         font-size: 14px;
+  //         color: #0000008c;
+  //         padding-bottom: 10px;
+  //       }
+
+  //       &:nth-child(2) {
+  //         font-size: 16px;
+  //         font-weight: bolder;
+  //         color: #1a1a1a;
+  //         padding-bottom: 10px;
+  //       }
+
+  //       &:last-child {
+  //         font-size: 14px;
+  //         color: #0000008c;
+  //       }
+  //     }
+  //   }
+
+  //   img {
+  //     width: 146px;
+  //     height: 88px;
+  //     border-radius: 5px;
+  //   }
+  // }
+
+  .loading-message {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    margin: 16px 0 32px;
+    color: #64748b;
+    background: rgba(241, 245, 249, 0.6);
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease;
 
-    .center {
-      width: 100%;
-      height: 80px;
-      margin-left: 20px;
-      text-align: left;
-
-      .el-skeleton-item {
-        margin-left: 30px;
-        margin-bottom: 10px;
-      }
-
-      p {
-        &:first-child {
-          font-size: 14px;
-          color: #0000008c;
-          padding-bottom: 10px;
-        }
-
-        &:nth-child(2) {
-          font-size: 16px;
-          font-weight: bolder;
-          color: #1a1a1a;
-          padding-bottom: 10px;
-        }
-
-        &:last-child {
-          font-size: 14px;
-          color: #0000008c;
-        }
-      }
+    .icon-check {
+      margin-right: 8px;
+      transform: translateY(1px);
     }
 
-    img {
-      width: 146px;
-      height: 88px;
-      border-radius: 5px;
+    .text {
+      font-size: 14px;
+      letter-spacing: 0.5px;
     }
   }
 

@@ -19,9 +19,9 @@ export default defineConfig({
         target: 'http://120.46.86.24:8101/',
         changeOrigin: true,
         ws: true,
-        // pathRewritre: {
-        //   '^/': '',
-        // },
+        // 路径重写规则：移除请求路径开头的斜杠
+        // 例如 /api/user → api/user（注意目标服务器地址末尾已包含斜杠）
+        rewrite: (path) => path.replace(/^\//, ''),
       },
     },
   },

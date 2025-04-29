@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/block-lang -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup>
 import { onMounted, ref } from 'vue'
@@ -71,9 +72,9 @@ const getCollectionInfo = async () => {
     })
   }
 }
-onMounted(() => {
+if (userStore.id) {
   getCollectionInfo()
-})
+}
 </script>
 
 <template>

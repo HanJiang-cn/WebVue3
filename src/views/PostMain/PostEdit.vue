@@ -4,19 +4,22 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { getPostApi, editPostApi } from '@/api/post'
+import { getPostApi, editPostApi, addPostApi } from '@/api/post'
+import { addFileApi } from '@/api/upfile'
 import MdEditor from '@/components/MdEditor.vue'
 
 const router = useRouter()
 const postId = ref(router.currentRoute.value.query.id)
 // 表单引用
 const formRef = ref(null)
+const formStatus = ref('') // 初始状态为编辑
+
 const form = reactive({
   title: '',
   content: '',
   post_classes: '',
-  tags: [],
   post_picture: '',
+  tags: []
 })
 const categories = ref([
   { value: '技术分享', label: '技术分享' },
@@ -24,7 +27,7 @@ const categories = ref([
   { value: '生活感悟', label: '生活感悟' },
   { value: '问题求助', label: '问题求助' }
 ])
-const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
+const suggestedTags = ref(['题目交流', '职业发展', '前端', '数据结构', '面试经验', '学习方法'])
 const submitting = ref(false)
 
 // 验证规则
@@ -48,11 +51,14 @@ onMounted(async () => {
   try {
     const res = await getPostApi({ id: postId.value })
     if (res.code === 0) {
-      Object.assign(form, res.data)
+      form.title = res.data.title
+      form.content = res.data.content
+      form.post_classes = res.data.post_classes
+      formStatus.value = res.data.status
       form.tags = res.data.tagList
       // 处理服务器返回的封面URL
-      if (res.data.img) {
-        form.post_picture = res.data.img
+      if (res.data.post_picture) {
+        form.post_picture = res.data.post_picture
       }
     }
   } catch (error) {
@@ -202,6 +208,42 @@ const submitFormDraft = async () => {
     }
   )
 }
+
+// 发布帖子
+const submitFormPublish = async () => {
+  submitting.value = true
+  await formRef.value.validate(
+    async (valid) => {
+      if (valid) {
+        try {
+          await handleUpload()
+          const res = await addPostApi({
+            ...form,
+            id: postId.value, // 确保传递帖子ID
+          })
+          if (res.code === 0) {
+            ElNotification({
+              title: '发布成功',
+              message: '帖子已发布',
+              type: 'success'
+            })
+
+            // 编辑成功后跳转到帖子详情页
+            window.open(router.resolve({
+              path: '/post',
+              query: {
+                id: postId.value
+              }
+            }).href, '_self')
+          }
+        } catch (error) {
+          console.error('发布帖子失败:', error)
+        }
+      }
+    }
+  )
+  submitting.value = false
+}
 </script>
 
 <template>
@@ -266,12 +308,17 @@ const submitFormDraft = async () => {
 
     <!-- 提交栏 -->
     <div class="submit-bar">
-      <el-button type="primary" size="large" :loading="submitting" @click="submitForm">
+      <el-button v-if="formStatus === 0" type="primary" size="large" :loading="submitting" @click="submitForm">
         立即保存
       </el-button>
-      <el-button size="large" :loading="submitting" @click="submitFormDraft">
-        保存草稿
-      </el-button>
+      <div v-else>
+        <el-button type="primary" size="large" :loading="submitting" @click="submitFormPublish">
+          发布帖子
+        </el-button>
+        <el-button size="large" :loading="submitting" @click="submitFormDraft">
+          保存草稿
+        </el-button>
+      </div>
     </div>
   </el-form>
 </template>

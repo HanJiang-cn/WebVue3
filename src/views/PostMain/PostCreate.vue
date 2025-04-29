@@ -25,7 +25,7 @@ const categories = ref([
   { value: '生活感悟', label: '生活感悟' },
   { value: '问题求助', label: '问题求助' }
 ])
-const suggestedTags = ref(['LeetCode', '动态规划', '前端开发', 'Vue', 'Node.js'])
+const suggestedTags = ref(['题目交流', '职业发展', '前端', '数据结构', '面试经验', '学习方法'])
 const submitting = ref(false)
 
 // 验证规则

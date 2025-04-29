@@ -18,7 +18,7 @@ import IndexAside from '@/views/IndexMain/IndexAside.vue';
       </div>
       <div class="aside">
         <div class="aside-content">
-          <el-affix :offset="20" target=".aside-content">
+          <el-affix :offset="20" target=".main-layout">
             <IndexAside />
           </el-affix>
         </div>
@@ -64,10 +64,12 @@ import IndexAside from '@/views/IndexMain/IndexAside.vue';
     padding-top: 50px;
     color: #333;
     text-align: right;
+    height: 100%;
 
     .aside-content {
+      width: 350px;
       text-align: left;
-      height: 100%;
+      // height: 100vh;
     }
   }
 }

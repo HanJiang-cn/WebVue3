@@ -104,7 +104,7 @@ const handleFavorite = async () => {
 </script>
 
 <template>
-  <div class="post-container" v-if="postData.status === 0 || postData.status === 1">
+  <div class="post-container" v-if="postData.status === 0">
     <!-- 返回按钮 -->
     <div class="back-button">
       <el-button type="text" @click="$router.back()">
