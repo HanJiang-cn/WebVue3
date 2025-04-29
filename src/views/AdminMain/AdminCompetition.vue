@@ -116,7 +116,7 @@ const handleDelete = async (competitionId) => {
       <el-table-column prop="type" label="竞赛类型">
         <template #default="{ row }">
           <el-tag :type="row.type === '0' ? 'false' : 'success'">
-            {{ row.type === '0' ? '个人赛' : '团队赛' }}
+            {{ row.type === '0' ? '团队赛' : '个人赛' }}
           </el-tag>
         </template>
       </el-table-column>

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
-import { onMounted, ref,reactive } from 'vue'
+import { onMounted, ref,reactive,watch } from 'vue'
 import empty from '@/assets/empty-projects.svg'
 import { getApi } from '@/api/question'
 import { usePagination } from '@/hooks/usePagination'
@@ -12,11 +12,10 @@ const loading = ref(false)
 const direction = ref('全部')
 const knowledge = ref('全部')
 const type = ref('全部')
-const difficulty = ref('全部')
+const difficulty = ref('')
 // 筛选条件
 const filter = reactive({
   title: '',
-  sort: 'newest'
 })
 
 // 搜索题目
@@ -26,13 +25,17 @@ const fetchQuestion = () => {
 // 获取题目列表
 const loadData = async () => {
   loading.value = true
-  const { data: { records, total } } = await getApi({ ...pageInfo , title: filter.title })
+  const { data: { records, total } } = await getApi({ ...pageInfo , title: filter.title,difficulty: difficulty.value})
   loading.value = false
   questions.value = records
   setTotals(Number(total))
   console.log(questions.value)
 }
-
+// 添加筛选条件变化监听
+watch([difficulty], () => {
+  pageInfo.current = 1 // 重置到第一页
+  loadData()
+})
 onMounted(() => {
   loadData()
 })
@@ -105,8 +108,8 @@ const { totals, pageInfo, handleCurrentChange, handleSizeChange, setTotals } = u
       <span class="heading">难度</span>
       <div class="select">
         <div>
-          <el-radio-group v-model="difficulty" size="large">
-            <el-radio-button label="全部" value="全部" />
+          <el-radio-group v-model="difficulty" size="large" @change="loadData">
+            <el-radio-button label="全部" value="" />
             <el-radio-button label="简单" value="简单" />
             <el-radio-button label="适中" value="适中" />
             <el-radio-button label="困难" value="困难" />
