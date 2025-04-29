@@ -99,7 +99,7 @@ const handleNoPass = (competitionId) => {
       </el-table-column>
       <el-table-column prop="name" label="帖子标题">
         <template #default="{ row }">
-          <span class="title-text" @click="previewVisible = true; previewContent = row.context">{{ row.name}}</span>
+          <span class="title-text" @click="previewVisible = true; previewContent = row.info">{{ row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="userRole" label="帖子状态">

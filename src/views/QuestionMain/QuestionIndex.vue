@@ -2,9 +2,15 @@
 <script setup>
 import QuestionIndexCard from '@/components/QuestionMain/QuestionIndexCard.vue'
 import QuestionIndexBackground from '@/components/QuestionMain/QuestionIndexBackground.vue'
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getEveryRecordApi,historyErrorQuestionApi } from '@/api/question'
+//引入用户信息
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
+const id =Number( userStore.id)
 const router = useRouter()
+const historyErrorQuestion = ref([])
 const radio1 = ref('1')
 const tableData = ref([
   {
@@ -95,6 +101,26 @@ const handleHistory= () => {
       path: '/question/history',
     }).href, '_blank')
 }
+// 获取错题记录
+const errorQuestion = async () => {
+  try {
+    const { data } = await historyErrorQuestionApi({ userId:id })
+    historyErrorQuestion.value = data.records || []
+  } catch (error) {
+    console.error('获取错题记录失败:', error)
+    historyErrorQuestion.value = []
+  }
+}
+const handleRecord = () => {
+  getEveryRecordApi({id:id}).then((res) => {
+    console.log(res)
+  })
+}
+onMounted(() => {
+  handleRecord()
+  errorQuestion()
+})
+
 </script>
 
 <template>
@@ -262,8 +288,10 @@ const handleHistory= () => {
             <p>练习历史</p>
           </div>
           <div id="content">
-            <a href="#">
-              <span id="name">算法</span>
+            <a href="#" v-for="(record, index) in historyErrorQuestion"
+          :key="index"
+          class="error-item">
+              <span id="name">{{ record.questions.title }}</span>
               <span id="condition">完成</span>
             </a>
           </div>
