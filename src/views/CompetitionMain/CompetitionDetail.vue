@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { searchCompetition ,signCompetition,reviewCompetition} from '@/api/competition'
+import { searchCompetition, signCompetition, reviewCompetition } from '@/api/competition'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 import moment from 'moment'
@@ -85,12 +85,18 @@ const handleSignUp = async () => {
 }
 //点击进行考试
 const handleExam = () => {
-  router.push({
+  window.open(router.resolve({
     path: '/competition/answer',
     query: {
       id: id.value
     }
-  })
+  }).href, '_self')
+  // router.push({
+  //   path: '/competition/answer',
+  //   query: {
+  //     id: id.value
+  //   }
+  // })
 }
 
 onMounted(() => {
@@ -102,11 +108,7 @@ onMounted(() => {
   <div class="detail-container">
     <!-- 封面图 -->
     <div class="cover-wrapper">
-      <img
-        :src="competition.coverUrl || defaultCover"
-        :alt="competition.name"
-        class="competition-cover"
-      >
+      <img :src="competition.coverUrl || defaultCover" :alt="competition.name" class="competition-cover">
     </div>
 
     <!-- 主体内容 -->
@@ -164,38 +166,24 @@ onMounted(() => {
               <span class="value">{{ competition.pushName || '大赛组委会' }}</span>
             </div>
           </div>
-          <el-button
-        v-if="competitionStatus === 1"
-        type="primary"
-        class="signup-btn"
-        :disabled="isSigned"
-        @click="handleSignUp"
-      >
-        {{ !isSigned ? '立即报名'  : '已报名'}}
-      </el-button>
+          <el-button v-if="competitionStatus === 1" type="primary" class="signup-btn" :disabled="isSigned"
+            @click="handleSignUp">
+            {{ !isSigned ? '立即报名' : '已报名' }}
+          </el-button>
 
-      <!-- 考试按钮 -->
-      <el-button
-        v-if="competitionStatus === 2"
-        type="primary"
-        class="signup-btn"
-        :disabled="isSigned"
-        @click="handleExam"
-      >
-        进行考试
-        <el-tooltip
-          v-if="isSigned"
-          content="请先完成报名"
-          placement="top"
-        >
-          <i class="el-icon-warning" style="margin-left: 5px"/>
-        </el-tooltip>
-      </el-button>
+          <!-- 考试按钮 -->
+          <el-button v-if="competitionStatus === 2" type="primary" class="signup-btn" :disabled="isSigned"
+            @click="handleExam">
+            进行考试
+            <el-tooltip v-if="isSigned" content="请先完成报名" placement="top">
+              <i class="el-icon-warning" style="margin-left: 5px" />
+            </el-tooltip>
+          </el-button>
 
-      <!-- 结束提示 -->
-      <div v-if="competitionStatus === 3" class="disabled-tip">
-        赛事已结束
-      </div>
+          <!-- 结束提示 -->
+          <div v-if="competitionStatus === 3" class="disabled-tip">
+            赛事已结束
+          </div>
         </div>
       </aside>
     </main>
@@ -241,16 +229,27 @@ onMounted(() => {
   }
 
   .status-tag {
-  width: 75px;
+    width: 75px;
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 14px;
     text-align: center;
 
 
-    &.status-ongoing { background: #e8f4ff; color: #1890ff; }
-    &.status-processing { background: #fff7e6; color: #faad14; }
-    &.status-ended { background: #fff0f0; color: #ff4d4f; }
+    &.status-ongoing {
+      background: #e8f4ff;
+      color: #1890ff;
+    }
+
+    &.status-processing {
+      background: #fff7e6;
+      color: #faad14;
+    }
+
+    &.status-ended {
+      background: #fff0f0;
+      color: #ff4d4f;
+    }
   }
 }
 
@@ -305,7 +304,7 @@ onMounted(() => {
     padding: 20px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
     .sidebar-title {
       font-size: 18px;
@@ -329,6 +328,7 @@ onMounted(() => {
       font-weight: 500;
     }
   }
+
   .disabled-tip {
     margin-top: 20px;
     padding: 12px;
@@ -338,6 +338,7 @@ onMounted(() => {
     border-radius: 4px;
     border: 1px solid #e4e7ed;
   }
+
   .signup-btn {
     width: 100%;
     margin-top: 20px;
@@ -345,5 +346,4 @@ onMounted(() => {
     font-size: 16px;
   }
 }
-
 </style>
