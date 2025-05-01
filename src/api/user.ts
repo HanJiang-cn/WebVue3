@@ -9,7 +9,9 @@ enum Api {
   Update = '/user/update/my',
   PlanList = '/user/Index/getPlan',
   GetCollection = '/admin/info/user/getInfo',
-  ConfirmNotification = '/admin/info/putStatus'
+  ConfirmNotification = '/admin/info/putStatus',
+  SignIn = '/question/user/everyRecord',
+  SignInRecord = '/question/user/getSign'
 }
 
 interface LoginData {
@@ -62,4 +64,12 @@ function confirmNotificationApi(data: any) {
   return post(`/admin/info/putStatus?id=${data}`)
 }
 
-export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi, getIdInfoApi, getCollectionInfoApi, confirmNotificationApi }
+function signInApi() {
+  return post(Api.SignIn)
+}
+
+function signInRecordApi(data: any) {
+  return get(Api.SignInRecord, data)
+}
+
+export { loginApi, registerApi, getLoginUserInfoApi, updateLoginUserApi, getPlanListApi, getIdInfoApi, getCollectionInfoApi, confirmNotificationApi, signInApi, signInRecordApi }

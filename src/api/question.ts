@@ -11,7 +11,7 @@ enum Api {
   submitQuestion = '/question/question_submit/do',
   getMydetail='/question/get',
   AddCompetitionPaper='/competition/addComQues',
-  dailyQuestion='/question/user/everyRecord',
+  dailyQuestion='/user/Index/getQuestion',
   getCompetitionQuestion='/competition/user/getComQues',
   getCompetitionQuestionDetail='/competition/user/getComQues/Info',
   historyErrorQuestion='/question/user/errorRecord',
@@ -110,7 +110,7 @@ function AddCompetitionPaper(competitionId:number,questionId:Array<number>){
   return post(`/competition/addComQues?competitionId=${competitionId}&questionId=${questionId}`)
 }
 function dailyQuestionApi(data:any){
-  return post(Api.dailyQuestion,data)
+  return get(Api.dailyQuestion,data)
 }
 function getCompetitionQuestionApi(competitionId:number){
   return post(`/competition/user/getComQues?competitionId=${competitionId}`)

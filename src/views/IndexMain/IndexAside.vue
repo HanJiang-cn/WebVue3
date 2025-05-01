@@ -3,13 +3,14 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { dailyQuestionApi,getEveryRecordApi } from '@/api/question'
+import { dailyQuestionApi, getEveryRecordApi } from '@/api/question'
+import { signInApi } from '@/api/user'
 
 const router = useRouter()
 const userStore = useUserStore()
 const dailyQuestion = ref({})
 const getEveryRecord = async () => {
-  const res = await getEveryRecordApi({userId: userStore.userId})
+  const res = await getEveryRecordApi({ userId: userStore.userId })
   console.log(res.data)
   console.log(userStore.userId)
 }
@@ -19,11 +20,12 @@ const getDailyQuestion = async () => {
   getEveryRecord()
 }
 
-const showChallenge = () => {
+const showChallenge = async () => {
   router.push({
     path: '/problems/question',
     query: { id: dailyQuestion.value.id }
   })
+  await signInApi()
 }
 onMounted(() => {
   getDailyQuestion()
